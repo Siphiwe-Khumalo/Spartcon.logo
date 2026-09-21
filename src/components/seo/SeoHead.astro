@@ -35,15 +35,23 @@ const {
 const fullTitle =
   brandSuffix && !/spartcon/i.test(title) ? `${title} | Spartcon` : title;
 
+/**
+ * Resolve against Astro.site rather than the hardcoded company URL, so a
+ * subpath or preview deployment emits internally consistent canonical and
+ * Open Graph URLs instead of pointing at the production domain.
+ */
+const origin = Astro.site?.href ?? company.siteUrl;
+
 const canonical = new URL(
   Astro.url.pathname.replace(/\/+$/, "") || "/",
-  company.siteUrl
+  origin
 ).href;
 
-/* Social card image. Uses the built asset URL so it resolves absolutely. */
-const ogImageUrl = ogImage
-  ? new URL(`/og/${ogImage}.jpg`, company.siteUrl).href
-  : new URL("/og/default.jpg", company.siteUrl).href;
+/* Social card image, resolved through the configured base path. */
+const ogPath = `${import.meta.env.BASE_URL.replace(/\/+$/, "")}/og/${
+  ogImage ?? "default"
+}.jpg`;
+const ogImageUrl = new URL(ogPath, origin).href;
 
 /**
  * Organization schema. Only fields confirmed by the source material are

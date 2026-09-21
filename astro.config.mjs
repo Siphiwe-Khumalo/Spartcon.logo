@@ -7,8 +7,19 @@ import sitemap from "@astrojs/sitemap";
  * `site` is used for canonical URLs, Open Graph URLs, the generated sitemap
  * and robots.txt. Update this to the live production domain before deployment.
  */
+/**
+ * `site` and `base` are overridable by environment variables so the same
+ * source can be deployed either at a domain root (the production case) or at a
+ * subpath such as GitHub Pages' /<repo>/ (the preview case).
+ *
+ *   SITE_URL   full origin, e.g. https://siphiwe-khumalo.github.io
+ *   SITE_BASE  subpath,     e.g. /Spartcon.logo
+ *
+ * Neither is needed for local development or a root-domain deployment.
+ */
 export default defineConfig({
-  site: "https://www.spartcon.co.za",
+  site: process.env.SITE_URL || "https://www.spartcon.co.za",
+  base: process.env.SITE_BASE || "/",
   trailingSlash: "never",
   build: {
     format: "directory",
