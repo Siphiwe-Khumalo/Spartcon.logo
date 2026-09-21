@@ -202,3 +202,54 @@ CloudFront, or standard web hosting).
 **Before going live,** update `site` in `astro.config.mjs` and the `Sitemap:`
 line in `public/robots.txt` to the production domain. Both currently point at
 `https://www.spartcon.co.za`.
+
+
+---
+
+## Review deployment (GitHub Pages)
+
+The live preview URL is:
+
+**https://siphiwe-khumalo.github.io/Spartcon.logo/**
+
+There are two ways to serve it. **Pick one** — running both is redundant.
+
+### Option A — GitHub Actions (recommended)
+
+`Settings → Pages → Source` → **GitHub Actions**
+
+`.github/workflows/deploy-pages.yml` then builds and publishes on every push to
+`main`. Nothing built is committed to the repository, so the preview can never
+drift from the source.
+
+### Option B — deploy from the `gh-pages` branch
+
+`Settings → Pages → Source` → **Deploy from a branch** → branch **`gh-pages`**,
+folder **`/ (root)`**
+
+The `gh-pages` branch holds a pre-built copy of the site. This needs no Actions
+run, but it has to be rebuilt and force-pushed by hand whenever the source
+changes, so Option A is preferable for anything ongoing.
+
+### Why the subpath matters
+
+GitHub Pages serves a project repository from `/<repo>/`, not the domain root.
+Astro's `base` option prefixes the assets Astro emits, but not hand-written
+root-absolute links such as `href="/about"` — of which this site has 111.
+`scripts/rewrite-base.mjs` runs after the build and prefixes them, and no-ops
+entirely when `SITE_BASE` is unset, so a production root-domain deploy is
+unaffected.
+
+To reproduce a Pages-equivalent build locally:
+
+```bash
+SITE_URL=https://siphiwe-khumalo.github.io SITE_BASE=/Spartcon.logo npm run build
+SITE_BASE=/Spartcon.logo node scripts/rewrite-base.mjs
+```
+
+`.nojekyll` is essential in the published output. Without it Jekyll skips any
+directory beginning with an underscore, which means every file in `_astro/`
+— all CSS, JavaScript and optimised images — returns 404.
+
+The preview is served with `robots.txt` set to `Disallow: /` and the sitemap
+removed, so it cannot compete with the production domain in search results.

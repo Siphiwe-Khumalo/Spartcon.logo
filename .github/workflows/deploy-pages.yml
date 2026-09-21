@@ -40,6 +40,12 @@ jobs:
       - name: Resolve Pages URL
         id: pages
         uses: actions/configure-pages@v5
+        with:
+          # Lets the workflow switch Pages into "GitHub Actions" mode itself
+          # using the job's own GITHUB_TOKEN, rather than failing with
+          # "Get Pages site failed" when the repository is still set to
+          # "Deploy from a branch".
+          enablement: true
 
       - name: Build
         env:
