@@ -1,0 +1,1102 @@
+---
+/**
+ * SITE NAVIGATION
+ *
+ * Desktop: horizontal bar with two dropdown types —
+ *   - a compact list for Services
+ *   - a mega-menu for Facilities Engineering, which carries the Spartcon Tech
+ *     lockup and states the parent-brand relationship explicitly.
+ *
+ * Mobile: a full-height drawer where dropdowns become accordions.
+ *
+ * Accessibility:
+ *   - Real <button aria-expanded aria-controls> triggers for each dropdown.
+ *   - Hover opens on pointer devices; click/Enter/Space works everywhere.
+ *   - Escape closes and returns focus to the trigger.
+ *   - Arrow keys move through the menubar; Tab leaving a panel closes it.
+ *   - aria-current="page" marks the active route.
+ */
+import Logo from "@components/brand/Logo.astro";
+import WaveMark from "@components/brand/WaveMark.astro";
+import Button from "@components/ui/Button.astro";
+import { primaryNav, navCta, isActive, techLinks } from "@data/navigation";
+import { techBrand } from "@data/spartcon-tech";
+
+const pathname = Astro.url.pathname;
+---
+
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="nav" data-nav>
+  <div class="nav__inner container">
+    <!-- ------------------------------------------------------------- brand -->
+    <a
+      href="/"
+      class="nav__brand"
+      aria-label="Spartcon — home"
+      aria-current={pathname === "/" ? "page" : undefined}
+    >
+      <Logo variant="spartcon" layout="inline" size="md" title="" />
+    </a>
+
+    <!-- -------------------------------------------------- desktop menubar -->
+    <nav class="nav__primary" aria-label="Primary">
+      <ul class="nav__list" role="list">
+        {
+          primaryNav.map((item) => {
+            const active = isActive(item.href, pathname);
+            const panelId = `panel-${item.href.replace(/\W+/g, "-")}`;
+
+            if (!item.children) {
+              return (
+                <li class="nav__item">
+                  <a
+                    href={item.href}
+                    class:list={["nav__link", active && "is-active"]}
+                    aria-current={active ? "page" : undefined}
+                  >
+                    <span>{item.label}</span>
+                  </a>
+                </li>
+              );
+            }
+
+            return (
+              <li
+                class:list={[
+                  "nav__item",
+                  "nav__item--has-panel",
+                  item.megaMenu && "nav__item--mega",
+                ]}
+                data-dropdown
+              >
+                <button
+                  type="button"
+                  class:list={["nav__link", "nav__trigger", active && "is-active"]}
+                  aria-expanded="false"
+                  aria-controls={panelId}
+                  data-dropdown-trigger
+                >
+                  <span>{item.label}</span>
+                  <svg
+                    class="nav__chev"
+                    viewBox="0 0 10 6"
+                    width="10"
+                    height="6"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M1 1l4 4 4-4"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.4"
+                    />
+                  </svg>
+                </button>
+
+                {item.megaMenu === "spartcon-tech" ? (
+                  <div
+                    class="nav__panel nav__panel--mega"
+                    id={panelId}
+                    data-dropdown-panel
+                  >
+                    <div class="mega">
+                      <!-- Brand column: makes the parent relationship explicit -->
+                      <div class="mega__brand">
+                        <Logo variant="tech" layout="stacked" size="lg" invert />
+                        <p class="mega__descriptor">{techBrand.descriptor}</p>
+                        <p class="mega__parent">{techBrand.parentStatement}</p>
+                        <a href={techBrand.basePath} class="mega__cta">
+                          <span>Spartcon Tech Overview</span>
+                          <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+                            <path
+                              d="M1 8h13M9 3l5 5-5 5"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.6"
+                              stroke-linecap="square"
+                            />
+                          </svg>
+                        </a>
+                      </div>
+
+                      <!-- Links column -->
+                      <ul class="mega__links" role="list">
+                        {techLinks.map((link, i) => (
+                          <li>
+                            <a
+                              href={link.href}
+                              class:list={[
+                                "mega__link",
+                                isActive(link.href, pathname) && "is-active",
+                              ]}
+                              aria-current={
+                                isActive(link.href, pathname) ? "page" : undefined
+                              }
+                            >
+                              <span class="mega__link-index">
+                                {String(i + 1).padStart(2, "0")}
+                              </span>
+                              <span class="mega__link-text">
+                                <span class="mega__link-label">{link.label}</span>
+                                {link.description && (
+                                  <span class="mega__link-desc">
+                                    {link.description}
+                                  </span>
+                                )}
+                              </span>
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                ) : (
+                  <div class="nav__panel" id={panelId} data-dropdown-panel>
+                    <ul class="drop" role="list">
+                      {item.children.map((link) => (
+                        <li>
+                          <a
+                            href={link.href}
+                            class:list={[
+                              "drop__link",
+                              isActive(link.href, pathname) && "is-active",
+                            ]}
+                            aria-current={
+                              isActive(link.href, pathname) ? "page" : undefined
+                            }
+                          >
+                            <span class="drop__label">{link.label}</span>
+                            {link.description && (
+                              <span class="drop__desc">{link.description}</span>
+                            )}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </li>
+            );
+          })
+        }
+      </ul>
+    </nav>
+
+    <!-- ------------------------------------------------------------- cta -->
+    <div class="nav__cta">
+      <Button href={navCta.href} variant="primary" arrow>{navCta.label}</Button>
+    </div>
+
+    <!-- --------------------------------------------------- mobile trigger -->
+    <button
+      type="button"
+      class="nav__burger"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Open menu"
+      data-menu-toggle
+    >
+      <span class="nav__burger-lines" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
+    </button>
+  </div>
+
+  <!-- Progress-style hairline that strengthens as the page scrolls. -->
+  <div class="nav__edge" aria-hidden="true"></div>
+</header>
+
+<!-- ======================================================= mobile drawer -->
+<div class="mnav" id="mobile-menu" data-mobile-menu hidden>
+  <div class="mnav__scroll">
+    <nav aria-label="Mobile navigation">
+      <ul class="mnav__list" role="list">
+        {
+          primaryNav.map((item, idx) => {
+            const active = isActive(item.href, pathname);
+            const accId = `m-acc-${idx}`;
+
+            if (!item.children) {
+              return (
+                <li class="mnav__item">
+                  <a
+                    href={item.href}
+                    class:list={["mnav__link", active && "is-active"]}
+                    aria-current={active ? "page" : undefined}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              );
+            }
+
+            return (
+              <li class="mnav__item">
+                <button
+                  type="button"
+                  class:list={["mnav__link", "mnav__acc", active && "is-active"]}
+                  aria-expanded="false"
+                  aria-controls={accId}
+                  data-mobile-acc
+                >
+                  <span>{item.label}</span>
+                  <span class="mnav__plus" aria-hidden="true">
+                    <span></span><span></span>
+                  </span>
+                </button>
+
+                <div class="mnav__panel" id={accId} data-mobile-panel>
+                  <div class="mnav__panel-inner">
+                    {item.megaMenu === "spartcon-tech" && (
+                      <div class="mnav__brand">
+                        <Logo variant="tech" layout="inline" size="sm" invert />
+                        <p class="mnav__descriptor">{techBrand.descriptor}</p>
+                      </div>
+                    )}
+                    <ul role="list" class="mnav__sublist">
+                      {item.children.map((link) => (
+                        <li>
+                          <a
+                            href={link.href}
+                            class:list={[
+                              "mnav__sublink",
+                              isActive(link.href, pathname) && "is-active",
+                            ]}
+                            aria-current={
+                              isActive(link.href, pathname) ? "page" : undefined
+                            }
+                          >
+                            <span class="mnav__sublabel">{link.label}</span>
+                            {link.description && (
+                              <span class="mnav__subdesc">{link.description}</span>
+                            )}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </nav>
+
+    <div class="mnav__foot">
+      <Button href={navCta.href} variant="primary" size="lg" full arrow>
+        {navCta.label}
+      </Button>
+      <p class="mnav__positioning">
+        <WaveMark height="0.7rem" color="var(--orange-400)" />
+        <span>Professional construction solutions for the African environment.</span>
+      </p>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ====================================================== desktop nav === */
+
+  .nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: var(--z-nav);
+    background: rgba(255, 255, 255, 0.94);
+    /* A light blur keeps text legible over photography without a glass look. */
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    transition: background-color var(--d-mid) var(--e-out),
+      box-shadow var(--d-mid) var(--e-out);
+  }
+
+  /* Over a dark hero the nav starts transparent and inverts its text. */
+  .nav[data-nav-transparent="true"]:not([data-nav-scrolled="true"]) {
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .nav[data-nav-scrolled="true"] {
+    box-shadow: 0 1px 0 var(--line), var(--shadow-sm);
+  }
+
+  .nav__inner {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 2vw, 2.5rem);
+    height: var(--nav-h);
+    transition: height var(--d-mid) var(--e-out);
+  }
+
+  .nav[data-nav-scrolled="true"] .nav__inner {
+    height: var(--nav-h-scrolled);
+  }
+
+  .nav__brand {
+    flex: none;
+    display: flex;
+    align-items: center;
+    padding: 0.25rem 0;
+  }
+
+  .nav__primary {
+    margin-left: auto;
+  }
+
+  .nav__list {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.25rem, 0.8vw, 1rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .nav__item {
+    position: relative;
+  }
+
+  .nav__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 0.65rem;
+    font-size: var(--t-sm);
+    font-weight: 450;
+    color: var(--navy-900);
+    white-space: nowrap;
+    position: relative;
+    transition: color var(--d-fast) var(--e-out);
+  }
+
+  /* Animated underline indicator. */
+  .nav__link > span:first-child::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -3px;
+    height: 1.5px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--d-mid) var(--e-out);
+  }
+
+  .nav__link > span:first-child {
+    position: relative;
+  }
+
+  .nav__link:hover > span:first-child::after,
+  .nav__link:focus-visible > span:first-child::after,
+  .nav__link.is-active > span:first-child::after,
+  [data-dropdown][data-open="true"] .nav__trigger > span:first-child::after {
+    transform: scaleX(1);
+  }
+
+  .nav__link:hover,
+  .nav__trigger[aria-expanded="true"] {
+    color: var(--accent);
+  }
+
+  .nav__chev {
+    transition: transform var(--d-mid) var(--e-out);
+    opacity: 0.65;
+  }
+
+  .nav__trigger[aria-expanded="true"] .nav__chev {
+    transform: rotate(180deg);
+  }
+
+  .nav__cta {
+    flex: none;
+  }
+
+  .nav__edge {
+    height: 1px;
+    background: var(--line);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--d-slow) var(--e-out);
+  }
+
+  .nav[data-nav-scrolled="true"] .nav__edge {
+    transform: scaleX(1);
+  }
+
+  /* --------------------------------------------- inverted (over dark hero) */
+
+  .nav[data-nav-transparent="true"]:not([data-nav-scrolled="true"]) .nav__link {
+    color: var(--white);
+  }
+
+  .nav[data-nav-transparent="true"]:not([data-nav-scrolled="true"])
+    :global(.logo__wordmark) {
+    color: var(--white);
+  }
+
+  .nav[data-nav-transparent="true"]:not([data-nav-scrolled="true"]) .nav__edge {
+    background: var(--line-invert);
+  }
+
+  .nav[data-nav-transparent="true"]:not([data-nav-scrolled="true"])
+    .nav__burger-lines
+    span {
+    background: var(--white);
+  }
+
+  /* ======================================================== dropdowns === */
+
+  .nav__panel {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 50%;
+    transform: translateX(-50%) translateY(-6px);
+    background: var(--white);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-menu);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity var(--d-mid) var(--e-out),
+      transform var(--d-mid) var(--e-out), visibility var(--d-mid);
+    min-width: 19rem;
+  }
+
+  [data-dropdown][data-open="true"] > .nav__panel {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Mega-menu anchors to the viewport rather than the trigger. */
+  .nav__panel--mega {
+    left: auto;
+    right: 0;
+    transform: translateY(-6px);
+    width: min(56rem, calc(100vw - var(--gutter) * 2));
+    background: var(--navy-900);
+    border-color: var(--line-invert);
+    color: var(--white);
+  }
+
+  [data-dropdown][data-open="true"] > .nav__panel--mega {
+    transform: translateY(0);
+  }
+
+  /* ------------------------------------------------------- simple dropdown */
+
+  .drop {
+    margin: 0;
+    padding: 0.5rem;
+    list-style: none;
+  }
+
+  .drop__link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.7rem 0.85rem;
+    transition: background-color var(--d-fast) var(--e-out);
+    position: relative;
+  }
+
+  .drop__link::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.7rem;
+    bottom: 0.7rem;
+    width: 2px;
+    background: var(--accent);
+    transform: scaleY(0);
+    transition: transform var(--d-fast) var(--e-out);
+  }
+
+  .drop__link:hover,
+  .drop__link:focus-visible {
+    background: var(--grey-50);
+  }
+
+  .drop__link:hover::before,
+  .drop__link.is-active::before {
+    transform: scaleY(1);
+  }
+
+  .drop__label {
+    font-size: var(--t-sm);
+    font-weight: 500;
+    color: var(--navy-900);
+  }
+
+  .drop__desc {
+    font-size: var(--t-xs);
+    color: var(--fg-subtle);
+    line-height: 1.45;
+  }
+
+  /* ------------------------------------------------------------ mega-menu */
+
+  .mega {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 6fr);
+  }
+
+  .mega__brand {
+    padding: clamp(1.5rem, 2vw, 2.25rem);
+    border-right: 1px solid var(--line-invert);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    background: var(--navy-800);
+  }
+
+  .mega__descriptor {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--teal-400);
+  }
+
+  .mega__parent {
+    font-size: var(--t-xs);
+    line-height: 1.6;
+    color: var(--navy-200);
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--line-invert);
+  }
+
+  .mega__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--t-sm);
+    font-weight: 500;
+    color: var(--white);
+    margin-top: 0.25rem;
+  }
+
+  .mega__cta svg {
+    transition: transform var(--d-mid) var(--e-out);
+  }
+
+  .mega__cta:hover {
+    color: var(--teal-400);
+  }
+
+  .mega__cta:hover svg {
+    transform: translateX(4px);
+  }
+
+  .mega__links {
+    margin: 0;
+    padding: 0.75rem;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.125rem;
+  }
+
+  .mega__link {
+    display: flex;
+    gap: 0.7rem;
+    padding: 0.75rem 0.85rem;
+    height: 100%;
+    transition: background-color var(--d-fast) var(--e-out);
+  }
+
+  .mega__link:hover,
+  .mega__link:focus-visible {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .mega__link-index {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+    color: var(--teal-400);
+    padding-top: 0.2rem;
+    flex: none;
+  }
+
+  .mega__link-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .mega__link-label {
+    font-size: var(--t-sm);
+    font-weight: 500;
+    color: var(--white);
+  }
+
+  .mega__link.is-active .mega__link-label {
+    color: var(--teal-400);
+  }
+
+  .mega__link-desc {
+    font-size: var(--t-xs);
+    color: var(--navy-300);
+    line-height: 1.45;
+  }
+
+  /* ==================================================== mobile trigger === */
+
+  .nav__burger {
+    display: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-right: -0.6rem;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+
+  .nav__burger-lines {
+    position: relative;
+    width: 1.375rem;
+    height: 0.75rem;
+    display: block;
+  }
+
+  .nav__burger-lines span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    background: var(--navy-900);
+    transition: transform var(--d-mid) var(--e-out),
+      opacity var(--d-fast) var(--e-out);
+  }
+
+  .nav__burger-lines span:nth-child(1) {
+    top: 0;
+  }
+  .nav__burger-lines span:nth-child(2) {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .nav__burger-lines span:nth-child(3) {
+    bottom: 0;
+  }
+
+  .nav__burger[aria-expanded="true"] .nav__burger-lines span:nth-child(1) {
+    transform: translateY(5.25px) rotate(45deg);
+  }
+
+  .nav__burger[aria-expanded="true"] .nav__burger-lines span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .nav__burger[aria-expanded="true"] .nav__burger-lines span:nth-child(3) {
+    transform: translateY(-5.25px) rotate(-45deg);
+  }
+
+  /* ===================================================== mobile drawer === */
+
+  .mnav {
+    position: fixed;
+    inset: var(--nav-h) 0 0 0;
+    z-index: var(--z-menu);
+    background: var(--navy-900);
+    color: var(--white);
+    display: none;
+    opacity: 0;
+    transition: opacity var(--d-mid) var(--e-out);
+  }
+
+  .mnav[data-open] {
+    display: block;
+  }
+
+  .mnav[data-open="true"] {
+    opacity: 1;
+  }
+
+  .mnav__scroll {
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding: var(--s-5) var(--gutter) var(--s-9);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mnav__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line-invert);
+  }
+
+  .mnav__item {
+    border-bottom: 1px solid var(--line-invert);
+  }
+
+  .mnav__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-4);
+    width: 100%;
+    padding: 1.05rem 0;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: var(--tr-snug);
+    color: var(--white);
+    text-align: left;
+  }
+
+  .mnav__link.is-active {
+    color: var(--orange-400);
+  }
+
+  .mnav__plus {
+    position: relative;
+    width: 0.9rem;
+    height: 0.9rem;
+    flex: none;
+  }
+
+  .mnav__plus span {
+    position: absolute;
+    background: currentColor;
+    transition: transform var(--d-mid) var(--e-out);
+  }
+
+  .mnav__plus span:nth-child(1) {
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    transform: translateY(-50%);
+  }
+
+  .mnav__plus span:nth-child(2) {
+    left: 50%;
+    top: 0;
+    width: 1.5px;
+    height: 100%;
+    transform: translateX(-50%);
+  }
+
+  .mnav__acc[aria-expanded="true"] .mnav__plus span:nth-child(2) {
+    transform: translateX(-50%) scaleY(0);
+  }
+
+  .mnav__panel {
+    overflow: hidden;
+    height: 0;
+  }
+
+  .mnav__panel-inner {
+    padding-bottom: 1.25rem;
+  }
+
+  .mnav__brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.5rem 0 1rem;
+    border-bottom: 1px solid var(--line-invert);
+    margin-bottom: 0.75rem;
+  }
+
+  .mnav__descriptor {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--teal-400);
+  }
+
+  .mnav__sublist {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .mnav__sublink {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    padding: 0.6rem 0.75rem 0.6rem 0.9rem;
+    border-left: 2px solid var(--line-invert);
+    transition: border-color var(--d-fast) var(--e-out),
+      background-color var(--d-fast) var(--e-out);
+  }
+
+  .mnav__sublink:hover,
+  .mnav__sublink.is-active {
+    border-color: var(--orange-500);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .mnav__sublabel {
+    font-size: var(--t-sm);
+    font-weight: 500;
+  }
+
+  .mnav__subdesc {
+    font-size: var(--t-xs);
+    color: var(--navy-300);
+    line-height: 1.45;
+  }
+
+  .mnav__foot {
+    margin-top: var(--s-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-5);
+  }
+
+  .mnav__positioning {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: var(--t-xs);
+    color: var(--navy-300);
+    line-height: 1.6;
+  }
+
+  /* ====================================================== breakpoints === */
+
+  /* The bar is dense: collapse to the drawer while there is still room. */
+  @media (max-width: 1180px) {
+    .nav__primary,
+    .nav__cta {
+      display: none;
+    }
+
+    .nav__burger {
+      display: flex;
+      margin-left: auto;
+    }
+  }
+
+  @media (min-width: 1181px) {
+    .mnav {
+      display: none !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav__panel {
+      transition: opacity var(--d-fast) linear, visibility var(--d-fast);
+      transform: translateX(-50%);
+    }
+
+    .nav__panel--mega {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  /* =====================================================================
+     NAVIGATION BEHAVIOUR
+     Dropdowns, mega-menu, mobile drawer, scroll state and transparency.
+     ===================================================================== */
+
+  const nav = document.querySelector<HTMLElement>("[data-nav]");
+
+  /* ------------------------------------------------- scroll state on nav -- */
+  if (nav) {
+    // A dark hero lets the nav sit transparent until the user scrolls past it.
+    // The hero itself carries [data-nav-overlap] so we can measure its height.
+    const hero = document.querySelector<HTMLElement>("[data-nav-overlap]");
+    if (document.body.dataset.transparentNav === "true") {
+      nav.dataset.navTransparent = "true";
+    }
+
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      // Switch to the solid state just before the hero's bottom edge passes
+      // under the bar, so the text never sits on a mixed background.
+      const threshold = hero
+        ? Math.max(hero.offsetHeight - nav.offsetHeight * 2, 40)
+        : 24;
+      nav.dataset.navScrolled = String(window.scrollY > threshold);
+    };
+    update();
+    addEventListener(
+      "scroll",
+      () => {
+        if (!raf) raf = requestAnimationFrame(update);
+      },
+      { passive: true }
+    );
+    addEventListener("resize", update, { passive: true });
+  }
+
+  /* ---------------------------------------------------- desktop dropdowns */
+  const dropdowns = [
+    ...document.querySelectorAll<HTMLElement>("[data-dropdown]"),
+  ];
+  let closeTimer: number | undefined;
+
+  const setOpen = (dd: HTMLElement, open: boolean) => {
+    dd.dataset.open = String(open);
+    dd.querySelector<HTMLButtonElement>("[data-dropdown-trigger]")?.setAttribute(
+      "aria-expanded",
+      String(open)
+    );
+  };
+
+  const closeAll = (except?: HTMLElement) => {
+    dropdowns.forEach((dd) => dd !== except && setOpen(dd, false));
+  };
+
+  dropdowns.forEach((dd) => {
+    const trigger = dd.querySelector<HTMLButtonElement>(
+      "[data-dropdown-trigger]"
+    );
+    const panel = dd.querySelector<HTMLElement>("[data-dropdown-panel]");
+    if (!trigger || !panel) return;
+
+    // Pointer: open on hover with a small close delay so diagonal travel to the
+    // panel doesn't dismiss it.
+    const canHover = matchMedia("(hover:hover) and (pointer:fine)").matches;
+
+    if (canHover) {
+      dd.addEventListener("mouseenter", () => {
+        clearTimeout(closeTimer);
+        closeAll(dd);
+        setOpen(dd, true);
+      });
+      dd.addEventListener("mouseleave", () => {
+        closeTimer = window.setTimeout(() => setOpen(dd, false), 140);
+      });
+    }
+
+    // Click / keyboard toggle works on every device.
+    trigger.addEventListener("click", (e) => {
+      e.preventDefault();
+      const isOpen = dd.dataset.open === "true";
+      closeAll();
+      setOpen(dd, !isOpen);
+      if (!isOpen) {
+        panel.querySelector<HTMLAnchorElement>("a")?.focus({
+          preventScroll: true,
+        });
+      }
+    });
+
+    // Escape closes and returns focus to the trigger.
+    dd.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && dd.dataset.open === "true") {
+        e.stopPropagation();
+        setOpen(dd, false);
+        trigger.focus();
+      }
+    });
+
+    // Tabbing out of the panel closes it.
+    dd.addEventListener("focusout", () => {
+      requestAnimationFrame(() => {
+        if (!dd.contains(document.activeElement)) setOpen(dd, false);
+      });
+    });
+  });
+
+  // Arrow-key traversal along the menubar.
+  const topLevel = [
+    ...document.querySelectorAll<HTMLElement>(".nav__list > li > .nav__link"),
+  ];
+  topLevel.forEach((el, i) => {
+    el.addEventListener("keydown", (e) => {
+      const key = (e as KeyboardEvent).key;
+      if (key !== "ArrowRight" && key !== "ArrowLeft") return;
+      e.preventDefault();
+      const next =
+        key === "ArrowRight"
+          ? topLevel[(i + 1) % topLevel.length]
+          : topLevel[(i - 1 + topLevel.length) % topLevel.length];
+      next?.focus();
+    });
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!(e.target as HTMLElement).closest("[data-dropdown]")) closeAll();
+  });
+
+  /* ------------------------------------------------------- mobile drawer */
+  const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+  const drawer = document.querySelector<HTMLElement>("[data-mobile-menu]");
+
+  if (toggle && drawer) {
+    const setDrawer = (open: boolean) => {
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+
+      if (open) {
+        drawer.hidden = false;
+        drawer.dataset.open = "false";
+        // Force a frame so the opacity transition runs.
+        requestAnimationFrame(() => (drawer.dataset.open = "true"));
+        document.body.setAttribute("data-scroll-locked", "");
+      } else {
+        drawer.dataset.open = "false";
+        document.body.removeAttribute("data-scroll-locked");
+        const hide = () => {
+          if (drawer.dataset.open === "false") drawer.hidden = true;
+          drawer.removeEventListener("transitionend", hide);
+        };
+        drawer.addEventListener("transitionend", hide);
+        // Fallback in case the transition doesn't fire.
+        setTimeout(hide, 420);
+      }
+    };
+
+    toggle.addEventListener("click", () =>
+      setDrawer(toggle.getAttribute("aria-expanded") !== "true")
+    );
+
+    // Close on Escape, and whenever a link is followed.
+    addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && toggle.getAttribute("aria-expanded") === "true") {
+        setDrawer(false);
+        toggle.focus();
+      }
+    });
+
+    drawer.addEventListener("click", (e) => {
+      if ((e.target as HTMLElement).closest("a")) setDrawer(false);
+    });
+
+    // Leaving the mobile breakpoint must not strand an open drawer.
+    matchMedia("(min-width: 1181px)").addEventListener("change", (ev) => {
+      if (ev.matches) setDrawer(false);
+    });
+
+    /* Mobile accordions — animate height, keep aria in sync. */
+    drawer.querySelectorAll<HTMLButtonElement>("[data-mobile-acc]").forEach(
+      (btn) => {
+        const panel = btn.nextElementSibling as HTMLElement | null;
+        if (!panel) return;
+
+        btn.addEventListener("click", () => {
+          const open = btn.getAttribute("aria-expanded") === "true";
+          btn.setAttribute("aria-expanded", String(!open));
+          panel.style.height = open ? `${panel.scrollHeight}px` : "0px";
+          requestAnimationFrame(() => {
+            panel.style.transition = "height 380ms cubic-bezier(0.22,1,0.36,1)";
+            panel.style.height = open ? "0px" : `${panel.scrollHeight}px`;
+          });
+        });
+      }
+    );
+  }
+</script>

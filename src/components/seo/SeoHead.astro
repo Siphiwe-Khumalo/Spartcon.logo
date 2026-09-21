@@ -1,0 +1,124 @@
+---
+/**
+ * SEO HEAD — titles, descriptions, canonical URLs, Open Graph, Twitter cards
+ * and Organization structured data.
+ *
+ * Descriptions are written from the supplied company content. No keyword
+ * stuffing: each page gets one accurate sentence about that page.
+ */
+import { company } from "@data/company";
+
+interface Props {
+  title: string;
+  description: string;
+  /** Appends " | Spartcon" unless the title already carries the brand. */
+  brandSuffix?: boolean;
+  /** Image slug used for the social card. */
+  ogImage?: string | null;
+  /** "website" for landing pages, "article" for content pages. */
+  ogType?: "website" | "article";
+  noindex?: boolean;
+  /** Emits Organization structured data. Homepage only. */
+  includeOrganization?: boolean;
+}
+
+const {
+  title,
+  description,
+  brandSuffix = true,
+  ogImage = null,
+  ogType = "website",
+  noindex = false,
+  includeOrganization = false,
+} = Astro.props;
+
+const fullTitle =
+  brandSuffix && !/spartcon/i.test(title) ? `${title} | Spartcon` : title;
+
+/**
+ * Resolve against Astro.site rather than the hardcoded company URL, so a
+ * subpath or preview deployment emits internally consistent canonical and
+ * Open Graph URLs instead of pointing at the production domain.
+ */
+const origin = Astro.site?.href ?? company.siteUrl;
+
+const canonical = new URL(
+  Astro.url.pathname.replace(/\/+$/, "") || "/",
+  origin
+).href;
+
+/* Social card image, resolved through the configured base path. */
+const ogPath = `${import.meta.env.BASE_URL.replace(/\/+$/, "")}/og/${
+  ogImage ?? "default"
+}.jpg`;
+const ogImageUrl = new URL(ogPath, origin).href;
+
+/**
+ * Organization schema. Only fields confirmed by the source material are
+ * emitted — no invented address, phone number or founding date.
+ */
+const organizationLd: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: company.legalName,
+  alternateName: company.name,
+  url: company.siteUrl,
+  description: company.shortDescription,
+  slogan: company.positioning,
+  address: {
+    "@type": "PostalAddress",
+    addressCountry: company.countryCode,
+  },
+  areaServed: { "@type": "Place", name: "South Africa" },
+  knowsAbout: [
+    "Building construction",
+    "Civil engineering",
+    "Facilities engineering",
+    "Structural steel",
+    "Reinforced concrete",
+    "Bulk earthworks",
+    "Maintenance and operations",
+  ],
+  subOrganization: {
+    "@type": "Organization",
+    name: company.division.name,
+    description: company.division.descriptor,
+    url: `${company.siteUrl}/facilities-engineering`,
+  },
+};
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+
+{noindex && <meta name="robots" content="noindex,nofollow" />}
+{!noindex && <meta name="robots" content="index,follow,max-image-preview:large" />}
+
+<!-- Open Graph -->
+<meta property="og:type" content={ogType} />
+<meta property="og:site_name" content={company.legalName} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:locale" content="en_ZA" />
+<meta property="og:image" content={ogImageUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={`${company.name} — ${description}`} />
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageUrl} />
+
+{
+  includeOrganization && (
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(organizationLd)}
+      is:inline
+    />
+  )
+}

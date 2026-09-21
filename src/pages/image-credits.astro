@@ -1,0 +1,291 @@
+---
+/**
+ * IMAGE CREDITS — full attribution for every photograph on the site.
+ *
+ * Publishing this is both a licence obligation (CC BY / CC BY-SA require
+ * attribution) and an honesty measure: it makes explicit that the photography
+ * is licensed industry imagery rather than Spartcon project photography.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PageHero from "@components/ui/PageHero.astro";
+import Section from "@components/ui/Section.astro";
+import EditorialNote from "@components/ui/EditorialNote.astro";
+import { creditsBySubject, totalImages } from "@lib/images";
+
+const groups = creditsBySubject();
+
+/** Distinct licences in use, for the summary line. */
+const licences = [
+  ...new Set(
+    groups.flatMap((g) => g.items.map((i) => i.license)).filter(Boolean)
+  ),
+].sort();
+---
+
+<BaseLayout
+  title="Image Credits | Spartcon"
+  description="Attribution and licensing for the photography used on the Spartcon website."
+>
+  <PageHero
+    eyebrow="Credits"
+    title="Image credits and licensing"
+    lead="Every photograph on this website is a real photograph, licensed for commercial use, and attributed below."
+    facts={[
+      { label: "Images", value: String(totalImages) },
+      { label: "Source", value: "Wikimedia Commons" },
+      { label: "Licences", value: String(licences.length) },
+    ]}
+  />
+
+  <Section>
+    <div class="intro">
+      <EditorialNote tone="info" title="About the photography on this website">
+        <p>
+          <strong>
+            None of the photographs on this website depict Spartcon projects.
+          </strong>
+          They are contextual industry and equipment photographs, selected because
+          they genuinely relate to the engineering content beside them. They are
+          not a portfolio of completed work and should not be read as one.
+        </p>
+        <p>
+          No AI-generated imagery is used anywhere on this site. Every image is a
+          real photograph taken by a named photographer, sourced from Wikimedia
+          Commons under a licence that permits commercial use — CC0, public
+          domain, CC BY or CC BY-SA. Each image below links to its source page and
+          its licence.
+        </p>
+        <p>
+          When Spartcon supplies its own project photography, those images will
+          replace this set and will be captioned as genuine Spartcon work.
+        </p>
+      </EditorialNote>
+
+      <div class="lic">
+        <h2 class="lic__title">Licences in use</h2>
+        <ul class="lic__list" role="list">
+          {licences.map((l) => <li>{l}</li>)}
+        </ul>
+      </div>
+    </div>
+  </Section>
+
+  <!-- ============================================================== credits -->
+  {
+    groups.map((group, gi) => (
+      <Section
+        surface={gi % 2 === 1 ? "muted" : "default"}
+        spacing="tight"
+        aria-labelledby={`grp-${gi}`}
+      >
+        <h2 id={`grp-${gi}`} class="grp__title">{group.subject}</h2>
+
+        <ul class="credits" role="list">
+          {group.items.map((c) => (
+            <li class="credit">
+              <div class="credit__main">
+                <p class="credit__alt">{c.alt}</p>
+                <p class="credit__file">
+                  <code>{c.file}</code>
+                </p>
+              </div>
+
+              <dl class="credit__meta">
+                <div>
+                  <dt>Author</dt>
+                  <dd>{c.author}</dd>
+                </div>
+                <div>
+                  <dt>Licence</dt>
+                  <dd>
+                    {c.licenseUrl ? (
+                      <a
+                        href={c.licenseUrl}
+                        target="_blank"
+                        rel="noopener noreferrer nofollow license"
+                      >
+                        {c.license}
+                      </a>
+                    ) : (
+                      c.license
+                    )}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Source</dt>
+                  <dd>
+                    <a
+                      href={c.sourcePage}
+                      target="_blank"
+                      rel="noopener noreferrer nofollow"
+                    >
+                      {c.source}
+                    </a>
+                  </dd>
+                </div>
+              </dl>
+            </li>
+          ))}
+        </ul>
+      </Section>
+    ))
+  }
+
+  <Section surface="navy" spacing="tight">
+    <p class="foot-note">
+      Attribution is provided in good faith from the metadata published on each
+      source page. If you are the rights holder of an image used here and would
+      like the attribution corrected or the image removed, please
+      <a href="/contact" class="link">contact us</a> and we will act promptly.
+    </p>
+  </Section>
+</BaseLayout>
+
+<style>
+  .intro {
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+    gap: clamp(2rem, 1.5rem + 3vw, 4rem);
+    align-items: start;
+  }
+
+  /* ---------------------------------------------------------------- licences */
+
+  .lic__title {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    font-weight: 500;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--accent);
+    padding-bottom: var(--s-3);
+    border-bottom: 1px solid var(--line);
+    margin-bottom: var(--s-4);
+  }
+
+  .lic__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .lic__list li {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    color: var(--fg-muted);
+    border: 1px solid var(--line-strong);
+    padding: 0.35rem 0.55rem;
+  }
+
+  /* ----------------------------------------------------------------- credits */
+
+  .grp__title {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    font-weight: 500;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--accent);
+    padding-bottom: var(--s-3);
+    border-bottom: 1px solid var(--line-strong);
+    margin-bottom: var(--s-5);
+  }
+
+  .credits {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+
+  .credit {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+    gap: var(--s-5);
+    padding: var(--s-4) 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .credit__alt {
+    font-size: var(--t-sm);
+    color: var(--fg);
+    line-height: var(--lh-body);
+  }
+
+  .credit__file {
+    margin-top: 0.3rem;
+  }
+
+  .credit__file code {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--fg-subtle);
+  }
+
+  .credit__meta {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-4);
+    align-content: start;
+  }
+
+  .credit__meta dt {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    margin-bottom: 0.25rem;
+  }
+
+  .credit__meta dd {
+    margin: 0;
+    font-size: var(--t-xs);
+    color: var(--fg-muted);
+    line-height: 1.5;
+    word-break: break-word;
+  }
+
+  .credit__meta a {
+    border-bottom: 1px solid var(--line-strong);
+    transition: color var(--d-fast) var(--e-out),
+      border-color var(--d-fast) var(--e-out);
+  }
+
+  .credit__meta a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .foot-note {
+    font-size: var(--t-sm);
+    color: var(--navy-200);
+    max-width: 80ch;
+    line-height: var(--lh-body);
+  }
+
+  /* ------------------------------------------------------------ breakpoints */
+
+  @media (max-width: 900px) {
+    .intro,
+    .credit {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .credit {
+      gap: var(--s-3);
+    }
+  }
+
+  @media (max-width: 520px) {
+    .credit__meta {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--s-3);
+    }
+  }
+</style>

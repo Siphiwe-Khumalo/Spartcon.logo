@@ -1,0 +1,424 @@
+---
+/**
+ * SERVICES HUB — editorial index of the three service lines.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PageHero from "@components/ui/PageHero.astro";
+import Section from "@components/ui/Section.astro";
+import SectionHeader from "@components/ui/SectionHeader.astro";
+import MediaFrame from "@components/ui/MediaFrame.astro";
+import Button from "@components/ui/Button.astro";
+import ContactCta from "@components/sections/ContactCta.astro";
+import { services, engineeringDisciplines } from "@data/services";
+import { techBrand } from "@data/spartcon-tech";
+import { lifecycle } from "@data/company";
+---
+
+<BaseLayout
+  title="Services | Building Construction, Civil Engineering & Construction Support"
+  description="Spartcon's services: building construction, civil engineering and construction support solutions — from engineering design and foundations to roads, water and sanitation."
+  ogImage="services"
+>
+  <PageHero
+    eyebrow="Services"
+    title="From infrastructure planning to completion."
+    lead="We believe in assisting our clients from infrastructure planning to completion. Our partnership with you starts at your capital planning stage and runs through to project completion."
+    image="concrete-pour-base-slab"
+    breadcrumbs={[]}
+    facts={[
+      { label: "Service lines", value: "Three" },
+      { label: "CIDB", value: "7ME · 7CE · 6GB PE" },
+      { label: "Registrations", value: "ECSA · SACPCMP · NHBRC" },
+    ]}
+  />
+
+  <!-- ========================================================= service lines -->
+  <Section aria-labelledby="lines-title">
+    <SectionHeader
+      index="01"
+      eyebrow="Service lines"
+      title="What we deliver."
+      lead="Three service lines that cover the structure, the infrastructure and the resource needed to build both — plus facilities engineering through Spartcon Tech."
+      layout="split"
+      id="lines-title"
+    />
+
+    <div class="lines">
+      {
+        services.map((service, i) => (
+          <article class:list={["line", i % 2 === 1 && "line--reverse"]}>
+            <div class="line__media">
+              <a href={`/services/${service.slug}`} aria-label={service.title}>
+                <MediaFrame
+                  slug={service.image}
+                  ratio="4/3"
+                  sizes="(max-width: 900px) 100vw, 50vw"
+                  hoverZoom
+                />
+              </a>
+            </div>
+
+            <div class="line__body">
+              <p class="line__index">{service.index}</p>
+              <h3 class="t-h1 line__title">
+                <a href={`/services/${service.slug}`}>{service.title}</a>
+              </h3>
+              <p class="line__strapline">{service.strapline}</p>
+              <p class="line__intro">{service.intro}</p>
+
+              <ul class="line__caps" role="list">
+                {service.capabilities.map((c) => (
+                  <li>{c.title}</li>
+                ))}
+              </ul>
+
+              <div class="line__cta">
+                <Button href={`/services/${service.slug}`} variant="ghost" arrow>
+                  {service.title}
+                </Button>
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- ============================================================= lifecycle -->
+  <Section surface="navy" aria-labelledby="svc-lifecycle-title">
+    <SectionHeader
+      index="02"
+      eyebrow="Delivery lifecycle"
+      title="Plan, design, build, install, operate, maintain."
+      lead="Most projects hand over between planning, construction and operations — and lose something at every handover. Spartcon is structured to carry the work through."
+      layout="split"
+      id="svc-lifecycle-title"
+    />
+
+    <ol class="lc" role="list" data-reveal-group="70">
+      {
+        lifecycle.map((stage) => (
+          <li class="lc__item">
+            <span class="lc__step">{stage.step}</span>
+            <h3 class="lc__title">{stage.title}</h3>
+            <p class="lc__text">{stage.summary}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </Section>
+
+  <!-- =========================================================== engineering -->
+  <Section surface="muted" aria-labelledby="svc-eng-title">
+    <SectionHeader
+      index="03"
+      eyebrow="Engineering capability"
+      title="The disciplines behind the service lines."
+      lead="We deliver practical end-to-end engineering solutions, with outsourced professional services brought in where a project requires them."
+      layout="split"
+      id="svc-eng-title"
+    />
+
+    <div class="disc" data-reveal-group="60">
+      {
+        Object.values(engineeringDisciplines).map((group) => (
+          <div class="disc__group">
+            <h3 class="disc__title">{group.title}</h3>
+            <ul role="list">
+              {group.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- ===================================================== spartcon tech link -->
+  <Section surface="tech" aria-labelledby="svc-tech-title">
+    <div class="techx">
+      <div>
+        <p class="eyebrow techx__eyebrow">
+          <span class="index-num">04</span>
+          <span>Facilities Engineering</span>
+        </p>
+        <h2 id="svc-tech-title" class="t-display techx__title" data-reveal>
+          And once it's operational.
+        </h2>
+        <p class="techx__lead" data-reveal style="--reveal-delay:120ms">
+          Spartcon Tech provides outsourced engineering and maintenance for the
+          systems a facility runs on — HVAC, electrical, water, steam, fire,
+          security and facilities equipment.
+        </p>
+        <p class="techx__parent">{techBrand.parentStatement}</p>
+      </div>
+
+      <div class="techx__actions" data-reveal style="--reveal-delay:180ms">
+        <Button href={techBrand.basePath} variant="primary" size="lg" arrow>
+          Explore Spartcon Tech
+        </Button>
+        <Button href={`${techBrand.basePath}/building-systems`} variant="secondary" size="lg">
+          Building Systems
+        </Button>
+      </div>
+    </div>
+  </Section>
+
+  <ContactCta
+    title="Tell us what you're building."
+    lead="We challenge you to give us the opportunity to prove that construction is not a capital-intensive nightmare."
+    secondaryLabel="View Capabilities"
+    secondaryHref="/capabilities"
+  />
+</BaseLayout>
+
+<style>
+  /* ---------------------------------------------------------- service lines */
+
+  .lines {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(3.5rem, 2.5rem + 5vw, 7rem);
+  }
+
+  .line {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: clamp(2rem, 1.5rem + 4vw, 5rem);
+    align-items: center;
+  }
+
+  .line--reverse .line__media {
+    order: 2;
+  }
+
+  .line__index {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: var(--tr-label);
+    color: var(--accent);
+    margin-bottom: var(--s-4);
+  }
+
+  .line__title {
+    margin-bottom: var(--s-3);
+  }
+
+  .line__title a {
+    background-image: linear-gradient(var(--accent), var(--accent));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 2px;
+    transition: background-size var(--d-slow) var(--e-out);
+    padding-bottom: 0.08em;
+  }
+
+  .line__title a:hover {
+    background-size: 100% 2px;
+  }
+
+  .line__strapline {
+    font-family: var(--font-mono);
+    font-size: var(--t-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    margin-bottom: var(--s-5);
+  }
+
+  .line__intro {
+    color: var(--fg-muted);
+    line-height: var(--lh-relaxed);
+    max-width: 54ch;
+  }
+
+  .line__caps {
+    margin: var(--s-6) 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .line__caps li {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    border: 1px solid var(--line-strong);
+    padding: 0.4rem 0.6rem;
+    transition: border-color var(--d-fast) var(--e-out),
+      color var(--d-fast) var(--e-out);
+  }
+
+  .line__caps li:hover {
+    border-color: var(--accent);
+    color: var(--fg);
+  }
+
+  .line__cta {
+    margin-top: var(--s-6);
+  }
+
+  /* --------------------------------------------------------------- lifecycle */
+
+  .lc {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--line-invert);
+    border: 1px solid var(--line-invert);
+  }
+
+  .lc__item {
+    background: var(--navy-900);
+    padding: clamp(1.25rem, 1rem + 1vw, 2rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .lc__step {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+  }
+
+  .lc__title {
+    font-family: var(--font-display);
+    font-size: var(--t-h3);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: var(--tr-snug);
+    color: var(--white);
+  }
+
+  .lc__text {
+    font-size: var(--t-xs);
+    line-height: 1.7;
+    color: var(--navy-200);
+  }
+
+  /* ------------------------------------------------------------- disciplines */
+
+  .disc {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--s-6) var(--s-5);
+  }
+
+  .disc__title {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    font-weight: 500;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--accent);
+    padding-bottom: var(--s-3);
+    border-bottom: 1px solid var(--line-strong);
+    margin-bottom: var(--s-4);
+  }
+
+  .disc__group ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .disc__group li {
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+  }
+
+  /* ------------------------------------------------------------- tech block */
+
+  .techx {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    gap: clamp(2rem, 1.5rem + 4vw, 5rem);
+    align-items: end;
+  }
+
+  .techx__eyebrow {
+    color: var(--navy-200);
+  }
+
+  .techx__eyebrow :global(.index-num) {
+    color: var(--teal-400);
+  }
+
+  .techx__eyebrow::before {
+    background: var(--teal-400);
+  }
+
+  .techx__title {
+    color: var(--white);
+    max-width: 18ch;
+  }
+
+  .techx__lead {
+    margin-top: var(--s-5);
+    font-size: var(--t-lead);
+    line-height: var(--lh-relaxed);
+    color: var(--navy-100);
+    max-width: 56ch;
+  }
+
+  .techx__parent {
+    margin-top: var(--s-5);
+    padding-left: var(--s-4);
+    border-left: 2px solid var(--teal-400);
+    font-size: var(--t-xs);
+    color: var(--navy-300);
+  }
+
+  .techx__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+
+  /* ------------------------------------------------------------ breakpoints */
+
+  @media (max-width: 1024px) {
+    .disc {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .lc {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 900px) {
+    .line {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .line--reverse .line__media {
+      order: 0;
+    }
+
+    .techx {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .disc,
+    .lc {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

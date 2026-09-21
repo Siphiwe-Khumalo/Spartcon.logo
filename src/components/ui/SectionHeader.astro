@@ -1,0 +1,138 @@
+---
+/**
+ * Section header — eyebrow, heading, optional lead and trailing action.
+ * Establishes the heading hierarchy consistently across every page.
+ */
+interface Props {
+  /** Small mono label above the heading. */
+  eyebrow?: string;
+  /** Section index, e.g. "04". Displayed alongside the eyebrow. */
+  index?: string;
+  title: string;
+  lead?: string;
+  /** Heading level — keep the document outline logical. */
+  level?: 1 | 2 | 3;
+  /** Visual scale, independent of semantic level. */
+  scale?: "display" | "h1" | "h2" | "h3";
+  align?: "start" | "center";
+  /** Lays the heading and lead side by side on wide screens. */
+  layout?: "stacked" | "split";
+  id?: string;
+  class?: string;
+}
+
+const {
+  eyebrow,
+  index,
+  title,
+  lead,
+  level = 2,
+  scale = "h2",
+  align = "start",
+  layout = "stacked",
+  id,
+  class: className,
+} = Astro.props;
+
+const Heading = `h${level}` as "h1" | "h2" | "h3";
+const scaleClass = {
+  display: "t-display",
+  h1: "t-h1",
+  h2: "t-h2",
+  h3: "t-h3",
+}[scale];
+---
+
+<header
+  class:list={[
+    "sec-head",
+    `sec-head--${layout}`,
+    align === "center" && "sec-head--center",
+    className,
+  ]}
+  data-reveal
+>
+  <div class="sec-head__main">
+    {
+      (eyebrow || index) && (
+        <p class="eyebrow">
+          {index && <span class="sec-head__index">{index}</span>}
+          {eyebrow && <span>{eyebrow}</span>}
+        </p>
+      )
+    }
+    <Heading id={id} class:list={[scaleClass, "sec-head__title"]}>
+      {title}
+    </Heading>
+  </div>
+
+  {
+    (lead || Astro.slots.has("default")) && (
+      <div class="sec-head__aside">
+        {lead && <p class="t-lead">{lead}</p>}
+        <slot />
+      </div>
+    )
+  }
+</header>
+
+<style>
+  .sec-head {
+    margin-bottom: clamp(2.5rem, 1.5rem + 3vw, 4.5rem);
+  }
+
+  .sec-head__title {
+    max-width: 24ch;
+  }
+
+  .sec-head__index {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* The eyebrow rule is drawn by .eyebrow::before; when an index is present the
+     index takes that role, so suppress the rule to avoid doubling up. */
+  .sec-head__index ~ span {
+    color: var(--fg-subtle);
+  }
+
+  .sec-head--stacked .sec-head__aside {
+    margin-top: var(--s-5);
+    max-width: 60ch;
+  }
+
+  .sec-head--split {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: end;
+  }
+
+  .sec-head--split .sec-head__title {
+    max-width: 20ch;
+  }
+
+  .sec-head--center {
+    text-align: center;
+  }
+
+  .sec-head--center .sec-head__title {
+    margin-inline: auto;
+  }
+
+  .sec-head--center .eyebrow {
+    justify-content: center;
+  }
+
+  .sec-head--center .sec-head__aside {
+    margin-inline: auto;
+  }
+
+  @media (max-width: 900px) {
+    .sec-head--split {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--s-5);
+      align-items: start;
+    }
+  }
+</style>

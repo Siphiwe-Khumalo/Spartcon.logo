@@ -1,0 +1,268 @@
+---
+/**
+ * Button / CTA. Renders <a> when `href` is given, otherwise <button>.
+ *
+ * Interaction is "liquid": a colour sweep fills from the bottom on hover with
+ * a single easing curve. No bounce, no scale-up, no gimmicks.
+ */
+interface Props {
+  href?: string;
+  variant?: "primary" | "secondary" | "ghost" | "quiet";
+  size?: "md" | "lg";
+  type?: "button" | "submit" | "reset";
+  /** Appends a directional arrow that slides on hover. */
+  arrow?: boolean;
+  full?: boolean;
+  disabled?: boolean;
+  class?: string;
+  "aria-label"?: string;
+  id?: string;
+  [key: string]: unknown;
+}
+
+const {
+  href,
+  variant = "primary",
+  size = "md",
+  type = "button",
+  arrow = false,
+  full = false,
+  disabled = false,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const Tag = href ? "a" : "button";
+const classes = [
+  "btn",
+  `btn--${variant}`,
+  `btn--${size}`,
+  full && "btn--full",
+  className,
+];
+const isExternal = href?.startsWith("http");
+---
+
+<Tag
+  class:list={classes}
+  href={href}
+  type={href ? undefined : type}
+  disabled={href ? undefined : disabled}
+  aria-disabled={href && disabled ? "true" : undefined}
+  target={isExternal ? "_blank" : undefined}
+  rel={isExternal ? "noopener noreferrer" : undefined}
+  {...rest}
+>
+  <span class="btn__label"><slot /></span>
+  {
+    arrow && (
+      <span class="btn__arrow" aria-hidden="true">
+        <svg viewBox="0 0 16 16" width="15" height="15" fill="none">
+          <path
+            d="M1 8h13M9 3l5 5-5 5"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="square"
+          />
+        </svg>
+      </span>
+    )
+  }
+</Tag>
+
+<style>
+  .btn {
+    /* Geometry over softness: minimal radius, confident padding. */
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6em;
+    font-family: var(--font-body);
+    font-size: var(--t-sm);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    text-align: center;
+    border-radius: var(--r-xs);
+    border: 1px solid transparent;
+    cursor: pointer;
+    overflow: hidden;
+    isolation: isolate;
+    transition: color var(--d-fast) var(--e-out),
+      border-color var(--d-fast) var(--e-out),
+      background-color var(--d-fast) var(--e-out);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .btn--md {
+    padding: 0.95rem 1.5rem;
+  }
+
+  .btn--lg {
+    padding: 1.15rem 2rem;
+    font-size: var(--t-body);
+  }
+
+  .btn--full {
+    width: 100%;
+  }
+
+  /* The sweep layer. Scales on Y only, from the bottom edge. */
+  .btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform var(--d-mid) var(--e-out);
+  }
+
+  .btn:hover::after,
+  .btn:focus-visible::after {
+    transform: scaleY(1);
+  }
+
+  .btn__label {
+    position: relative;
+  }
+
+  .btn__arrow {
+    display: inline-flex;
+    transition: transform var(--d-mid) var(--e-out);
+  }
+
+  .btn:hover .btn__arrow,
+  .btn:focus-visible .btn__arrow {
+    transform: translateX(4px);
+  }
+
+  /* ----------------------------------------------------------- variants -- */
+
+  .btn--primary {
+    background: var(--accent);
+    color: var(--accent-fg);
+    border-color: var(--accent);
+  }
+
+  .btn--primary::after {
+    background: var(--navy-900);
+  }
+
+  .btn--primary:hover,
+  .btn--primary:focus-visible {
+    border-color: var(--navy-900);
+    color: var(--white);
+  }
+
+  .btn--secondary {
+    background: transparent;
+    color: var(--fg);
+    border-color: var(--line-strong);
+  }
+
+  .btn--secondary::after {
+    background: var(--fg);
+  }
+
+  .btn--secondary:hover,
+  .btn--secondary:focus-visible {
+    color: var(--bg);
+    border-color: var(--fg);
+  }
+
+  .btn--ghost {
+    background: transparent;
+    color: var(--fg);
+    border-color: transparent;
+    padding-inline: 0.25rem;
+  }
+
+  .btn--ghost .btn__label {
+    /* Drawn underline that grows from the left. */
+    background-image: linear-gradient(var(--accent), var(--accent));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 1.5px;
+    padding-bottom: 3px;
+    transition: background-size var(--d-mid) var(--e-out);
+  }
+
+  .btn--ghost:hover .btn__label,
+  .btn--ghost:focus-visible .btn__label {
+    background-size: 100% 1.5px;
+  }
+
+  .btn--ghost::after {
+    display: none;
+  }
+
+  .btn--quiet {
+    background: var(--bg-muted);
+    color: var(--fg);
+    border-color: var(--line);
+  }
+
+  .btn--quiet::after {
+    background: var(--navy-900);
+  }
+
+  .btn--quiet:hover,
+  .btn--quiet:focus-visible {
+    color: var(--white);
+    border-color: var(--navy-900);
+  }
+
+  /* ------------------------------------------------------ on dark ground */
+
+  :global(.on-navy) .btn--secondary,
+  :global(.surface-navy) .btn--secondary,
+  :global(.surface-tech) .btn--secondary {
+    color: var(--white);
+    border-color: var(--line-invert-strong);
+  }
+
+  :global(.on-navy) .btn--secondary::after,
+  :global(.surface-navy) .btn--secondary::after,
+  :global(.surface-tech) .btn--secondary::after {
+    background: var(--white);
+  }
+
+  :global(.on-navy) .btn--secondary:hover,
+  :global(.surface-navy) .btn--secondary:hover,
+  :global(.surface-tech) .btn--secondary:hover {
+    color: var(--navy-900);
+    border-color: var(--white);
+  }
+
+  :global(.on-navy) .btn--ghost,
+  :global(.surface-navy) .btn--ghost,
+  :global(.surface-tech) .btn--ghost {
+    color: var(--white);
+  }
+
+  /* ---------------------------------------------------------- disabled -- */
+
+  .btn:disabled,
+  .btn[aria-disabled="true"] {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn::after {
+      display: none;
+    }
+
+    .btn--primary:hover {
+      background: var(--navy-900);
+    }
+
+    .btn--secondary:hover {
+      background: var(--fg);
+      color: var(--bg);
+    }
+  }
+</style>

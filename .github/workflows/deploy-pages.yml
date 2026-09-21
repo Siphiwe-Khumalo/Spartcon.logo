@@ -1,0 +1,78 @@
+name: Deploy preview to GitHub Pages
+
+# Builds the site and publishes it to GitHub Pages so stakeholders can review a
+# live version. GitHub Pages serves a project repo from /<repo>/, so the build
+# runs with SITE_BASE set and a post-build pass rewrites hand-written
+# root-absolute links to match. See scripts/rewrite-base.mjs.
+#
+# This is a REVIEW deployment. For production, deploy at a domain root with
+# neither SITE_URL nor SITE_BASE set.
+
+on:
+  push:
+    branches: [main, feat/corporate-website]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never run two deployments at once; don't cancel one already in flight.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Resolve Pages URL
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Build
+        env:
+          # e.g. https://siphiwe-khumalo.github.io  +  /Spartcon.logo
+          SITE_URL: ${{ steps.pages.outputs.origin }}
+          SITE_BASE: ${{ steps.pages.outputs.base_path }}
+        run: npm run build
+
+      - name: Rewrite root-absolute links for the subpath
+        env:
+          SITE_BASE: ${{ steps.pages.outputs.base_path }}
+        run: node scripts/rewrite-base.mjs
+
+      - name: Block indexing of the preview
+        # This is a stakeholder review build, not the live site. Keeping it out
+        # of search results avoids it competing with the real domain later.
+        run: |
+          printf 'User-agent: *\nDisallow: /\n' > dist/robots.txt
+          rm -f dist/sitemap-index.xml dist/sitemap-0.xml
+
+      - name: Disable Jekyll processing
+        run: touch dist/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,348 @@
+---
+/**
+ * 01 — HERO
+ *
+ * Full-bleed photography behind the positioning statement. The nav sits
+ * transparent over this section until the user scrolls past it.
+ */
+import { Image } from "astro:assets";
+import Button from "@components/ui/Button.astro";
+import { requireImage } from "@lib/images";
+import { company } from "@data/company";
+
+const hero = requireImage("construction-cranes-city-skyline");
+---
+
+<!-- `on-navy` remaps the semantic colour tokens so buttons, rules and borders
+     resolve against a dark ground without per-component overrides. -->
+<section class="hero on-navy" data-nav-overlap aria-labelledby="hero-title">
+  <div class="hero__bg">
+    <Image
+      src={hero.src}
+      alt={hero.alt}
+      widths={[768, 1280, 1600, 2000, 2560]}
+      sizes="100vw"
+      loading="eager"
+      decoding="sync"
+      fetchpriority="high"
+      class="hero__img"
+    />
+    <div class="hero__scrim" aria-hidden="true"></div>
+  </div>
+
+  <div class="container hero__inner">
+    <p class="hero__eyebrow" data-reveal="fade">
+      <span class="hero__eyebrow-rule" aria-hidden="true"></span>
+      <span>{company.legalName}</span>
+      <span class="hero__eyebrow-sep" aria-hidden="true">·</span>
+      <span>{company.country}</span>
+    </p>
+
+    <h1 id="hero-title" class="t-hero hero__title" data-reveal-lines>
+      <span class="reveal-line"><span>Professional construction</span></span>
+      <span class="reveal-line"><span>solutions for the</span></span>
+      <span class="reveal-line"
+        ><span>African environment<span class="hero__stop">.</span></span></span
+      >
+    </h1>
+
+    <p class="hero__lead" data-reveal style="--reveal-delay:420ms">
+      By African professionals. A 100% BEE company delivering building
+      construction, civil engineering and facilities engineering — CIDB graded
+      7ME, 7CE and 6GB PE.
+    </p>
+
+    <div class="hero__actions" data-reveal style="--reveal-delay:540ms">
+      <Button href="/services" variant="primary" size="lg" arrow>
+        Explore Our Services
+      </Button>
+      <Button href="/contact" variant="secondary" size="lg">
+        Start a Conversation
+      </Button>
+    </div>
+
+    <!-- Division strip: three words that answer "what do you actually do". -->
+    <ul class="hero__strip" role="list" data-reveal style="--reveal-delay:640ms">
+      <li>
+        <a href="/services/building-construction">
+          <span class="hero__strip-index">01</span>
+          <span class="hero__strip-label">Building Construction</span>
+        </a>
+      </li>
+      <li>
+        <a href="/services/civil-engineering">
+          <span class="hero__strip-index">02</span>
+          <span class="hero__strip-label">Civil Engineering</span>
+        </a>
+      </li>
+      <li>
+        <a href="/facilities-engineering">
+          <span class="hero__strip-index">03</span>
+          <span class="hero__strip-label">Facilities Engineering</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Scroll affordance -->
+  <div class="hero__scroll" aria-hidden="true">
+    <span class="hero__scroll-label">Scroll</span>
+    <span class="hero__scroll-line"></span>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    /* Tall enough to feel like a hero, but the CTAs and division strip must
+       stay reachable on a laptop viewport — so the content, not the viewport,
+       sets the real height. */
+    min-height: min(100svh, 48rem);
+    display: flex;
+    align-items: flex-end;
+    padding-top: calc(var(--nav-h) + var(--s-6));
+    padding-bottom: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+    background: var(--navy-900);
+    color: var(--white);
+    overflow: hidden;
+  }
+
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 38%;
+  }
+
+  /* A single flat scrim — no gradient, and no banding seam. Tuned so white
+     display type clears WCAG AA against the lightest part of the photograph. */
+  .hero__scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 20, 40, 0.66);
+  }
+
+  .hero__inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+  }
+
+  /* ------------------------------------------------------------- eyebrow */
+
+  .hero__eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--navy-100);
+    margin-bottom: clamp(1.25rem, 1rem + 1vw, 2rem);
+  }
+
+  .hero__eyebrow-rule {
+    width: 2.25rem;
+    height: 1px;
+    background: var(--orange-500);
+    flex: none;
+  }
+
+  .hero__eyebrow-sep {
+    color: var(--navy-300);
+  }
+
+  /* --------------------------------------------------------------- title */
+
+  .hero__title {
+    color: var(--white);
+    max-width: 19ch;
+    /* Optical alignment: pull the cap-height flush with the gutter. */
+    margin-left: -0.04em;
+  }
+
+  .hero__stop {
+    color: var(--orange-500);
+  }
+
+  .hero__lead {
+    margin-top: clamp(1.5rem, 1rem + 1.5vw, 2.25rem);
+    font-size: var(--t-lead);
+    line-height: var(--lh-relaxed);
+    color: var(--navy-100);
+    max-width: 52ch;
+  }
+
+  .hero__actions {
+    margin-top: clamp(2rem, 1.5rem + 2vw, 3rem);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+
+  /* --------------------------------------------------------- division strip */
+
+  .hero__strip {
+    margin: clamp(2.5rem, 2rem + 3vw, 4.5rem) 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    /* Stronger than the standard inverted hairline: this rule sits over the
+       brightest part of the photograph and needs to hold its edge. */
+    border-top: 1px solid rgba(255, 255, 255, 0.45);
+    max-width: 58rem;
+  }
+
+  .hero__strip li + li {
+    border-left: 1px solid rgba(255, 255, 255, 0.28);
+  }
+
+  .hero__strip a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: var(--s-4) var(--s-4) var(--s-3) 0;
+    height: 100%;
+    position: relative;
+    transition: color var(--d-fast) var(--e-out);
+  }
+
+  .hero__strip li + li a {
+    padding-left: var(--s-4);
+  }
+
+  /* Top indicator grows on hover. */
+  .hero__strip a::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--orange-500);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--d-mid) var(--e-out);
+  }
+
+  .hero__strip a:hover::before,
+  .hero__strip a:focus-visible::before {
+    transform: scaleX(1);
+  }
+
+  /* Brightened and enlarged: the deep orange disappeared against sunlit
+     concrete in the photograph behind it. */
+  .hero__strip-index {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    color: #ff8a5c;
+  }
+
+  .hero__strip-label {
+    font-family: var(--font-display);
+    font-size: var(--t-h4);
+    font-weight: 500;
+    letter-spacing: var(--tr-snug);
+    color: var(--white);
+  }
+
+  /* ---------------------------------------------------------- scroll hint */
+
+  .hero__scroll {
+    position: absolute;
+    right: var(--gutter);
+    bottom: clamp(3.5rem, 2rem + 6vw, 7rem);
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .hero__scroll-label {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--navy-200);
+    writing-mode: vertical-rl;
+  }
+
+  .hero__scroll-line {
+    width: 1px;
+    height: 3.5rem;
+    background: var(--line-invert-strong);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* A short travelling segment — restrained, not a bouncing arrow. */
+  .hero__scroll-line::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 40%;
+    background: var(--orange-500);
+    animation: scroll-hint 2.6s var(--e-in-out) infinite;
+  }
+
+  @keyframes scroll-hint {
+    0% {
+      transform: translateY(-100%);
+    }
+    60%,
+    100% {
+      transform: translateY(250%);
+    }
+  }
+
+  /* ---------------------------------------------------------- breakpoints */
+
+  @media (max-width: 900px) {
+    .hero__strip {
+      grid-template-columns: minmax(0, 1fr);
+      max-width: 30rem;
+    }
+
+    .hero__strip li + li {
+      border-left: 0;
+      border-top: 1px solid var(--line-invert);
+    }
+
+    .hero__strip li + li a {
+      padding-left: 0;
+    }
+
+    .hero__scroll {
+      display: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero__actions :global(.btn) {
+      width: 100%;
+    }
+
+    .hero__title {
+      max-width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__scroll-line::after {
+      animation: none;
+      height: 100%;
+      opacity: 0.6;
+    }
+  }
+</style>

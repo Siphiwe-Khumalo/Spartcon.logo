@@ -1,0 +1,123 @@
+---
+/**
+ * CLOSING CONTACT CTA — the standard closing section for every page.
+ * Reused so the route to a conversation is never more than one screen away.
+ */
+import Button from "@components/ui/Button.astro";
+
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  lead?: string;
+  primaryLabel?: string;
+  primaryHref?: string;
+  secondaryLabel?: string;
+  secondaryHref?: string;
+  tone?: "navy" | "tech";
+  class?: string;
+}
+
+const {
+  eyebrow = "Contact",
+  title = "Let's build what comes next.",
+  lead = "Whether the work starts with ground, structure or the systems inside a building, the conversation starts the same way.",
+  primaryLabel = "Start a Conversation",
+  primaryHref = "/contact",
+  secondaryLabel = "Explore Our Services",
+  secondaryHref = "/services",
+  tone = "navy",
+  class: className,
+} = Astro.props;
+---
+
+<section
+  class:list={[
+    "cta",
+    tone === "tech" ? "surface-tech" : "surface-navy",
+    className,
+  ]}
+  aria-labelledby="cta-heading"
+>
+  <div class="cta__rule" aria-hidden="true"></div>
+
+  <div class="container cta__inner">
+    <div class="cta__text">
+      <p class="eyebrow cta__eyebrow">{eyebrow}</p>
+      <h2 id="cta-heading" class="t-display cta__title" data-reveal-lines>
+        <span class="reveal-line"><span>{title}</span></span>
+      </h2>
+      <p class="t-lead cta__lead" data-reveal style="--reveal-delay:140ms">
+        {lead}
+      </p>
+    </div>
+
+    <div class="cta__actions" data-reveal style="--reveal-delay:220ms">
+      <Button href={primaryHref} variant="primary" size="lg" arrow>
+        {primaryLabel}
+      </Button>
+      <Button href={secondaryHref} variant="secondary" size="lg">
+        {secondaryLabel}
+      </Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    position: relative;
+    padding-block: var(--section-y-loose);
+    overflow: hidden;
+  }
+
+  /* A single accent rule anchored to the left gutter — structural, not decorative. */
+  .cta__rule {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: clamp(4rem, 12vw, 12rem);
+    height: 3px;
+    background: var(--accent);
+  }
+
+  .cta__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    gap: clamp(2.5rem, 1.5rem + 4vw, 6rem);
+    align-items: end;
+  }
+
+  .cta__eyebrow {
+    color: var(--accent);
+  }
+
+  .cta__title {
+    max-width: 20ch;
+  }
+
+  .cta__lead {
+    margin-top: var(--s-5);
+    max-width: 50ch;
+    color: var(--navy-200);
+  }
+
+  .cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    padding-bottom: 0.4rem;
+  }
+
+  @media (max-width: 900px) {
+    .cta__inner {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+      gap: var(--s-7);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .cta__actions :global(.btn) {
+      width: 100%;
+    }
+  }
+</style>

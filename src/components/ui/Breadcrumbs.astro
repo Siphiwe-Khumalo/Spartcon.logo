@@ -1,0 +1,109 @@
+---
+/**
+ * BREADCRUMBS — navigational context plus BreadcrumbList structured data.
+ */
+import { company } from "@data/company";
+
+interface Props {
+  /** Ancestors, excluding Home and the current page. */
+  trail: { label: string; href: string }[];
+  current: string;
+  invert?: boolean;
+  class?: string;
+}
+
+const { trail, current, invert = false, class: className } = Astro.props;
+
+const items = [{ label: "Home", href: "/" }, ...trail];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    ...items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.label,
+      item: `${company.siteUrl}${item.href === "/" ? "" : item.href}`,
+    })),
+    {
+      "@type": "ListItem",
+      position: items.length + 1,
+      name: current,
+    },
+  ],
+};
+---
+
+<nav aria-label="Breadcrumb" class:list={["crumbs", invert && "crumbs--invert", className]}>
+  <ol role="list">
+    {
+      items.map((item) => (
+        <li>
+          <a href={item.href}>{item.label}</a>
+          <span class="crumbs__sep" aria-hidden="true">/</span>
+        </li>
+      ))
+    }
+    <li><span aria-current="page">{current}</span></li>
+  </ol>
+</nav>
+
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+
+<style>
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .crumbs li {
+    display: inline-flex;
+    align-items: center;
+    color: var(--fg-subtle);
+  }
+
+  .crumbs a {
+    color: var(--fg-subtle);
+    transition: color var(--d-fast) var(--e-out);
+  }
+
+  .crumbs a:hover {
+    color: var(--accent);
+  }
+
+  .crumbs__sep {
+    margin: 0 0.6rem;
+    color: var(--line-strong);
+  }
+
+  .crumbs [aria-current="page"] {
+    color: var(--fg);
+  }
+
+  .crumbs--invert li,
+  .crumbs--invert a {
+    color: var(--navy-200);
+  }
+
+  .crumbs--invert [aria-current="page"] {
+    color: var(--white);
+  }
+
+  .crumbs--invert .crumbs__sep {
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  .crumbs--invert a:hover {
+    color: var(--orange-400);
+  }
+</style>

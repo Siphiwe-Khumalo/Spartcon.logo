@@ -1,0 +1,167 @@
+---
+/**
+ * SPARTCON / SPARTCON TECH LOCKUP
+ *
+ * Renders the wave mark above or beside the wordmark. Two variants:
+ *   variant="spartcon"  -> wave mark + "Spartcon"
+ *   variant="tech"      -> wave mark + "Spartcon" + "TECHNOLOGIES"
+ *
+ * The wordmark is live text rather than a flattened image, so it stays sharp,
+ * scales with the type system, and is readable by assistive technology.
+ *
+ * NOTE FOR THE CLIENT: replace with Spartcon's official vector artwork before
+ * launch. The wordmark here is set in Archivo, which approximates but does not
+ * exactly match the original logotype.
+ */
+import WaveMark from "./WaveMark.astro";
+
+interface Props {
+  variant?: "spartcon" | "tech";
+  /** "stacked" puts the mark above the wordmark; "inline" sets them side by side. */
+  layout?: "stacked" | "inline";
+  /** Inverts to white/light for dark surfaces. */
+  invert?: boolean;
+  /** Overall scale. Drives the wordmark size. */
+  size?: "sm" | "md" | "lg" | "xl";
+  /** Accessible name. Set to "" when a nearby element already labels it. */
+  title?: string;
+  class?: string;
+}
+
+const {
+  variant = "spartcon",
+  layout = "stacked",
+  invert = false,
+  size = "md",
+  title,
+  class: className,
+} = Astro.props;
+
+const label =
+  title ?? (variant === "tech" ? "Spartcon Technologies" : "Spartcon");
+---
+
+<span
+  class:list={[
+    "logo",
+    `logo--${layout}`,
+    `logo--${size}`,
+    variant === "tech" && "logo--tech",
+    invert && "logo--invert",
+    className,
+  ]}
+  role="img"
+  aria-label={label}
+>
+  <WaveMark class="logo__mark" color={invert ? "var(--orange-400)" : "var(--orange-500)"} />
+  <span class="logo__words">
+    <span class="logo__wordmark">Spartcon</span>
+    {variant === "tech" && <span class="logo__sub">Technologies</span>}
+  </span>
+</span>
+
+<style>
+  .logo {
+    display: inline-flex;
+    gap: 0.34em;
+    align-items: center;
+    line-height: 1;
+    /* --logo-unit drives every internal dimension. */
+    font-size: var(--logo-unit, 1.5rem);
+  }
+
+  .logo--stacked {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.18em;
+  }
+
+  .logo--inline {
+    flex-direction: row;
+    gap: 0.4em;
+  }
+
+  /* -------------------------------------------------------------- sizing */
+  .logo--sm {
+    --logo-unit: 1.125rem;
+  }
+  .logo--md {
+    --logo-unit: 1.5rem;
+  }
+  .logo--lg {
+    --logo-unit: 2.25rem;
+  }
+  .logo--xl {
+    --logo-unit: 3rem;
+  }
+
+  /* These rules must be :global — the <svg> they target is rendered inside the
+     WaveMark child component, so Astro's scoped-style attribute never lands on
+     it and a scoped selector silently does nothing. Without this the SVG falls
+     back to filling its container.
+     
+     Sized from measurement, not estimate: "Spartcon" in Poppins 600 renders
+     4.45em wide and the mark's aspect ratio is 3.62:1, so 1.12em of height
+     gives ~4.05em of width — the 0.91x mark-to-wordmark ratio measured from the
+     official artwork. */
+  .logo :global(.logo__mark) {
+    height: 1.12em;
+    width: auto;
+    flex: none;
+    /* Optical alignment: the ribbon's left cut sits flush with the 'S' stem. */
+    margin-left: 0.05em;
+    transition: transform var(--d-mid) var(--e-out);
+  }
+
+  /* Inline lockups sit in tight spaces (nav bar, footer rows), so the mark is
+     reduced to read as a compact badge beside the wordmark. */
+  .logo--inline :global(.logo__mark) {
+    height: 0.8em;
+    margin-left: 0;
+  }
+
+  .logo__words {
+    display: flex;
+    flex-direction: column;
+    gap: 0.14em;
+  }
+
+  /* The Spartcon logotype is a heavy geometric-rounded sans with circular
+     bowls and a single-storey 'a'. Poppins is the closest widely-available
+     match; the site's Archivo grotesque is deliberately NOT used here because
+     its letterforms read visibly wrong against the real mark. */
+  .logo__wordmark {
+    font-family: "Poppins", var(--font-display);
+    font-weight: 600;
+    font-size: 1em;
+    letter-spacing: -0.026em;
+    color: var(--navy-900);
+    /* The logotype reads as a single unit; never let it wrap. */
+    white-space: nowrap;
+  }
+
+  .logo__sub {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.3em;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--teal-500);
+    white-space: nowrap;
+    /* Optically aligns the tracked-out subline with the wordmark's left edge. */
+    padding-left: 0.08em;
+  }
+
+  .logo--invert .logo__wordmark {
+    color: var(--white);
+  }
+
+  .logo--invert .logo__sub {
+    color: var(--teal-400);
+  }
+
+  /* Subtle lift when the lockup is used inside a link. */
+  :global(a:hover) > .logo :global(.logo__mark) {
+    transform: translateY(-1px);
+  }
+</style>

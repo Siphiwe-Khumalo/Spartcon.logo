@@ -1,0 +1,778 @@
+---
+/**
+ * SPARTCON TECH — Facilities Engineering overview.
+ * Visually distinct (teal-keyed on navy) while keeping the parent brand explicit.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Section from "@components/ui/Section.astro";
+import SectionHeader from "@components/ui/SectionHeader.astro";
+import MediaFrame from "@components/ui/MediaFrame.astro";
+import Button from "@components/ui/Button.astro";
+import Logo from "@components/brand/Logo.astro";
+import Breadcrumbs from "@components/ui/Breadcrumbs.astro";
+import ContactCta from "@components/sections/ContactCta.astro";
+import { Image } from "astro:assets";
+import { requireImage } from "@lib/images";
+import {
+  techBrand,
+  techMarketSegments,
+  techTrades,
+  techOperatingStrategy,
+  buildingSystems,
+  maintenanceDisciplines,
+} from "@data/spartcon-tech";
+import { techLinks } from "@data/navigation";
+import { company } from "@data/company";
+
+const hero = requireImage("air-handling-units-commercial");
+const sectionLinks = techLinks.filter(
+  (l) => l.href !== techBrand.basePath && !l.href.endsWith("/contact")
+);
+---
+
+<BaseLayout
+  title="Spartcon Tech | Facilities Engineering by Spartcon"
+  description={techBrand.metaDescription}
+  ogImage="facilities-engineering"
+  transparentNav
+>
+  <!-- ================================================================= hero -->
+  <section class="thero on-navy" data-nav-overlap aria-labelledby="thero-title">
+    <div class="thero__bg">
+      <Image
+        src={hero.src}
+        alt={hero.alt}
+        widths={[768, 1280, 1600, 2000, 2560]}
+        sizes="100vw"
+        loading="eager"
+        decoding="sync"
+        fetchpriority="high"
+        class="thero__img"
+      />
+      <div class="thero__scrim" aria-hidden="true"></div>
+    </div>
+
+    <div class="container thero__inner">
+      <Breadcrumbs trail={[]} current="Facilities Engineering" invert />
+
+      <div class="thero__lockup">
+        <Logo variant="tech" layout="stacked" size="xl" invert title="Spartcon Technologies" />
+        <p class="thero__descriptor">{techBrand.descriptor}</p>
+      </div>
+
+      <h1 id="thero-title" class="t-hero thero__title" data-reveal-lines>
+        <span class="reveal-line"><span>The building is finished.</span></span>
+        <span class="reveal-line"
+          ><span>The engineering<span class="thero__stop">.</span> isn't</span></span
+        >
+      </h1>
+
+      <p class="thero__lead" data-reveal style="--reveal-delay:380ms">
+        {techBrand.positioning}
+      </p>
+
+      <div class="thero__actions" data-reveal style="--reveal-delay:480ms">
+        <Button href={`${techBrand.basePath}/building-systems`} variant="primary" size="lg" arrow>
+          Explore Building Systems
+        </Button>
+        <Button href={`${techBrand.basePath}/contact`} variant="secondary" size="lg">
+          Contact Spartcon Tech
+        </Button>
+      </div>
+
+      <p class="thero__parent">{techBrand.parentStatement}</p>
+    </div>
+  </section>
+
+  <!-- =========================================================== background -->
+  <Section aria-labelledby="tb-title">
+    <div class="split">
+      <div>
+        <SectionHeader
+          index="01"
+          eyebrow="Company background"
+          title="Engineering services since 2008."
+          id="tb-title"
+        />
+      </div>
+
+      <div class="prose" data-reveal>
+        <p class="t-lead">
+          Spartcon has been providing engineering services to clients throughout
+          South Africa since 2008, under the Spartan Group of companies.
+        </p>
+        <p>
+          Spartcon has the requisite expertise and experience, innovative
+          technologies and depth of resources to maximise operational efficiency
+          and cost effectiveness — while balancing the need for environmental
+          comfort, convenience and safety.
+        </p>
+        <p>
+          The solutions we deliver are oriented towards maximising asset
+          lifecycle value, ensuring continuous optimum performance of
+          infrastructure, facilities and buildings. This is driven through a
+          <strong>predictive, pre-emptive and reactive maintenance approach</strong>,
+          so services can be provided with minimum disruption while assuring the
+          comfort of our clients.
+        </p>
+        <p>
+          We employ engineers, technologists, technicians and skilled trades
+          professionals, with regional offices located strategically throughout
+          the country to provide our complete engineering services.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- ========================================================= core expertise -->
+  <Section surface="muted" aria-labelledby="tce-title">
+    <SectionHeader
+      index="02"
+      eyebrow="Core expertise"
+      title="Understanding how a facility actually operates."
+      lead="The heart of our business lies in understanding the operation of facilities, buildings and infrastructure — as well as how these facilities support the people they accommodate."
+      layout="split"
+      id="tce-title"
+    />
+
+    <div class="ce">
+      <div class="ce__text prose" data-reveal>
+        <p>
+          Spartcon provides outsourced engineering and maintenance solutions
+          nationwide. Our range of expertise, depth of experience and broad
+          geographic coverage enable us to serve either small facilities or large
+          facilities portfolios.
+        </p>
+        <p>
+          Our staff includes highly skilled professionals with engineering
+          expertise and indispensable technical know-how, who work closely with
+          your personnel to meet key facilities services objectives.
+        </p>
+        <p>
+          Our engineering managers are registered with <strong>ECSA</strong> as
+          professional engineers and have served as facilities engineers —
+          bringing the hands-on experience essential to keeping facilities
+          operating at optimum efficiency.
+        </p>
+      </div>
+
+      <MediaFrame
+        slug="mechanical-plant-room"
+        ratio="4/5"
+        sizes="(max-width: 1024px) 100vw, 36vw"
+        parallax
+      />
+    </div>
+
+    <!-- operating strategy -->
+    <div class="os">
+      <h3 class="os__title">Operating strategy</h3>
+      <ol class="os__list" role="list" data-reveal-group="60">
+        {
+          techOperatingStrategy.map((item, i) => (
+            <li>
+              <span class="os__index">{String(i + 1).padStart(2, "0")}</span>
+              <span class="os__label">{item}</span>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="os__note">
+        Spartcon furnishes engineering labour, an operations platform and
+        technical support to maintain facilities mechanical, electrical, plumbing
+        and utility systems — applying professional engineering management
+        concepts and contemporary scientific methodologies.
+      </p>
+    </div>
+  </Section>
+
+  <!-- ============================================== maintenance approach -->
+  <Section surface="tech" aria-labelledby="tma-title">
+    <SectionHeader
+      index="03"
+      eyebrow="Maintenance approach"
+      title="Predictive, pre-emptive, reactive."
+      lead="Three approaches, applied where each is economic — so minimum disruption is a design decision rather than a hope."
+      layout="split"
+      id="tma-title"
+    />
+
+    <ol class="ma" role="list" data-reveal-group="80">
+      {
+        maintenanceDisciplines.slice(0, 3).map((d) => (
+          <li class="ma__item">
+            <span class="ma__index">{d.index}</span>
+            <h3 class="ma__title">{d.title}</h3>
+            <p class="ma__summary">{d.summary}</p>
+            <p class="ma__detail">{d.detail}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="ma__cta">
+      <Button href={`${techBrand.basePath}/maintenance-operations`} variant="primary" arrow>
+        Maintenance &amp; Operations
+      </Button>
+    </div>
+  </Section>
+
+  <!-- ========================================================= trades + segments -->
+  <Section aria-labelledby="tts-title">
+    <div class="split">
+      <div>
+        <SectionHeader
+          index="04"
+          eyebrow="Coverage"
+          title="Trades and market segments."
+          id="tts-title"
+        />
+        <p class="t-body">
+          Our trades experience spans the systems a building depends on. Our
+          market segments span the estates that depend on them.
+        </p>
+      </div>
+
+      <div class="cov">
+        <div class="cov__block" data-reveal>
+          <h3 class="cov__title">Trades experience</h3>
+          <ul class="cov__tags" role="list">
+            {techTrades.map((t) => <li>{t}</li>)}
+          </ul>
+        </div>
+
+        <div class="cov__block" data-reveal style="--reveal-delay:120ms">
+          <h3 class="cov__title">Market segments</h3>
+          <ul class="cov__tags cov__tags--alt" role="list">
+            {techMarketSegments.map((s) => <li>{s}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- ======================================================= building systems -->
+  <Section surface="muted" aria-labelledby="tbs-title">
+    <SectionHeader
+      index="05"
+      eyebrow="Building systems"
+      title="Twelve system families."
+      lead="Every system below is designed, installed and maintained to the applicable SANS, OEM and OHSA standards."
+      layout="split"
+      id="tbs-title"
+    />
+
+    <ul class="bs" role="list" data-reveal-group="40">
+      {
+        buildingSystems.map((s) => (
+          <li>
+            <a href={`${techBrand.basePath}/building-systems#${s.slug}`} class="bs__link">
+              <span class="bs__index">{s.index}</span>
+              <span class="bs__name">{s.title}</span>
+              <span class="bs__cat">{s.category}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="bs__cta">
+      <Button href={`${techBrand.basePath}/building-systems`} variant="secondary" size="lg" arrow>
+        All building systems
+      </Button>
+    </div>
+  </Section>
+
+  <!-- ============================================================== sections -->
+  <Section surface="navy" aria-labelledby="tsec-title">
+    <SectionHeader
+      index="06"
+      eyebrow="Spartcon Tech"
+      title="Explore the division."
+      layout="split"
+      id="tsec-title"
+      lead="Engineering services, maintenance and operations, building systems, energy and utilities, and maintenance management."
+    />
+
+    <ul class="secs" role="list" data-reveal-group="70">
+      {
+        sectionLinks.map((link, i) => (
+          <li>
+            <a href={link.href} class="secs__link">
+              <span class="secs__index">{String(i + 1).padStart(2, "0")}</span>
+              <span class="secs__body">
+                <span class="secs__name">{link.label}</span>
+                <span class="secs__desc">{link.description}</span>
+              </span>
+              <span class="secs__arrow" aria-hidden="true">
+                <svg viewBox="0 0 16 16" width="14" height="14">
+                  <path
+                    d="M1 8h13M9 3l5 5-5 5"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="square"
+                  />
+                </svg>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <ContactCta
+    tone="tech"
+    eyebrow="Contact Spartcon Tech"
+    title="Let's keep it running."
+    lead={`Talk to us about a maintenance contract, a building system, or an engineering appointment. ${techBrand.parentStatement}`}
+    primaryLabel="Contact Spartcon Tech"
+    primaryHref={`${techBrand.basePath}/contact`}
+    secondaryLabel="Spartcon Construction"
+    secondaryHref="/services"
+  />
+</BaseLayout>
+
+<style>
+  /* ================================================================== hero */
+
+  .thero {
+    position: relative;
+    min-height: min(100svh, 50rem);
+    display: flex;
+    align-items: flex-end;
+    padding-top: calc(var(--nav-h) + var(--s-7));
+    padding-bottom: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+    background: var(--navy-900);
+    color: var(--white);
+    overflow: hidden;
+    --accent: var(--teal-400);
+  }
+
+  .thero__bg {
+    position: absolute;
+    inset: 0;
+  }
+
+  .thero__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 45%;
+  }
+
+  /* Deeper flat scrim than Spartcon's, tinted by the navy-800 division colour. */
+  .thero__scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(13, 26, 48, 0.76);
+  }
+
+  .thero__inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+  }
+
+  .thero__lockup {
+    margin-top: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    margin-bottom: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .thero__descriptor {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--teal-400);
+  }
+
+  .thero__title {
+    color: var(--white);
+    max-width: 22ch;
+    margin-left: -0.04em;
+  }
+
+  .thero__stop {
+    color: var(--teal-400);
+  }
+
+  .thero__lead {
+    margin-top: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+    font-size: var(--t-lead);
+    line-height: var(--lh-relaxed);
+    color: var(--navy-100);
+    max-width: 58ch;
+  }
+
+  .thero__actions {
+    margin-top: clamp(1.75rem, 1.25rem + 2vw, 2.75rem);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+
+  .thero__parent {
+    margin-top: clamp(2rem, 1.5rem + 2vw, 3rem);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--line-invert);
+    font-size: var(--t-xs);
+    color: var(--navy-200);
+    max-width: 60ch;
+  }
+
+  /* ========================================================= core expertise */
+
+  .ce {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(2rem, 1.5rem + 4vw, 5rem);
+    align-items: start;
+  }
+
+  .os {
+    margin-top: clamp(3rem, 2rem + 3vw, 5rem);
+    padding-top: var(--s-7);
+    border-top: 1px solid var(--line);
+  }
+
+  .os__title {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    font-weight: 500;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: var(--s-5);
+  }
+
+  .os__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  .os__list li {
+    background: var(--bg-muted);
+    padding: var(--s-5);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .os__index {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+  }
+
+  .os__label {
+    font-family: var(--font-display);
+    font-size: var(--t-h4);
+    font-weight: 600;
+    letter-spacing: var(--tr-snug);
+  }
+
+  .os__note {
+    margin-top: var(--s-5);
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    max-width: 78ch;
+    line-height: var(--lh-body);
+  }
+
+  /* ==================================================== maintenance approach */
+
+  .ma {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--line-invert);
+    border: 1px solid var(--line-invert);
+  }
+
+  .ma__item {
+    background: var(--navy-800);
+    padding: clamp(1.5rem, 1.25rem + 1.2vw, 2.25rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .ma__index {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    color: var(--teal-400);
+  }
+
+  .ma__title {
+    font-family: var(--font-display);
+    font-size: var(--t-h3);
+    font-weight: 600;
+    letter-spacing: var(--tr-snug);
+    color: var(--white);
+  }
+
+  .ma__summary {
+    font-size: var(--t-sm);
+    font-weight: 500;
+    color: var(--white);
+  }
+
+  .ma__detail {
+    font-size: var(--t-xs);
+    line-height: 1.7;
+    color: var(--navy-200);
+  }
+
+  .ma__cta {
+    margin-top: var(--s-6);
+  }
+
+  /* ============================================================== coverage */
+
+  .cov {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-7);
+  }
+
+  .cov__title {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    font-weight: 500;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--accent);
+    padding-bottom: var(--s-3);
+    border-bottom: 1px solid var(--line);
+    margin-bottom: var(--s-4);
+  }
+
+  .cov__tags {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .cov__tags li {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    border: 1px solid var(--line-strong);
+    padding: 0.4rem 0.6rem;
+    transition: border-color var(--d-fast) var(--e-out),
+      color var(--d-fast) var(--e-out);
+  }
+
+  .cov__tags li:hover {
+    border-color: var(--teal-500);
+    color: var(--fg);
+  }
+
+  .cov__tags--alt li {
+    background: var(--navy-900);
+    color: var(--white);
+    border-color: var(--navy-900);
+  }
+
+  .cov__tags--alt li:hover {
+    background: var(--teal-500);
+    border-color: var(--teal-500);
+    color: var(--white);
+  }
+
+  /* ======================================================= building systems */
+
+  .bs {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  .bs__link {
+    background: var(--bg-muted);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: var(--s-5);
+    height: 100%;
+    transition: background-color var(--d-fast) var(--e-out);
+  }
+
+  .bs__link:hover {
+    background: var(--white);
+  }
+
+  .bs__index {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    color: var(--teal-500);
+  }
+
+  .bs__name {
+    font-family: var(--font-display);
+    font-size: var(--t-h4);
+    font-weight: 600;
+    letter-spacing: var(--tr-snug);
+  }
+
+  .bs__cat {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+
+  .bs__cta {
+    margin-top: var(--s-6);
+  }
+
+  /* ============================================================== sections */
+
+  .secs {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line-invert);
+  }
+
+  .secs li {
+    border-bottom: 1px solid var(--line-invert);
+  }
+
+  .secs__link {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: clamp(1rem, 2vw, 2rem);
+    align-items: center;
+    padding: clamp(1rem, 0.9rem + 0.6vw, 1.5rem) 0;
+    transition: padding-left var(--d-mid) var(--e-out);
+    position: relative;
+  }
+
+  .secs__link::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.9rem;
+    bottom: 0.9rem;
+    width: 2px;
+    background: var(--teal-400);
+    transform: scaleY(0);
+    transition: transform var(--d-mid) var(--e-out);
+  }
+
+  .secs__link:hover {
+    padding-left: var(--s-4);
+  }
+
+  .secs__link:hover::before {
+    transform: scaleY(1);
+  }
+
+  .secs__index {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: 0.12em;
+    color: var(--teal-400);
+  }
+
+  .secs__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .secs__name {
+    font-family: var(--font-display);
+    font-size: var(--t-h3);
+    font-weight: 600;
+    letter-spacing: var(--tr-snug);
+    color: var(--white);
+  }
+
+  .secs__desc {
+    font-size: var(--t-sm);
+    color: var(--navy-200);
+  }
+
+  .secs__arrow {
+    color: var(--navy-300);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity var(--d-mid) var(--e-out),
+      transform var(--d-mid) var(--e-out);
+  }
+
+  .secs__link:hover .secs__arrow,
+  .secs__link:focus-visible .secs__arrow {
+    opacity: 1;
+    transform: translateX(0);
+    color: var(--teal-400);
+  }
+
+  /* ============================================================ breakpoints */
+
+  @media (max-width: 1024px) {
+    .ce {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .os__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .bs {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .ma {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 700px) {
+    .bs {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 480px) {
+    .thero__actions :global(.btn) {
+      width: 100%;
+    }
+
+    .os__list,
+    .bs {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

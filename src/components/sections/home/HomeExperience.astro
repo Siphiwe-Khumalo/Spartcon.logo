@@ -1,0 +1,199 @@
+---
+/**
+ * 09 — EXPERIENCE / PROJECTS
+ *
+ * No project information was supplied, so no projects are invented. This
+ * section presents the TYPES of work Spartcon undertakes and links to the
+ * projects page, which is structured to accept real projects later.
+ *
+ * When `projects.ts` gains its first entry, this section switches to showing
+ * recent projects instead.
+ */
+import Section from "@components/ui/Section.astro";
+import Button from "@components/ui/Button.astro";
+import MediaFrame from "@components/ui/MediaFrame.astro";
+import { experienceAreas, projects, hasProjects } from "@data/projects";
+
+const recent = projects.slice(0, 3);
+---
+
+<Section id="experience" surface="muted" aria-labelledby="exp-title">
+  <header class="exp-head">
+    <div>
+      <p class="eyebrow">
+        <span class="index-num">09</span>
+        <span>{hasProjects ? "Selected projects" : "Experience"}</span>
+      </p>
+      <h2 id="exp-title" class="t-display exp-head__title" data-reveal>
+        {hasProjects ? "Recent work." : "The work we take on."}
+      </h2>
+    </div>
+    <p class="t-lead exp-head__lead" data-reveal style="--reveal-delay:120ms">
+      {
+        hasProjects
+          ? "A selection of recent Spartcon appointments."
+          : "Spartcon's experience spans structural building works, civil infrastructure, construction support and facilities engineering."
+      }
+    </p>
+  </header>
+
+  {
+    hasProjects ? (
+      <ul class="exp" role="list">
+        {recent.map((p, i) => (
+          <li class="exp__cell" data-reveal style={`--reveal-delay:${i * 80}ms`}>
+            <a href={`/projects/${p.slug}`} class="exp__link">
+              {p.image && p.imageIsOfThisProject && (
+                <MediaFrame slug={p.image} ratio="4/3" reveal={false} hoverZoom />
+              )}
+              <span class="exp__body">
+                <span class="exp__title">{p.title}</span>
+                <span class="exp__summary">{p.summary}</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <ul class="exp" role="list">
+        {experienceAreas.map((area, i) => (
+          <li class="exp__cell" data-reveal style={`--reveal-delay:${i * 80}ms`}>
+            <MediaFrame
+              slug={area.image}
+              ratio="4/3"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              reveal={false}
+              hoverZoom
+            />
+            <div class="exp__body">
+              <span class="exp__index">{area.index}</span>
+              <h3 class="exp__title">{area.title}</h3>
+              <p class="exp__summary">{area.summary}</p>
+              <ul class="exp__scope" role="list">
+                {area.typicalScope.slice(0, 3).map((s) => (
+                  <li>{s}</li>
+                ))}
+              </ul>
+            </div>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  <div class="exp__cta" data-reveal>
+    <Button href="/projects" variant="secondary" size="lg" arrow>
+      {hasProjects ? "All projects" : "Projects & experience"}
+    </Button>
+  </div>
+</Section>
+
+<style>
+  .exp-head {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: clamp(2rem, 1.5rem + 3vw, 4.5rem);
+    align-items: end;
+    margin-bottom: clamp(2.5rem, 2rem + 3vw, 4rem);
+  }
+
+  .exp-head__title {
+    max-width: 18ch;
+  }
+
+  .exp-head__lead {
+    max-width: 50ch;
+  }
+
+  .exp {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(1.25rem, 1rem + 1.5vw, 2.25rem);
+  }
+
+  .exp__cell {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+  }
+
+  .exp__link {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+    height: 100%;
+  }
+
+  .exp__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .exp__index {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+  }
+
+  .exp__title {
+    font-family: var(--font-display);
+    font-size: var(--t-h4);
+    font-weight: 600;
+    letter-spacing: var(--tr-snug);
+  }
+
+  .exp__summary {
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    line-height: var(--lh-body);
+  }
+
+  .exp__scope {
+    margin: 0.4rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    border-top: 1px solid var(--line);
+    padding-top: 0.7rem;
+  }
+
+  .exp__scope li {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.03em;
+    color: var(--fg-subtle);
+    line-height: 1.5;
+  }
+
+  .exp__cta {
+    margin-top: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  }
+
+  @media (max-width: 1024px) {
+    .exp {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .exp-head {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .exp {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .exp__cta :global(.btn) {
+      width: 100%;
+    }
+  }
+</style>

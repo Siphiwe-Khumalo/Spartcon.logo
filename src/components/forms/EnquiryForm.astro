@@ -1,0 +1,791 @@
+---
+/**
+ * ENQUIRY FORM
+ *
+ * Accessible, validated enquiry form with no backend credentials invented.
+ *
+ * SUBMISSION: the form posts to whatever endpoint is set in `action`. Until a
+ * real endpoint exists it runs in "demo" mode — validation, error and success
+ * states all work, and the payload is logged rather than sent. See the
+ * TO CONNECT A BACKEND note below.
+ *
+ * Accessibility:
+ *   - Every control has a real <label> (never placeholder-as-label).
+ *   - Errors use aria-invalid + aria-describedby and are announced politely.
+ *   - Validation runs on submit and re-validates on input once touched, so the
+ *     user is not scolded mid-typing.
+ *   - The success state moves focus to the confirmation and is announced.
+ *   - Fully keyboard operable; honeypot field is hidden from AT and from users.
+ */
+import Button from "@components/ui/Button.astro";
+import { services } from "@data/services";
+import { buildingSystems } from "@data/spartcon-tech";
+
+interface Props {
+  /** Distinguishes Spartcon from Spartcon Tech submissions. */
+  variant?: "spartcon" | "tech";
+  /**
+   * TO CONNECT A BACKEND: set this to your form endpoint (e.g. a Formspree /
+   * Netlify Forms / custom API URL). When empty the form runs in demo mode.
+   */
+  action?: string;
+  id?: string;
+  class?: string;
+}
+
+const {
+  variant = "spartcon",
+  action = "",
+  id = "enquiry",
+  class: className,
+} = Astro.props;
+
+const isTech = variant === "tech";
+
+/** Enquiry categories differ between the two brands. */
+const enquiryOptions = isTech
+  ? [
+      "Maintenance contract",
+      "Engineering services",
+      ...buildingSystems.map((s) => s.title),
+      "Energy & utilities",
+      "Maintenance management system",
+      "Other",
+    ]
+  : [
+      ...services.map((s) => s.title),
+      "Engineering design services",
+      "Facilities engineering (Spartcon Tech)",
+      "General enquiry",
+    ];
+---
+
+<form
+  class:list={["form", isTech && "form--tech", className]}
+  id={id}
+  method="POST"
+  action={action || undefined}
+  novalidate
+  data-enquiry-form
+  data-demo={action ? undefined : "true"}
+  aria-describedby={`${id}-status`}
+>
+  <!-- Identifies which brand the enquiry came from, server-side. -->
+  <input type="hidden" name="enquiry_source" value={isTech ? "Spartcon Tech" : "Spartcon"} />
+
+  <!-- Honeypot: hidden from users and assistive tech; bots fill it in. -->
+  <div class="form__honeypot" aria-hidden="true">
+    <label for={`${id}-website`}>Leave this field empty</label>
+    <input type="text" id={`${id}-website`} name="website" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="form__grid">
+    <!-- ------------------------------------------------------------- name -->
+    <div class="field">
+      <label class="field__label" for={`${id}-name`}>
+        Name <span class="field__req" aria-hidden="true">*</span>
+        <span class="visually-hidden">(required)</span>
+      </label>
+      <input
+        class="field__input"
+        type="text"
+        id={`${id}-name`}
+        name="name"
+        autocomplete="name"
+        required
+        aria-describedby={`${id}-name-error`}
+      />
+      <p class="field__error" id={`${id}-name-error`} data-error-for="name"></p>
+    </div>
+
+    <!-- ---------------------------------------------------------- company -->
+    <div class="field">
+      <label class="field__label" for={`${id}-company`}>Company</label>
+      <input
+        class="field__input"
+        type="text"
+        id={`${id}-company`}
+        name="company"
+        autocomplete="organization"
+        aria-describedby={`${id}-company-error`}
+      />
+      <p class="field__error" id={`${id}-company-error`} data-error-for="company"></p>
+    </div>
+
+    <!-- ------------------------------------------------------------ email -->
+    <div class="field">
+      <label class="field__label" for={`${id}-email`}>
+        Email <span class="field__req" aria-hidden="true">*</span>
+        <span class="visually-hidden">(required)</span>
+      </label>
+      <input
+        class="field__input"
+        type="email"
+        id={`${id}-email`}
+        name="email"
+        autocomplete="email"
+        inputmode="email"
+        required
+        aria-describedby={`${id}-email-error`}
+      />
+      <p class="field__error" id={`${id}-email-error`} data-error-for="email"></p>
+    </div>
+
+    <!-- ------------------------------------------------------------ phone -->
+    <div class="field">
+      <label class="field__label" for={`${id}-phone`}>
+        Phone <span class="field__req" aria-hidden="true">*</span>
+        <span class="visually-hidden">(required)</span>
+      </label>
+      <input
+        class="field__input"
+        type="tel"
+        id={`${id}-phone`}
+        name="phone"
+        autocomplete="tel"
+        inputmode="tel"
+        required
+        aria-describedby={`${id}-phone-hint ${id}-phone-error`}
+      />
+      <p class="field__hint" id={`${id}-phone-hint`}>
+        South African mobile or landline number.
+      </p>
+      <p class="field__error" id={`${id}-phone-error`} data-error-for="phone"></p>
+    </div>
+
+    <!-- ---------------------------------------------------------- service -->
+    <div class="field field--full">
+      <label class="field__label" for={`${id}-service`}>
+        {isTech ? "Service required" : "Service required"}
+        <span class="field__req" aria-hidden="true">*</span>
+        <span class="visually-hidden">(required)</span>
+      </label>
+      <div class="field__select-wrap">
+        <select
+          class="field__input field__select"
+          id={`${id}-service`}
+          name="service"
+          required
+          aria-describedby={`${id}-service-error`}
+        >
+          <option value="">Please select…</option>
+          {enquiryOptions.map((opt) => <option value={opt}>{opt}</option>)}
+        </select>
+        <span class="field__chev" aria-hidden="true">
+          <svg viewBox="0 0 10 6" width="10" height="6">
+            <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4" />
+          </svg>
+        </span>
+      </div>
+      <p class="field__error" id={`${id}-service-error`} data-error-for="service"></p>
+    </div>
+
+    <!-- ---------------------------------------------------------- message -->
+    <div class="field field--full">
+      <label class="field__label" for={`${id}-message`}>
+        Message <span class="field__req" aria-hidden="true">*</span>
+        <span class="visually-hidden">(required)</span>
+      </label>
+      <textarea
+        class="field__input field__textarea"
+        id={`${id}-message`}
+        name="message"
+        rows="6"
+        required
+        aria-describedby={`${id}-message-hint ${id}-message-error`}
+      ></textarea>
+      <p class="field__hint" id={`${id}-message-hint`}>
+        Tell us about the project or facility, its location, and the timeline you
+        are working to.
+      </p>
+      <p class="field__error" id={`${id}-message-error`} data-error-for="message"></p>
+    </div>
+  </div>
+
+  <!-- ---------------------------------------------------------- submit row -->
+  <div class="form__actions">
+    <Button type="submit" variant="primary" size="lg" arrow class="form__submit">
+      Submit Enquiry
+    </Button>
+    <p class="form__note">
+      Required fields are marked <span aria-hidden="true">*</span>. We use your
+      details only to respond to this enquiry — see our
+      <a href="/privacy-policy" class="link">Privacy Policy</a>.
+    </p>
+  </div>
+
+  <!-- Live region: announces validation summary and success. -->
+  <div class="form__status" id={`${id}-status`} role="status" aria-live="polite" data-form-status></div>
+
+  <!-- Success panel, revealed after a successful submit. -->
+  <div class="form__success" data-form-success hidden tabindex="-1">
+    <span class="form__success-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="22" height="22">
+        <path d="M4 12.5l5 5L20 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" />
+      </svg>
+    </span>
+    <div>
+      <h3 class="form__success-title">Enquiry received</h3>
+      <p class="form__success-text" data-form-success-text>
+        Thank you — your enquiry has been sent. A member of the Spartcon team
+        will be in touch.
+      </p>
+      <button type="button" class="form__reset" data-form-reset>
+        Send another enquiry
+      </button>
+    </div>
+  </div>
+</form>
+
+<style>
+  .form {
+    --field-border: var(--line-strong);
+    --field-bg: var(--bg);
+    position: relative;
+  }
+
+  .form__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-5);
+  }
+
+  .field--full {
+    grid-column: 1 / -1;
+  }
+
+  /* -------------------------------------------------------------- honeypot */
+
+  .form__honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  /* ----------------------------------------------------------------- field */
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 0;
+  }
+
+  .field__label {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    font-weight: 500;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+
+  .field__req {
+    color: var(--accent);
+  }
+
+  .field__input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    font-size: var(--t-body);
+    font-family: var(--font-body);
+    color: var(--fg);
+    background: var(--field-bg);
+    border: 1px solid var(--field-border);
+    border-radius: var(--r-xs);
+    /* Liquid focus: border and a drawn underline, no glow. */
+    transition: border-color var(--d-fast) var(--e-out),
+      box-shadow var(--d-fast) var(--e-out),
+      background-color var(--d-fast) var(--e-out);
+    appearance: none;
+  }
+
+  .field__input:hover {
+    border-color: var(--fg-subtle);
+  }
+
+  .field__input:focus {
+    outline: none;
+    border-color: var(--accent);
+    /* Inset line rather than an outer halo — keeps the geometry crisp. */
+    box-shadow: inset 0 -2px 0 var(--accent);
+  }
+
+  .field__input:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .field__textarea {
+    resize: vertical;
+    min-height: 8rem;
+    line-height: var(--lh-body);
+  }
+
+  /* ---------------------------------------------------------------- select */
+
+  .field__select-wrap {
+    position: relative;
+  }
+
+  .field__select {
+    padding-right: 2.5rem;
+    cursor: pointer;
+  }
+
+  .field__chev {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--fg-subtle);
+  }
+
+  /* ------------------------------------------------------- hints / errors */
+
+  .field__hint {
+    font-size: var(--t-xs);
+    color: var(--fg-subtle);
+    line-height: 1.5;
+  }
+
+  .field__error {
+    font-size: var(--t-xs);
+    font-weight: 500;
+    color: var(--danger);
+    display: none;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .field__error::before {
+    content: "";
+    width: 0.75rem;
+    height: 0.75rem;
+    flex: none;
+    background: var(--danger);
+    /* A small solid square marker — no icon dependency. */
+  }
+
+  .field__error.is-shown {
+    display: flex;
+  }
+
+  /* Invalid state on the control itself. */
+  .field__input[aria-invalid="true"] {
+    border-color: var(--danger);
+    background: #fdf6f5;
+  }
+
+  .field__input[aria-invalid="true"]:focus {
+    box-shadow: inset 0 -2px 0 var(--danger);
+  }
+
+  /* --------------------------------------------------------------- actions */
+
+  .form__actions {
+    margin-top: var(--s-6);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-5);
+  }
+
+  .form__note {
+    font-size: var(--t-xs);
+    color: var(--fg-subtle);
+    max-width: 44ch;
+    line-height: 1.6;
+  }
+
+  /* Submitting state. */
+  .form[data-submitting] {
+    pointer-events: none;
+  }
+
+  .form[data-submitting] .form__submit {
+    opacity: 0.6;
+  }
+
+  /* ---------------------------------------------------------------- status */
+
+  .form__status:not(:empty) {
+    margin-top: var(--s-5);
+    padding: var(--s-4);
+    border: 1px solid var(--danger);
+    border-left-width: 3px;
+    background: #fdf6f5;
+    font-size: var(--t-sm);
+    color: #7d1a13;
+  }
+
+  .form__status ul {
+    margin: 0.5rem 0 0;
+    padding-left: 1.1rem;
+  }
+
+  .form__status a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  /* --------------------------------------------------------------- success */
+
+  .form__success {
+    display: flex;
+    gap: var(--s-4);
+    padding: var(--s-6);
+    border: 1px solid var(--success);
+    border-left-width: 3px;
+    background: #f2f8f4;
+  }
+
+  .form__success[hidden] {
+    display: none;
+  }
+
+  .form__success-mark {
+    color: var(--success);
+    flex: none;
+    margin-top: 0.15rem;
+  }
+
+  .form__success-title {
+    font-size: var(--t-h3);
+    margin-bottom: 0.4rem;
+  }
+
+  .form__success-text {
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    line-height: var(--lh-body);
+    max-width: 52ch;
+  }
+
+  .form__reset {
+    margin-top: var(--s-4);
+    font-family: var(--font-mono);
+    font-size: var(--t-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg);
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 2px;
+    transition: color var(--d-fast) var(--e-out);
+  }
+
+  .form__reset:hover {
+    color: var(--accent);
+  }
+
+  /* Hide the fields once submitted successfully. */
+  .form[data-submitted] .form__grid,
+  .form[data-submitted] .form__actions {
+    display: none;
+  }
+
+  /* -------------------------------------------------- on dark backgrounds */
+
+  .form--tech {
+    --field-border: var(--line-invert-strong);
+    --field-bg: rgba(255, 255, 255, 0.04);
+  }
+
+  .form--tech .field__label {
+    color: var(--navy-200);
+  }
+
+  .form--tech .field__input {
+    color: var(--white);
+  }
+
+  .form--tech .field__input option {
+    color: var(--navy-900);
+  }
+
+  .form--tech .field__input:focus {
+    border-color: var(--teal-400);
+    box-shadow: inset 0 -2px 0 var(--teal-400);
+  }
+
+  .form--tech .field__hint {
+    color: var(--navy-300);
+  }
+
+  .form--tech .field__error {
+    color: #ff9c90;
+  }
+
+  .form--tech .field__error::before {
+    background: #ff9c90;
+  }
+
+  .form--tech .field__input[aria-invalid="true"] {
+    background: rgba(255, 80, 60, 0.1);
+    border-color: #ff9c90;
+  }
+
+  .form--tech .form__note {
+    color: var(--navy-300);
+  }
+
+  .form--tech .form__status:not(:empty) {
+    background: rgba(255, 80, 60, 0.1);
+    color: #ffd2cb;
+    border-color: #ff9c90;
+  }
+
+  .form--tech .form__success {
+    background: rgba(42, 157, 157, 0.12);
+    border-color: var(--teal-400);
+  }
+
+  .form--tech .form__success-mark {
+    color: var(--teal-400);
+  }
+
+  .form--tech .form__success-text {
+    color: var(--navy-100);
+  }
+
+  .form--tech .form__reset {
+    color: var(--white);
+    border-color: var(--teal-400);
+  }
+
+  /* ------------------------------------------------------------ responsive */
+
+  @media (max-width: 640px) {
+    .form__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .form__actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .form__submit {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  /**
+   * Form validation and submission.
+   *
+   * Deliberately dependency-free. Uses `novalidate` on the form so we control
+   * messaging and focus order rather than relying on inconsistent native
+   * browser bubbles.
+   */
+  type Rule = {
+    test: (v: string, el: HTMLElement) => boolean;
+    message: string;
+  };
+
+  const required: Rule = {
+    test: (v) => v.trim().length > 0,
+    message: "This field is required.",
+  };
+
+  const rules: Record<string, Rule[]> = {
+    name: [
+      required,
+      {
+        test: (v) => v.trim().length >= 2,
+        message: "Please enter your full name.",
+      },
+    ],
+    email: [
+      required,
+      {
+        // Intentionally permissive: catches obvious mistakes without rejecting
+        // valid but unusual addresses.
+        test: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()),
+        message: "Please enter a valid email address, e.g. name@company.co.za",
+      },
+    ],
+    phone: [
+      required,
+      {
+        test: (v) => {
+          const digits = v.replace(/[^\d]/g, "");
+          return digits.length >= 9 && digits.length <= 15;
+        },
+        message: "Please enter a valid contact number.",
+      },
+    ],
+    service: [{ ...required, message: "Please select a service." }],
+    message: [
+      required,
+      {
+        test: (v) => v.trim().length >= 20,
+        message: "Please give us a little more detail (at least 20 characters).",
+      },
+    ],
+  };
+
+  document
+    .querySelectorAll<HTMLFormElement>("[data-enquiry-form]")
+    .forEach((form) => {
+      const status = form.querySelector<HTMLElement>("[data-form-status]")!;
+      const success = form.querySelector<HTMLElement>("[data-form-success]")!;
+      const successText = form.querySelector<HTMLElement>(
+        "[data-form-success-text]"
+      )!;
+      const resetBtn = form.querySelector<HTMLElement>("[data-form-reset]");
+      const isDemo = form.dataset.demo === "true";
+
+      /** Fields the user has already interacted with. */
+      const touched = new Set<string>();
+
+      const controlFor = (name: string) =>
+        form.querySelector<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(
+          `[name="${name}"]`
+        );
+
+      const errorFor = (name: string) =>
+        form.querySelector<HTMLElement>(`[data-error-for="${name}"]`);
+
+      /** Returns the first failing message for a field, or null. */
+      const validateField = (name: string): string | null => {
+        const el = controlFor(name);
+        if (!el) return null;
+        for (const rule of rules[name] ?? []) {
+          if (!rule.test(el.value, el)) return rule.message;
+        }
+        return null;
+      };
+
+      const render = (name: string) => {
+        const el = controlFor(name);
+        const box = errorFor(name);
+        if (!el || !box) return;
+        const msg = touched.has(name) ? validateField(name) : null;
+        if (msg) {
+          box.textContent = msg;
+          box.classList.add("is-shown");
+          el.setAttribute("aria-invalid", "true");
+        } else {
+          box.textContent = "";
+          box.classList.remove("is-shown");
+          el.removeAttribute("aria-invalid");
+        }
+      };
+
+      // Re-validate as the user corrects a field, but only after they've
+      // engaged with it — no scolding mid-first-keystroke.
+      Object.keys(rules).forEach((name) => {
+        const el = controlFor(name);
+        if (!el) return;
+        el.addEventListener("blur", () => {
+          touched.add(name);
+          render(name);
+        });
+        el.addEventListener("input", () => {
+          if (touched.has(name)) render(name);
+        });
+        el.addEventListener("change", () => {
+          touched.add(name);
+          render(name);
+        });
+      });
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        // Silently drop bot submissions that filled the honeypot.
+        const honey = form.querySelector<HTMLInputElement>('[name="website"]');
+        if (honey?.value) return;
+
+        // Validate everything and mark all fields as touched.
+        const failures: { name: string; message: string }[] = [];
+        Object.keys(rules).forEach((name) => {
+          touched.add(name);
+          const msg = validateField(name);
+          if (msg) failures.push({ name, message: msg });
+          render(name);
+        });
+
+        if (failures.length) {
+          const label = (n: string) =>
+            form
+              .querySelector(`label[for="${controlFor(n)?.id}"]`)
+              ?.textContent?.replace(/\*|\(required\)/g, "")
+              .trim() ?? n;
+
+          status.innerHTML =
+            `<strong>Please correct ${failures.length} ${
+              failures.length === 1 ? "field" : "fields"
+            } before submitting.</strong><ul>` +
+            failures
+              .map(
+                (f) =>
+                  `<li><a href="#${controlFor(f.name)?.id}">${label(
+                    f.name
+                  )}</a> — ${f.message}</li>`
+              )
+              .join("") +
+            "</ul>";
+
+          // Move focus to the first problem so keyboard users land in the right place.
+          controlFor(failures[0].name)?.focus();
+          return;
+        }
+
+        status.textContent = "";
+        form.setAttribute("data-submitting", "");
+
+        const data = new FormData(form);
+
+        try {
+          if (isDemo) {
+            /* ------------------------------------------------------------
+             * DEMO MODE — no backend endpoint is configured.
+             * No credentials are invented. To go live, set the `action` prop
+             * on <EnquiryForm /> to your real endpoint; this branch is then
+             * skipped and the form POSTs normally.
+             * ---------------------------------------------------------- */
+            console.info(
+              "[EnquiryForm] Demo mode — payload not sent:",
+              Object.fromEntries(data.entries())
+            );
+            await new Promise((r) => setTimeout(r, 600));
+            successText.textContent =
+              "Your enquiry passed validation. This form is not yet connected to a mail service, so nothing has been sent — please email or call us in the meantime.";
+          } else {
+            const res = await fetch(form.action, {
+              method: "POST",
+              body: data,
+              headers: { Accept: "application/json" },
+            });
+            if (!res.ok) throw new Error(`Request failed (${res.status})`);
+          }
+
+          form.setAttribute("data-submitted", "");
+          success.hidden = false;
+          success.focus();
+        } catch (err) {
+          status.innerHTML =
+            "<strong>We couldn't send your enquiry.</strong> Please try again, or contact us directly by email or phone.";
+          console.error("[EnquiryForm]", err);
+        } finally {
+          form.removeAttribute("data-submitting");
+        }
+      });
+
+      resetBtn?.addEventListener("click", () => {
+        form.reset();
+        touched.clear();
+        Object.keys(rules).forEach(render);
+        form.removeAttribute("data-submitted");
+        success.hidden = true;
+        status.textContent = "";
+        controlFor("name")?.focus();
+      });
+    });
+</script>

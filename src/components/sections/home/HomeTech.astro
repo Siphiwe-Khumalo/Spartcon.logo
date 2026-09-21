@@ -1,0 +1,343 @@
+---
+/**
+ * 07 — ENGINEERING / FACILITIES SECTION
+ *
+ * Visually distinct: the teal-keyed Spartcon Tech surface, with the parent
+ * relationship stated so the division never reads as a separate company.
+ */
+import Button from "@components/ui/Button.astro";
+import MediaFrame from "@components/ui/MediaFrame.astro";
+import Logo from "@components/brand/Logo.astro";
+import { techLinks } from "@data/navigation";
+import { techBrand, buildingSystems } from "@data/spartcon-tech";
+
+// Systems named on the homepage, as an at-a-glance index.
+const systemNames = buildingSystems.map((s) => s.title);
+
+// Section links, excluding the overview and contact entries.
+const sectionLinks = techLinks.filter(
+  (l) => l.href !== techBrand.basePath && !l.href.endsWith("/contact")
+);
+---
+
+<section class="tech surface-tech" aria-labelledby="tech-title">
+  <div class="tech__rule" aria-hidden="true"></div>
+
+  <div class="container">
+    <!-- ================================================== brand + heading -->
+    <div class="tech__top">
+      <div class="tech__brand">
+        <Logo variant="tech" layout="stacked" size="xl" invert />
+        <p class="tech__descriptor">{techBrand.descriptor}</p>
+      </div>
+
+      <div class="tech__heading">
+        <p class="eyebrow tech__eyebrow">
+          <span class="index-num">07</span>
+          <span>Facilities Engineering</span>
+        </p>
+
+        <h2 id="tech-title" class="t-display tech__title" data-reveal>
+          The building is finished. The engineering isn't.
+        </h2>
+
+        <p class="tech__lead" data-reveal style="--reveal-delay:120ms">
+          Spartcon Tech takes responsibility for the systems a facility runs on —
+          heating and cooling, power and standby power, water and wastewater,
+          fire and security, steam and heat exchange — across installation,
+          operation and maintenance.
+        </p>
+
+        <p class="tech__parent">{techBrand.parentStatement}</p>
+      </div>
+    </div>
+
+    <!-- ================================================== media + sections -->
+    <div class="tech__grid">
+      <div class="tech__media">
+        <MediaFrame
+          slug="mechanical-plant-room"
+          ratio="4/3"
+          sizes="(max-width: 1024px) 100vw, 48vw"
+          hoverZoom
+          caption="Building plant rooms concentrate a facility's engineering risk in one space."
+        />
+      </div>
+
+      <div class="tech__cols">
+        <!-- Section links -->
+        <nav class="tech__links" aria-label="Spartcon Tech sections">
+          <h3 class="tech__col-title">Capability areas</h3>
+          <ul role="list" data-reveal-group="60">
+            {
+              sectionLinks.map((link, i) => (
+                <li>
+                  <a href={link.href} class="tech__link">
+                    <span class="tech__link-index">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span class="tech__link-text">
+                      <span class="tech__link-label">{link.label}</span>
+                      <span class="tech__link-desc">{link.description}</span>
+                    </span>
+                    <span class="tech__link-arrow" aria-hidden="true">
+                      <svg viewBox="0 0 16 16" width="13" height="13">
+                        <path
+                          d="M1 8h13M9 3l5 5-5 5"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.6"
+                          stroke-linecap="square"
+                        />
+                      </svg>
+                    </span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+
+        <!-- Systems index: dense, technical, scannable -->
+        <div class="tech__systems">
+          <h3 class="tech__col-title">Building systems maintained</h3>
+          <ul class="tech__system-list" role="list">
+            {systemNames.map((name) => <li>{name}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="tech__cta" data-reveal>
+      <Button href={techBrand.basePath} variant="primary" size="lg" arrow>
+        Explore Spartcon Tech
+      </Button>
+      <Button href={`${techBrand.basePath}/contact`} variant="secondary" size="lg">
+        Contact Spartcon Tech
+      </Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .tech {
+    position: relative;
+    padding-block: var(--section-y-loose);
+    overflow: hidden;
+  }
+
+  /* Teal rule distinguishes the division from Spartcon's orange. */
+  .tech__rule {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: clamp(5rem, 18vw, 18rem);
+    height: 3px;
+    background: var(--teal-400);
+  }
+
+  /* ------------------------------------------------------------------ top */
+
+  .tech__top {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: clamp(2rem, 1.5rem + 4vw, 5rem);
+    align-items: start;
+    margin-bottom: clamp(3rem, 2rem + 4vw, 5.5rem);
+  }
+
+  .tech__brand {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-bottom: var(--s-5);
+    border-bottom: 1px solid var(--line-invert);
+  }
+
+  .tech__descriptor {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--teal-400);
+  }
+
+  .tech__eyebrow {
+    color: var(--navy-200);
+  }
+
+  .tech__eyebrow :global(.index-num) {
+    color: var(--teal-400);
+  }
+
+  .tech__eyebrow::before {
+    background: var(--teal-400);
+  }
+
+  .tech__title {
+    color: var(--white);
+    max-width: 22ch;
+  }
+
+  .tech__lead {
+    margin-top: var(--s-5);
+    font-size: var(--t-lead);
+    line-height: var(--lh-relaxed);
+    color: var(--navy-100);
+    max-width: 62ch;
+  }
+
+  .tech__parent {
+    margin-top: var(--s-5);
+    padding-left: var(--s-4);
+    border-left: 2px solid var(--teal-400);
+    font-size: var(--t-xs);
+    color: var(--navy-300);
+    max-width: 56ch;
+  }
+
+  /* ----------------------------------------------------------------- grid */
+
+  .tech__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+    gap: clamp(2rem, 1.5rem + 3vw, 4.5rem);
+    align-items: start;
+  }
+
+  .tech__cols {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2rem, 1.5rem + 2vw, 3rem);
+  }
+
+  .tech__col-title {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    font-weight: 500;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--navy-300);
+    padding-bottom: var(--s-3);
+    border-bottom: 1px solid var(--line-invert);
+    margin-bottom: var(--s-4);
+  }
+
+  /* ---------------------------------------------------------------- links */
+
+  .tech__links ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tech__link {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 0.85rem;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--line-invert);
+    transition: padding-left var(--d-mid) var(--e-out);
+  }
+
+  .tech__link:hover,
+  .tech__link:focus-visible {
+    padding-left: 0.6rem;
+  }
+
+  .tech__link-index {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    color: var(--teal-400);
+  }
+
+  .tech__link-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+
+  .tech__link-label {
+    font-size: var(--t-body);
+    font-weight: 500;
+    color: var(--white);
+  }
+
+  .tech__link-desc {
+    font-size: var(--t-xs);
+    color: var(--navy-300);
+    line-height: 1.5;
+  }
+
+  .tech__link-arrow {
+    color: var(--navy-300);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity var(--d-mid) var(--e-out),
+      transform var(--d-mid) var(--e-out);
+  }
+
+  .tech__link:hover .tech__link-arrow,
+  .tech__link:focus-visible .tech__link-arrow {
+    opacity: 1;
+    transform: translateX(0);
+    color: var(--teal-400);
+  }
+
+  /* -------------------------------------------------------------- systems */
+
+  .tech__system-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .tech__system-list li {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--navy-100);
+    border: 1px solid var(--line-invert-strong);
+    padding: 0.4rem 0.6rem;
+    transition: border-color var(--d-fast) var(--e-out),
+      color var(--d-fast) var(--e-out);
+  }
+
+  .tech__system-list li:hover {
+    border-color: var(--teal-400);
+    color: var(--white);
+  }
+
+  /* ------------------------------------------------------------------ cta */
+
+  .tech__cta {
+    margin-top: clamp(2.5rem, 2rem + 3vw, 4rem);
+    padding-top: var(--s-6);
+    border-top: 1px solid var(--line-invert);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+
+  /* ---------------------------------------------------------- breakpoints */
+
+  @media (max-width: 1024px) {
+    .tech__top,
+    .tech__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .tech__cta :global(.btn) {
+      width: 100%;
+    }
+  }
+</style>

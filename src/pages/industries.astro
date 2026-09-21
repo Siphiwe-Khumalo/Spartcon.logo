@@ -1,0 +1,317 @@
+---
+/**
+ * INDUSTRIES — the sectors Spartcon serves, across construction and facilities.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PageHero from "@components/ui/PageHero.astro";
+import Section from "@components/ui/Section.astro";
+import SectionHeader from "@components/ui/SectionHeader.astro";
+import MediaFrame from "@components/ui/MediaFrame.astro";
+import TypographicPanel from "@components/ui/TypographicPanel.astro";
+import Button from "@components/ui/Button.astro";
+import ContactCta from "@components/sections/ContactCta.astro";
+import { industries } from "@data/industries";
+import { clients, clientSectors } from "@data/credentials";
+---
+
+<BaseLayout
+  title="Industries | Sectors Spartcon Serves"
+  description="Spartcon serves government and state infrastructure, mining, commercial, industrial, residential, warehousing, hospitality, retail and medical sectors across South Africa."
+  ogImage="industries"
+>
+  <PageHero
+    eyebrow="Industries"
+    title="Nine sectors. One engineering standard."
+    lead="Our experience in multidisciplinary projects spans mining, residential, factories, corporate offices and warehouse spaces — with facilities engineering across government, commercial, hospitality, retail, industrial and medical estates."
+    image="ferrochrome-smelter-mpumalanga"
+    facts={[
+      { label: "Sectors served", value: "Nine" },
+      { label: "Construction", value: "Since 2018" },
+      { label: "Facilities engineering", value: "Since 2008" },
+    ]}
+  />
+
+  <!-- ============================================================= sectors -->
+  <Section spacing="tight" aria-labelledby="ind-intro-title">
+    <SectionHeader
+      index="01"
+      eyebrow="Sector coverage"
+      title="Where we work."
+      lead="Each sector below states which parts of the business serve it — construction, facilities engineering, or both."
+      layout="split"
+      id="ind-intro-title"
+    />
+  </Section>
+
+  {
+    industries.map((industry, i) => (
+      <Section
+        id={industry.slug}
+        surface={i % 2 === 1 ? "muted" : "default"}
+        spacing="tight"
+        aria-labelledby={`${industry.slug}-title`}
+      >
+        <article class:list={["ind", i % 2 === 1 && "ind--reverse"]}>
+          <div class="ind__media">
+            {industry.image ? (
+              <MediaFrame
+                slug={industry.image}
+                ratio="4/3"
+                sizes="(max-width: 900px) 100vw, 46vw"
+                hoverZoom
+              />
+            ) : (
+              <TypographicPanel
+                variant="spec"
+                ratio="4/3"
+                tone="navy"
+                title={industry.title}
+                caption="Sector photography to follow"
+                rows={[
+                  { label: "Sector", value: industry.index },
+                  { label: "Served by", value: industry.served.join(" · ") },
+                ]}
+              />
+            )}
+          </div>
+
+          <div class="ind__body">
+            <p class="ind__index">{industry.index}</p>
+            <h2 id={`${industry.slug}-title`} class="t-h1 ind__title" data-reveal>
+              {industry.title}
+            </h2>
+
+            <ul class="ind__tags" role="list">
+              {industry.served.map((s) => (
+                <li>{s}</li>
+              ))}
+            </ul>
+
+            <p class="ind__summary" data-reveal style="--reveal-delay:80ms">
+              {industry.summary}
+            </p>
+
+            <div class="ind__relevance" data-reveal style="--reveal-delay:140ms">
+              <h3 class="ind__relevance-label">What Spartcon brings</h3>
+              <p>{industry.relevance}</p>
+            </div>
+          </div>
+        </article>
+      </Section>
+    ))
+  }
+
+  <!-- ============================================================== clients -->
+  <Section surface="navy" aria-labelledby="clients-title">
+    <SectionHeader
+      index="02"
+      eyebrow="Clients"
+      title="Organisations named in our company profile."
+      lead="The following clients are listed in Spartcon's company profile. Logos are not displayed until written permission is confirmed for each mark."
+      layout="split"
+      id="clients-title"
+    />
+
+    <div class="clients">
+      {
+        clientSectors.map((sector) => {
+          const list = clients.filter((c) => c.sector === sector);
+          if (!list.length) return null;
+          return (
+            <div class="clients__group" data-reveal>
+              <h3 class="clients__sector">{sector}</h3>
+              <ul role="list">
+                {list.map((c) => (
+                  <li>{c.name}</li>
+                ))}
+              </ul>
+            </div>
+          );
+        })
+      }
+    </div>
+
+    <p class="clients__note">
+      Client names are reproduced from Spartcon's supplied company profile. All
+      third-party names and marks remain the property of their respective owners.
+    </p>
+  </Section>
+
+  <!-- ========================================================= cross-links -->
+  <Section surface="inset" spacing="tight">
+    <div class="xl">
+      <div>
+        <h2 class="t-h3">Looking for capability detail?</h2>
+        <p class="t-sm xl__text">
+          Sector pages describe where we work. The capabilities index describes
+          what we are equipped to do, organised by engineering discipline.
+        </p>
+      </div>
+      <div class="xl__actions">
+        <Button href="/capabilities" variant="secondary" arrow>Capabilities</Button>
+        <Button href="/services" variant="ghost" arrow>Services</Button>
+      </div>
+    </div>
+  </Section>
+
+  <ContactCta
+    title="Which sector are you in?"
+    lead="Tell us about the facility or project and we will tell you exactly which part of Spartcon should be in the room."
+    secondaryLabel="View Capabilities"
+    secondaryHref="/capabilities"
+  />
+</BaseLayout>
+
+<style>
+  /* ---------------------------------------------------------------- sectors */
+
+  .ind {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(2rem, 1.5rem + 4vw, 5rem);
+    align-items: center;
+  }
+
+  .ind--reverse .ind__media {
+    order: 2;
+  }
+
+  .ind__index {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: var(--tr-label);
+    color: var(--accent);
+    margin-bottom: var(--s-3);
+  }
+
+  .ind__title {
+    margin-bottom: var(--s-4);
+  }
+
+  .ind__tags {
+    margin: 0 0 var(--s-5);
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .ind__tags li {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid currentColor;
+    padding: 0.3rem 0.5rem;
+  }
+
+  .ind__summary {
+    font-size: var(--t-lead);
+    line-height: var(--lh-relaxed);
+    color: var(--fg-muted);
+    max-width: 52ch;
+  }
+
+  .ind__relevance {
+    margin-top: var(--s-6);
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--line);
+    max-width: 58ch;
+  }
+
+  .ind__relevance-label {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    font-weight: 500;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    margin-bottom: var(--s-3);
+  }
+
+  .ind__relevance p {
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    line-height: var(--lh-body);
+  }
+
+  /* ---------------------------------------------------------------- clients */
+
+  .clients {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: var(--s-6) var(--s-5);
+  }
+
+  .clients__sector {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    font-weight: 500;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--accent);
+    padding-bottom: var(--s-3);
+    border-bottom: 1px solid var(--line-invert);
+    margin-bottom: var(--s-4);
+  }
+
+  .clients__group ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .clients__group li {
+    font-size: var(--t-sm);
+    color: var(--navy-100);
+    line-height: 1.5;
+  }
+
+  .clients__note {
+    margin-top: var(--s-7);
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--line-invert);
+    font-size: var(--t-xs);
+    color: var(--navy-300);
+    max-width: 78ch;
+  }
+
+  /* ------------------------------------------------------------ cross-links */
+
+  .xl {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-5);
+  }
+
+  .xl__text {
+    margin-top: var(--s-3);
+    max-width: 56ch;
+  }
+
+  .xl__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    align-items: center;
+  }
+
+  /* ------------------------------------------------------------ breakpoints */
+
+  @media (max-width: 900px) {
+    .ind {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .ind--reverse .ind__media {
+      order: 0;
+    }
+  }
+</style>

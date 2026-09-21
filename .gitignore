@@ -1,0 +1,38 @@
+# Dependencies
+# Matched without a trailing slash so a node_modules symlink is ignored too.
+node_modules
+.pnpm-store/
+
+# Build output
+dist/
+.astro/
+.output/
+
+# Local review artefacts (screenshots, contact sheets, scratch data)
+scripts/review/
+scripts/pool.json
+scripts/candidates.json
+scripts/c1.json
+scripts/serve.log
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log*
+
+
+# Python bytecode from the image-sourcing scripts
+__pycache__/
+*.py[cod]

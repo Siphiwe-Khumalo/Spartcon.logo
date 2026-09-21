@@ -1,0 +1,106 @@
+---
+/**
+ * BASE LAYOUT — the document shell for every page.
+ *
+ * Owns: fonts, global CSS, SEO head, navigation, footer and the motion layer.
+ * Pages supply only their content and metadata.
+ */
+
+// Self-hosted fonts — no third-party requests and no render-blocking external
+// stylesheet. Only the weight axis is loaded for the variable families, and the
+// mono family is restricted to the Latin subset at the two weights in use, so
+// no Cyrillic/Greek/Vietnamese subsets ship.
+import "@fontsource-variable/archivo/wght.css";
+import "@fontsource-variable/inter/wght.css";
+import "@fontsource/ibm-plex-mono/latin-400.css";
+import "@fontsource/ibm-plex-mono/latin-500.css";
+// Poppins is loaded for the logotype only — a geometric-rounded sans that
+// matches the real Spartcon wordmark far better than the site's Archivo.
+import "@fontsource/poppins/latin-600.css";
+
+import "@styles/tokens.css";
+import "@styles/base.css";
+import "@styles/utilities.css";
+
+import SeoHead from "@components/seo/SeoHead.astro";
+import SiteNav from "@components/nav/SiteNav.astro";
+import SiteFooter from "@components/nav/SiteFooter.astro";
+import { company } from "@data/company";
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string | null;
+  ogType?: "website" | "article";
+  noindex?: boolean;
+  includeOrganization?: boolean;
+  /** Set on pages whose hero sits behind the nav, so the nav starts transparent. */
+  transparentNav?: boolean;
+  class?: string;
+}
+
+const {
+  title,
+  description,
+  ogImage = null,
+  ogType = "website",
+  noindex = false,
+  includeOrganization = false,
+  transparentNav = false,
+  class: className,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en-ZA" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <SeoHead
+      title={title}
+      description={description}
+      ogImage={ogImage}
+      ogType={ogType}
+      noindex={noindex}
+      includeOrganization={includeOrganization}
+    />
+
+    <meta name="theme-color" content="#0a1428" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Remove the no-js class as early as possible to avoid a flash. -->
+    <script is:inline>
+      document.documentElement.classList.remove("no-js");
+    </script>
+  </head>
+
+  <body data-transparent-nav={transparentNav ? "true" : undefined}>
+    <SiteNav />
+
+    <main id="main" class:list={["main", className]}>
+      <slot />
+    </main>
+
+    <SiteFooter />
+
+    <script>
+      import { initMotion } from "@/scripts/motion";
+      initMotion();
+    </script>
+  </body>
+</html>
+
+<style>
+  .main {
+    /* Pages with a transparent nav manage their own top spacing; everything
+       else relies on the page hero's padding. */
+    min-height: 50vh;
+  }
+</style>

@@ -1,0 +1,67 @@
+---
+/**
+ * Section wrapper — owns vertical rhythm, surface colour and the container.
+ * Keeps page templates free of layout plumbing.
+ */
+interface Props {
+  id?: string;
+  surface?: "default" | "muted" | "inset" | "navy" | "tech";
+  spacing?: "default" | "tight" | "loose" | "none";
+  /** Container width. "flush" opts out of the container entirely. */
+  width?: "default" | "narrow" | "text" | "flush";
+  /** Renders as <section> by default; use "div" when nesting. */
+  as?: "section" | "div" | "article";
+  /** Adds a hairline rule along the top edge. */
+  topRule?: boolean;
+  class?: string;
+  "aria-labelledby"?: string;
+  "aria-label"?: string;
+}
+
+const {
+  id,
+  surface = "default",
+  spacing = "default",
+  width = "default",
+  as: Tag = "section",
+  topRule = false,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const surfaceClass = {
+  default: null,
+  muted: "surface-muted",
+  inset: "surface-inset",
+  navy: "surface-navy",
+  tech: "surface-tech",
+}[surface];
+
+const spacingClass = {
+  default: "section",
+  tight: "section section--tight",
+  loose: "section section--loose",
+  none: null,
+}[spacing];
+
+const widthClass = {
+  default: "container",
+  narrow: "container container--narrow",
+  text: "container container--text",
+  flush: null,
+}[width];
+---
+
+<Tag
+  id={id}
+  class:list={[spacingClass, surfaceClass, topRule && "section--top-rule", className]}
+  {...rest}
+>
+  {widthClass ? <div class={widthClass}><slot /></div> : <slot />}
+</Tag>
+
+<style>
+  .section--top-rule {
+    border-top: 1px solid var(--line);
+  }
+</style>

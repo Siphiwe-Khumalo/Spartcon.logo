@@ -1,0 +1,152 @@
+/* ==========================================================================
+   SPARTCON DESIGN SYSTEM — TOKENS
+   Deep navy, Spartcon orange, white, light neutral grey.
+   No gradients. No neon. No glass. Geometry, line, whitespace, typography.
+   ========================================================================== */
+
+:root {
+  /* ---------------------------------------------------------------- palette */
+  --navy-900: #0a1428; /* deepest — hero grounds, footer */
+  --navy-800: #101d38;
+  --navy-700: #16294c;
+  --navy-600: #1d3663;
+  --navy-500: #24457c;
+  --navy-400: #4a6597;
+  --navy-300: #8194b5;
+  --navy-200: #b9c4d6;
+  --navy-100: #dde3ec;
+
+  --orange-600: #cc3c10;
+  --orange-500: #e8481a; /* Spartcon orange — primary accent */
+  --orange-400: #f26333;
+  --orange-100: #fde8e1;
+
+  --teal-500: #1d7a7a; /* Spartcon Tech secondary (from TECHNOLOGIES mark) */
+  --teal-400: #2a9d9d;
+  --teal-100: #e0f0f0;
+
+  --grey-50: #f7f8fa; /* light neutral grey surfaces */
+  --grey-100: #eef0f4;
+  --grey-200: #e2e5ea;
+  --grey-300: #cfd4dc;
+  --grey-400: #9aa2b0;
+  /* Darkened from #6b7484 so small subtle text clears WCAG AA (4.5:1) against
+     both the white and the light-grey surfaces. */
+  --grey-500: #5f6877;
+  --grey-600: #4c5462;
+  --white: #ffffff;
+
+  /* ------------------------------------------------------------- semantics */
+  --bg: var(--white);
+  --bg-muted: var(--grey-50);
+  --bg-inset: var(--grey-100);
+  --bg-invert: var(--navy-900);
+
+  --fg: var(--navy-900);
+  --fg-muted: var(--grey-600);
+  --fg-subtle: var(--grey-500);
+  --fg-invert: var(--white);
+  --fg-invert-muted: var(--navy-200);
+
+  --accent: var(--orange-500);
+  --accent-hover: var(--orange-600);
+  --accent-fg: var(--white);
+
+  --line: var(--grey-200);
+  --line-strong: var(--grey-300);
+  --line-invert: rgba(255, 255, 255, 0.16);
+  --line-invert-strong: rgba(255, 255, 255, 0.3);
+
+  --focus: var(--orange-500);
+  --focus-invert: #ffb39a;
+
+  --danger: #b4231a;
+  --success: #166e46;
+
+  /* ----------------------------------------------------------- typography */
+  --font-display: "Archivo Variable", "Archivo", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: "Inter Variable", "Inter", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Fluid scale. Clamped so large desktop stays composed and mobile stays legible. */
+  --t-hero: clamp(2.5rem, 1.5rem + 4.4vw, 5.25rem);
+  --t-display: clamp(2.25rem, 1.32rem + 4vw, 4.75rem);
+  --t-h1: clamp(2rem, 1.35rem + 2.8vw, 3.75rem);
+  --t-h2: clamp(1.625rem, 1.2rem + 1.85vw, 2.75rem);
+  --t-h3: clamp(1.25rem, 1.08rem + 0.75vw, 1.75rem);
+  --t-h4: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  --t-lead: clamp(1.0625rem, 1rem + 0.5vw, 1.375rem);
+  --t-body: 1rem;
+  --t-sm: 0.9375rem;
+  --t-xs: 0.8125rem;
+  --t-label: 0.75rem;
+
+  --lh-tight: 0.98;
+  --lh-snug: 1.1;
+  --lh-heading: 1.18;
+  --lh-body: 1.65;
+  --lh-relaxed: 1.75;
+
+  --tr-tight: -0.03em;
+  --tr-snug: -0.018em;
+  --tr-normal: 0;
+  --tr-label: 0.14em;
+  --tr-wide: 0.2em;
+
+  /* --------------------------------------------------------------- spacing */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 2.5rem;
+  --s-8: 3rem;
+  --s-9: 4rem;
+  --s-10: 5rem;
+  --s-11: 6.5rem;
+  --s-12: 8rem;
+
+  /* Section rhythm scales with viewport so long pages breathe on desktop. */
+  --section-y: clamp(4rem, 2.5rem + 6vw, 9rem);
+  --section-y-tight: clamp(3rem, 2rem + 4vw, 6rem);
+  --section-y-loose: clamp(5rem, 3rem + 8vw, 12rem);
+
+  /* ---------------------------------------------------------------- layout */
+  --container: 82.5rem; /* 1320px */
+  --container-narrow: 62rem;
+  --container-text: 46rem;
+  --gutter: clamp(1.25rem, 0.75rem + 2.5vw, 4rem);
+  --nav-h: 5rem;
+  --nav-h-scrolled: 4rem;
+
+  /* --------------------------------------------------- radii / elevation */
+  /* Deliberately minimal — geometry over softness. */
+  --r-none: 0;
+  --r-xs: 2px;
+  --r-sm: 3px;
+  --r-md: 4px;
+
+  --shadow-sm: 0 1px 2px rgba(10, 20, 40, 0.06);
+  --shadow-md: 0 6px 24px -8px rgba(10, 20, 40, 0.14);
+  --shadow-menu: 0 24px 48px -16px rgba(10, 20, 40, 0.22);
+
+  /* ---------------------------------------------------- motion (liquid UI) */
+  --e-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --e-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --e-soft: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --d-xfast: 120ms;
+  --d-fast: 200ms;
+  --d-mid: 340ms;
+  --d-slow: 560ms;
+  --d-reveal: 900ms;
+
+  --z-base: 1;
+  --z-raised: 10;
+  --z-nav: 100;
+  --z-menu: 110;
+  --z-overlay: 120;
+}

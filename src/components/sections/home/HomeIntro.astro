@@ -1,0 +1,173 @@
+---
+/**
+ * 02 — COMPANY INTRODUCTION
+ * Answers "who is Spartcon" immediately after the hero, using verified facts.
+ */
+import Section from "@components/ui/Section.astro";
+import Button from "@components/ui/Button.astro";
+import MediaFrame from "@components/ui/MediaFrame.astro";
+import { company } from "@data/company";
+---
+
+<Section id="introduction" aria-labelledby="intro-title">
+  <div class="intro">
+    <div class="intro__text">
+      <p class="eyebrow">
+        <span class="index-num">01</span>
+        <span>Who we are</span>
+      </p>
+
+      <h2 id="intro-title" class="t-display intro__title" data-reveal>
+        A 100% BEE South African construction and engineering company.
+      </h2>
+
+      <div class="intro__body" data-reveal style="--reveal-delay:120ms">
+        <p class="t-lead">
+          Spartcon (Pty) Ltd is a privately held corporation delivering building
+          construction, civil engineering and construction support — and
+          facilities engineering through Spartcon Tech.
+        </p>
+        <p>
+          We have provided engineering services throughout South Africa since
+          <strong>2008</strong>, and have been involved in the construction of
+          government, facilities and commercial infrastructure since
+          <strong>2018</strong>. We are experts in most typical building and civil
+          construction disciplines, having undertaken projects spanning buildings
+          to roads and water infrastructure.
+        </p>
+        <p>
+          Our experience in multidisciplinary projects encompasses mining,
+          residential, factories, corporate offices and warehouse spaces. Our
+          construction and engineering managers are registered with ECSA and
+          SACPCMP as professional engineers.
+        </p>
+        <p class="intro__quote">
+          We value sustainable and transparent relationships with our clients
+          over profit — and that is what sets us apart from our competitors.
+        </p>
+      </div>
+
+      <div class="intro__actions" data-reveal style="--reveal-delay:200ms">
+        <Button href="/about" variant="ghost" arrow>More about Spartcon</Button>
+      </div>
+    </div>
+
+    <aside class="intro__aside">
+      <MediaFrame
+        slug="structural-steel-welding"
+        ratio="4/5"
+        sizes="(max-width: 900px) 100vw, 38vw"
+        parallax
+        class="intro__media"
+      />
+
+      <!-- Verified facts only — no invented statistics. -->
+      <dl class="intro__facts" data-reveal style="--reveal-delay:160ms">
+        <div>
+          <dt>Ownership</dt>
+          <dd>100% BEE</dd>
+        </div>
+        <div>
+          <dt>CIDB grading</dt>
+          <dd>7ME · 7CE · 6GB PE</dd>
+        </div>
+        <div>
+          <dt>Registrations</dt>
+          <dd>NHBRC · ECSA · SACPCMP</dd>
+        </div>
+        <div>
+          <dt>Base</dt>
+          <dd>Midrand, {company.country}</dd>
+        </div>
+      </dl>
+    </aside>
+  </div>
+</Section>
+
+<style>
+  .intro {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(2.5rem, 1.5rem + 5vw, 7rem);
+    align-items: start;
+  }
+
+  .intro__title {
+    max-width: 24ch;
+    margin-bottom: var(--s-6);
+  }
+
+  .intro__body > * + * {
+    margin-top: var(--s-5);
+  }
+
+  .intro__body p:not(.t-lead):not(.intro__quote) {
+    color: var(--fg-muted);
+    max-width: 64ch;
+  }
+
+  .intro__quote {
+    font-family: var(--font-display);
+    font-size: var(--t-h4);
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: var(--tr-snug);
+    color: var(--fg);
+    max-width: 48ch;
+    padding-left: var(--s-4);
+    border-left: 2px solid var(--accent);
+  }
+
+  .intro__actions {
+    margin-top: var(--s-7);
+  }
+
+  .intro__aside {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-6);
+    padding-top: clamp(0rem, 3vw, 4rem);
+  }
+
+  .intro__facts {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--line);
+  }
+
+  .intro__facts > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--s-4);
+    padding: var(--s-4) 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .intro__facts dt {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    flex: none;
+  }
+
+  .intro__facts dd {
+    margin: 0;
+    font-size: var(--t-sm);
+    font-weight: 500;
+    text-align: right;
+  }
+
+  @media (max-width: 900px) {
+    .intro {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .intro__aside {
+      padding-top: 0;
+    }
+  }
+</style>

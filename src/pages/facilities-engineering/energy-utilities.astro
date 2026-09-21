@@ -1,0 +1,411 @@
+---
+/**
+ * SPARTCON TECH — ENERGY & UTILITIES
+ * Includes the Green Building Programme from the Facilities Engineering profile.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PageHero from "@components/ui/PageHero.astro";
+import Section from "@components/ui/Section.astro";
+import SectionHeader from "@components/ui/SectionHeader.astro";
+import MediaFrame from "@components/ui/MediaFrame.astro";
+import TypographicPanel from "@components/ui/TypographicPanel.astro";
+import Button from "@components/ui/Button.astro";
+import ContactCta from "@components/sections/ContactCta.astro";
+import {
+  techBrand,
+  energyUtilities,
+  greenBuildingProgramme,
+  buildingSystems,
+} from "@data/spartcon-tech";
+
+const standbySystem = buildingSystems.find((s) => s.slug === "standby-power")!;
+const electricalSystem = buildingSystems.find((s) => s.slug === "electrical")!;
+---
+
+<BaseLayout
+  title="Energy & Utilities | Spartcon Tech"
+  description="Energy audits, cost savings analysis, utility rebates, advanced metering, standby and solar generation, plus the Spartcon Green Building Programme supporting GBCSA certification."
+  ogImage="energy-utilities"
+>
+  <PageHero
+    eyebrow="Spartcon Tech"
+    tone="tech"
+    title="Energy & Utilities"
+    lead="Electric utilities are one of the single largest controllable operating expenses related to facilities and real estate portfolios."
+    image="solar-water-heating-south-africa"
+    breadcrumbs={[{ label: "Facilities Engineering", href: techBrand.basePath }]}
+    facts={[
+      { label: "Focus", value: "Audit · Reduce · Monitor" },
+      { label: "Green building", value: "GBCSA support" },
+      { label: "Generation", value: "Standby · Solar" },
+    ]}
+  />
+
+  <!-- ==================================================== energy management -->
+  <Section aria-labelledby="eu-intro-title">
+    <div class="split">
+      <div>
+        <SectionHeader
+          index="01"
+          eyebrow="Energy management"
+          title="Lower the cost, then keep it low."
+          id="eu-intro-title"
+        />
+      </div>
+
+      <div class="prose" data-reveal>
+        <p class="t-lead">
+          Spartcon has developed close ties with professional energy management
+          vendors who can lower your facility's energy costs and create more
+          efficient operational strategies.
+        </p>
+        <p>
+          Spartcon has developed and implemented an Energy Audit Programme,
+          currently in use across different benchmarks. Results of these audits
+          highlight opportunities for operational efficiency, and our management
+          team provides prioritised recommendations based on client input and
+          objectives.
+        </p>
+        <p>
+          We partner with other energy industry professionals to provide a
+          web-based tool to manage electricity costs — applying knowledge of
+          electric utilities, tariffs and rates, and advanced metering
+          technologies to develop an energy management solution.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- ======================================================= capability areas -->
+  <Section surface="muted" aria-labelledby="eu-areas-title">
+    <SectionHeader
+      index="02"
+      eyebrow="Capability"
+      title="Four areas of energy and utility work."
+      layout="split"
+      id="eu-areas-title"
+      lead="From audit and analysis through to the generation and metering infrastructure itself."
+    />
+
+    <div class="areas">
+      {
+        energyUtilities.map((area, i) => (
+          <article class:list={["area", i % 2 === 1 && "area--reverse"]}>
+            <div class="area__media">
+              {area.image ? (
+                <MediaFrame
+                  slug={area.image}
+                  ratio="4/3"
+                  sizes="(max-width: 900px) 100vw, 46vw"
+                  hoverZoom
+                />
+              ) : (
+                <TypographicPanel
+                  variant="index"
+                  index={area.index}
+                  ratio="4/3"
+                  tone="tech"
+                  title={area.title}
+                  caption="Metering and monitoring"
+                />
+              )}
+            </div>
+
+            <div class="area__body">
+              <p class="area__index">{area.index}</p>
+              <h3 class="t-h1 area__title" data-reveal>{area.title}</h3>
+              <p class="area__summary" data-reveal style="--reveal-delay:80ms">
+                {area.summary}
+              </p>
+              <ul class="area__points" role="list" data-reveal style="--reveal-delay:140ms">
+                {area.points.map((p) => <li>{p}</li>)}
+              </ul>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- ==================================================== power infrastructure -->
+  <Section surface="tech" aria-labelledby="eu-power-title">
+    <SectionHeader
+      index="03"
+      eyebrow="Power infrastructure"
+      title="Supply, distribution and resilience."
+      layout="split"
+      id="eu-power-title"
+      lead="Medium to low voltage electrical infrastructure and standby generation, designed and installed to SANS 10142-1 and OEM specification."
+    />
+
+    <div class="power">
+      <div class="power__col" data-reveal>
+        <h3 class="power__title">{electricalSystem.title}</h3>
+        <ul role="list">
+          {electricalSystem.scope.map((s) => <li>{s}</li>)}
+        </ul>
+      </div>
+
+      <div class="power__col" data-reveal style="--reveal-delay:120ms">
+        <h3 class="power__title">{standbySystem.title}</h3>
+        <ul role="list">
+          {standbySystem.scope.map((s) => <li>{s}</li>)}
+        </ul>
+      </div>
+    </div>
+
+    <div class="power__cta">
+      <Button href={`${techBrand.basePath}/building-systems#electrical`} variant="primary" arrow>
+        Electrical systems detail
+      </Button>
+    </div>
+  </Section>
+
+  <!-- ================================================= green building programme -->
+  <Section aria-labelledby="eu-green-title">
+    <div class="green">
+      <div class="green__body">
+        <p class="eyebrow">
+          <span class="index-num">04</span>
+          <span>Environmental responsibility</span>
+        </p>
+
+        <h2 id="eu-green-title" class="t-display green__title" data-reveal>
+          {greenBuildingProgramme.title}
+        </h2>
+
+        <p class="green__intro" data-reveal style="--reveal-delay:100ms">
+          {greenBuildingProgramme.intro}
+        </p>
+
+        <div class="prose green__prose" data-reveal style="--reveal-delay:160ms">
+          {greenBuildingProgramme.body.map((p) => <p>{p}</p>)}
+        </div>
+
+        <ul class="green__tags" role="list">
+          <li>GBCSA certification support</li>
+          <li>Energy and environmental design</li>
+          <li>Sustainable product selection</li>
+        </ul>
+      </div>
+
+      <MediaFrame
+        slug="wastewater-aeration-basins"
+        ratio="4/5"
+        sizes="(max-width: 1024px) 100vw, 36vw"
+        parallax
+        caption="Wastewater treatment infrastructure — utilities managed across supply, use and discharge."
+      />
+    </div>
+  </Section>
+
+  <ContactCta
+    tone="tech"
+    eyebrow="Contact Spartcon Tech"
+    title="What is your facility spending on energy?"
+    lead="An energy audit is the fastest way to find out — and to get a prioritised list of what to do about it."
+    primaryLabel="Request an energy audit"
+    primaryHref={`${techBrand.basePath}/contact`}
+    secondaryLabel="Building Systems"
+    secondaryHref={`${techBrand.basePath}/building-systems`}
+  />
+</BaseLayout>
+
+<style>
+  /* -------------------------------------------------------------- area rows */
+
+  .areas {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(3rem, 2.5rem + 4vw, 6rem);
+  }
+
+  .area {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(2rem, 1.5rem + 4vw, 5rem);
+    align-items: center;
+  }
+
+  .area--reverse .area__media {
+    order: 2;
+  }
+
+  .area__index {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: var(--tr-label);
+    color: var(--teal-500);
+    margin-bottom: var(--s-3);
+  }
+
+  .area__title {
+    margin-bottom: var(--s-4);
+  }
+
+  .area__summary {
+    font-size: var(--t-lead);
+    line-height: var(--lh-relaxed);
+    color: var(--fg-muted);
+    max-width: 52ch;
+  }
+
+  .area__points {
+    margin: var(--s-6) 0 0;
+    padding: var(--s-5) 0 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem var(--s-5);
+  }
+
+  .area__points li {
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    position: relative;
+    padding-left: 1.1rem;
+    line-height: 1.55;
+  }
+
+  .area__points li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 0.45rem;
+    height: 1px;
+    background: var(--teal-500);
+  }
+
+  /* ------------------------------------------------------------------ power */
+
+  .power {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--line-invert);
+    border: 1px solid var(--line-invert);
+  }
+
+  .power__col {
+    background: var(--navy-900);
+    padding: clamp(1.5rem, 1.25rem + 1.2vw, 2.25rem);
+  }
+
+  .power__title {
+    font-family: var(--font-display);
+    font-size: var(--t-h3);
+    font-weight: 600;
+    letter-spacing: var(--tr-snug);
+    color: var(--white);
+    padding-bottom: var(--s-3);
+    border-bottom: 1px solid var(--line-invert);
+    margin-bottom: var(--s-4);
+  }
+
+  .power__col ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .power__col li {
+    font-size: var(--t-sm);
+    color: var(--navy-100);
+    position: relative;
+    padding-left: 1.1rem;
+    line-height: 1.55;
+  }
+
+  .power__col li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 0.45rem;
+    height: 1px;
+    background: var(--teal-400);
+  }
+
+  .power__cta {
+    margin-top: var(--s-6);
+  }
+
+  /* ------------------------------------------------------------------ green */
+
+  .green {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(2rem, 1.5rem + 4vw, 5rem);
+    align-items: start;
+  }
+
+  .green__title {
+    max-width: 18ch;
+    margin-bottom: var(--s-5);
+  }
+
+  .green__intro {
+    font-size: var(--t-lead);
+    line-height: var(--lh-relaxed);
+    color: var(--fg);
+    max-width: 56ch;
+    padding-left: var(--s-4);
+    border-left: 2px solid var(--teal-500);
+  }
+
+  .green__prose {
+    margin-top: var(--s-6);
+  }
+
+  .green__tags {
+    margin: var(--s-6) 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .green__tags li {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--teal-500);
+    border: 1px solid currentColor;
+    padding: 0.4rem 0.6rem;
+  }
+
+  /* ------------------------------------------------------------ breakpoints */
+
+  @media (max-width: 1024px) {
+    .green {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 900px) {
+    .area {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .area--reverse .area__media {
+      order: 0;
+    }
+
+    .power {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 620px) {
+    .area__points {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

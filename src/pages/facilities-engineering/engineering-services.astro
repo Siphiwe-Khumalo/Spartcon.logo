@@ -1,0 +1,400 @@
+---
+/**
+ * SPARTCON TECH — ENGINEERING SERVICES
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PageHero from "@components/ui/PageHero.astro";
+import Section from "@components/ui/Section.astro";
+import SectionHeader from "@components/ui/SectionHeader.astro";
+import MediaFrame from "@components/ui/MediaFrame.astro";
+import TypographicPanel from "@components/ui/TypographicPanel.astro";
+import Button from "@components/ui/Button.astro";
+import ContactCta from "@components/sections/ContactCta.astro";
+import {
+  techBrand,
+  engineeringServices,
+  techTrades,
+  buildingSystems,
+} from "@data/spartcon-tech";
+import { standards } from "@data/company";
+
+const equipmentSystem = buildingSystems.find(
+  (s) => s.slug === "facilities-equipment"
+)!;
+---
+
+<BaseLayout
+  title="Engineering Services | Spartcon Tech"
+  description="Outsourced engineering and maintenance nationwide — design, build, install and commission mechanical, electrical, plumbing and utility systems, plus facilities equipment supply through OEMs."
+  ogImage="engineering-services"
+>
+  <PageHero
+    eyebrow="Spartcon Tech"
+    tone="tech"
+    title="Engineering Services"
+    lead="Outsourced engineering and maintenance solutions nationwide, serving either small facilities or large facilities portfolios."
+    image="mechanical-plant-room"
+    breadcrumbs={[{ label: "Facilities Engineering", href: techBrand.basePath }]}
+    facts={[
+      { label: "Coverage", value: "Nationwide" },
+      { label: "Registered", value: "ECSA" },
+      { label: "Since", value: "2008" },
+    ]}
+  />
+
+  <!-- ============================================================ overview -->
+  <Section aria-labelledby="es-intro-title">
+    <div class="split">
+      <div>
+        <SectionHeader
+          index="01"
+          eyebrow="Core expertise"
+          title="Engineering that understands operations."
+          id="es-intro-title"
+        />
+      </div>
+
+      <div class="prose" data-reveal>
+        <p class="t-lead">
+          The heart of our business lies in understanding the operation of
+          facilities, buildings and infrastructure — as well as how these
+          facilities support the people they accommodate.
+        </p>
+        <p>
+          Our range of expertise, depth of experience and broad geographic
+          coverage enable us to serve either small facilities or large facilities
+          portfolios. Our staff includes highly skilled professionals with
+          engineering expertise and indispensable technical know-how, who work
+          closely with your personnel to meet key facilities services objectives.
+        </p>
+        <p>
+          We have proven tools and processes to ensure standardised delivery of
+          services, and we leverage leading technology to automate virtually
+          every aspect of engineering and maintenance management.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- ============================================================= services -->
+  <Section surface="muted" aria-labelledby="es-services-title">
+    <SectionHeader
+      index="02"
+      eyebrow="Service areas"
+      title="What we deliver."
+      layout="split"
+      id="es-services-title"
+      lead="From installation and commissioning through to overhaul, performance recovery and deployed engineering labour."
+    />
+
+    <div class="svcs">
+      {
+        engineeringServices.map((svc, i) => (
+          <article class:list={["svc", i % 2 === 1 && "svc--reverse"]}>
+            <div class="svc__media">
+              {svc.image ? (
+                <MediaFrame
+                  slug={svc.image}
+                  ratio="4/3"
+                  sizes="(max-width: 900px) 100vw, 46vw"
+                  hoverZoom
+                />
+              ) : (
+                <TypographicPanel
+                  variant="index"
+                  index={svc.index}
+                  ratio="4/3"
+                  tone="tech"
+                  title={svc.title}
+                />
+              )}
+            </div>
+
+            <div class="svc__body">
+              <p class="svc__index">{svc.index}</p>
+              <h3 class="t-h1 svc__title" data-reveal>{svc.title}</h3>
+              <p class="svc__summary" data-reveal style="--reveal-delay:80ms">
+                {svc.summary}
+              </p>
+              <ul class="svc__points" role="list" data-reveal style="--reveal-delay:140ms">
+                {svc.points.map((p) => <li>{p}</li>)}
+              </ul>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- ==================================================== facilities equipment -->
+  <Section surface="tech" aria-labelledby="es-equip-title">
+    <SectionHeader
+      index="03"
+      eyebrow="Facilities equipment"
+      title="Laundry and kitchen equipment, OEM-backed."
+      lead={equipmentSystem.summary}
+      layout="split"
+      id="es-equip-title"
+    />
+
+    <ul class="equip" role="list" data-reveal-group="50">
+      {equipmentSystem.scope.map((item) => <li>{item}</li>)}
+    </ul>
+
+    <p class="equip__note">
+      We design horizontal cooking processes from culinary exploration to
+      crockery sanitation, to ensure continuity in process quality output —
+      incorporating conventional and steam cooking.
+    </p>
+  </Section>
+
+  <!-- ================================================================ trades -->
+  <Section aria-labelledby="es-trades-title">
+    <div class="split">
+      <div>
+        <SectionHeader
+          index="04"
+          eyebrow="Trades"
+          title="The trades we cover."
+          id="es-trades-title"
+        />
+        <p class="t-body">
+          Our trades experience spans general building maintenance practices
+          across every system a facility depends on.
+        </p>
+        <div class="trades__cta">
+          <Button href={`${techBrand.basePath}/building-systems`} variant="secondary" arrow>
+            Building Systems
+          </Button>
+        </div>
+      </div>
+
+      <ul class="trades" role="list" data-reveal-group="40">
+        {techTrades.map((t) => <li>{t}</li>)}
+      </ul>
+    </div>
+  </Section>
+
+  <!-- ============================================================= standards -->
+  <Section surface="navy" aria-labelledby="es-std-title">
+    <SectionHeader
+      index="05"
+      eyebrow="Standards"
+      title="Codes we design and install to."
+      layout="split"
+      id="es-std-title"
+      lead="Minimum engineering standards, OEM operational standards and OHSA regulations, applied consistently across every appointment."
+    />
+
+    <dl class="std" data-reveal-group="50">
+      {
+        standards.map((s) => (
+          <div class="std__row">
+            <dt>{s.code}</dt>
+            <dd>{s.scope}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </Section>
+
+  <ContactCta
+    tone="tech"
+    eyebrow="Contact Spartcon Tech"
+    title="Need engineering capacity?"
+    lead="Whether it is an installation, an overhaul, or deployed engineering labour alongside your own team, tell us what the facility needs."
+    primaryLabel="Contact Spartcon Tech"
+    primaryHref={`${techBrand.basePath}/contact`}
+    secondaryLabel="Maintenance & Operations"
+    secondaryHref={`${techBrand.basePath}/maintenance-operations`}
+  />
+</BaseLayout>
+
+<style>
+  /* ---------------------------------------------------------------- services */
+
+  .svcs {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(3rem, 2.5rem + 4vw, 6rem);
+  }
+
+  .svc {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(2rem, 1.5rem + 4vw, 5rem);
+    align-items: center;
+  }
+
+  .svc--reverse .svc__media {
+    order: 2;
+  }
+
+  .svc__index {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: var(--tr-label);
+    color: var(--teal-500);
+    margin-bottom: var(--s-3);
+  }
+
+  .svc__title {
+    margin-bottom: var(--s-4);
+  }
+
+  .svc__summary {
+    font-size: var(--t-lead);
+    line-height: var(--lh-relaxed);
+    color: var(--fg-muted);
+    max-width: 52ch;
+  }
+
+  .svc__points {
+    margin: var(--s-6) 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    border-top: 1px solid var(--line);
+    padding-top: var(--s-5);
+  }
+
+  .svc__points li {
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    position: relative;
+    padding-left: 1.1rem;
+  }
+
+  .svc__points li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 0.45rem;
+    height: 1px;
+    background: var(--teal-500);
+  }
+
+  /* --------------------------------------------------------------- equipment */
+
+  .equip {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    gap: 1px;
+    background: var(--line-invert);
+    border: 1px solid var(--line-invert);
+  }
+
+  .equip li {
+    background: var(--navy-900);
+    padding: var(--s-4) var(--s-5);
+    font-size: var(--t-sm);
+    color: var(--navy-100);
+    line-height: 1.6;
+    transition: background-color var(--d-mid) var(--e-out);
+  }
+
+  .equip li:hover {
+    background: var(--navy-700);
+  }
+
+  .equip__note {
+    margin-top: var(--s-6);
+    padding-left: var(--s-4);
+    border-left: 2px solid var(--teal-400);
+    font-size: var(--t-sm);
+    color: var(--navy-200);
+    max-width: 72ch;
+    line-height: var(--lh-body);
+  }
+
+  /* ------------------------------------------------------------------ trades */
+
+  .trades {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  .trades li {
+    background: var(--bg);
+    padding: var(--s-4) var(--s-5);
+    font-family: var(--font-display);
+    font-size: var(--t-h4);
+    font-weight: 500;
+    letter-spacing: var(--tr-snug);
+    transition: background-color var(--d-mid) var(--e-out),
+      color var(--d-mid) var(--e-out);
+  }
+
+  .trades li:hover {
+    background: var(--navy-900);
+    color: var(--white);
+  }
+
+  .trades__cta {
+    margin-top: var(--s-6);
+  }
+
+  /* --------------------------------------------------------------- standards */
+
+  .std {
+    margin: 0;
+    border-top: 1px solid var(--line-invert);
+  }
+
+  .std__row {
+    display: grid;
+    grid-template-columns: minmax(10rem, 16rem) minmax(0, 1fr);
+    gap: var(--s-5);
+    padding: var(--s-4) 0;
+    border-bottom: 1px solid var(--line-invert);
+  }
+
+  .std__row dt {
+    font-family: var(--font-mono);
+    font-size: var(--t-sm);
+    font-weight: 500;
+    color: var(--white);
+  }
+
+  .std__row dd {
+    margin: 0;
+    font-size: var(--t-sm);
+    color: var(--navy-200);
+    line-height: var(--lh-body);
+  }
+
+  /* ------------------------------------------------------------ breakpoints */
+
+  @media (max-width: 900px) {
+    .svc {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .svc--reverse .svc__media {
+      order: 0;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .trades {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .std__row {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.3rem;
+    }
+  }
+</style>

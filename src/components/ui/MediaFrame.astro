@@ -1,0 +1,198 @@
+---
+/**
+ * MEDIA FRAME — the single place photography enters the page.
+ *
+ * Handles Astro image optimisation (AVIF/WebP + responsive widths), the mask
+ * reveal, optional parallax, hover zoom and the attribution note.
+ *
+ * Honesty rules enforced here:
+ *   - Stock photography is never captioned as a Spartcon project.
+ *   - Every image carries its source attribution, surfaced on /image-credits
+ *     and optionally inline via `showCredit`.
+ *
+ * When the requested slug has no image, nothing is rendered — callers should
+ * fall back to <TypographicPanel> rather than a broken or fake image.
+ */
+import { Image } from "astro:assets";
+import { getImage } from "@lib/images";
+
+interface Props {
+  /** Image slug from src/data/image-credits.json. */
+  slug: string | null | undefined;
+  /** Overrides the registry alt text where context needs something specific. */
+  alt?: string;
+  /** Rendered width hint for srcset generation. */
+  widths?: number[];
+  sizes?: string;
+  /** Aspect ratio applied to the frame. */
+  ratio?: "16/9" | "4/3" | "3/2" | "1/1" | "4/5" | "3/4" | "21/9" | "auto";
+  /** Above-the-fold art should be eager + high priority. */
+  priority?: boolean;
+  /** Animate the frame open on scroll. */
+  reveal?: boolean;
+  /** Slow vertical drift as the section passes. */
+  parallax?: boolean;
+  /** Scale the photo slightly on hover. */
+  hoverZoom?: boolean;
+  /** Visible caption beneath the frame. */
+  caption?: string;
+  /** Show the photographer/licence line inline. */
+  showCredit?: boolean;
+  class?: string;
+  style?: string;
+}
+
+const {
+  slug,
+  alt,
+  widths = [480, 768, 1024, 1440, 1920],
+  sizes = "(max-width: 900px) 100vw, 50vw",
+  ratio = "3/2",
+  priority = false,
+  reveal = true,
+  parallax = false,
+  hoverZoom = false,
+  caption,
+  showCredit = false,
+  class: className,
+  style,
+} = Astro.props;
+
+const image = getImage(slug);
+---
+
+{
+  image && (
+    <figure
+      class:list={[
+        "media",
+        hoverZoom && "media--zoom",
+        parallax && "media--parallax",
+        className,
+      ]}
+      style={style}
+    >
+      <div
+        class="media__frame"
+        style={ratio !== "auto" ? `aspect-ratio:${ratio}` : undefined}
+        data-reveal={reveal ? "mask" : undefined}
+        data-parallax={parallax ? "0.06" : undefined}
+      >
+        <Image
+          src={image.src}
+          alt={alt ?? image.alt}
+          widths={widths}
+          sizes={sizes}
+          loading={priority ? "eager" : "lazy"}
+          decoding={priority ? "sync" : "async"}
+          fetchpriority={priority ? "high" : "auto"}
+          class="media__img"
+        />
+      </div>
+
+      {(caption || showCredit) && (
+        <figcaption class="media__caption">
+          {caption && <span class="media__caption-text">{caption}</span>}
+          {showCredit && (
+            <span class="media__credit">
+              {image.credit.author}
+              {" · "}
+              <a
+                href={image.credit.sourcePage}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+              >
+                {image.credit.source}
+              </a>
+              {" · "}
+              <a
+                href={image.credit.licenseUrl || image.credit.sourcePage}
+                target="_blank"
+                rel="noopener noreferrer nofollow license"
+              >
+                {image.credit.license}
+              </a>
+            </span>
+          )}
+        </figcaption>
+      )}
+    </figure>
+  )
+}
+
+<style>
+  .media {
+    margin: 0;
+    position: relative;
+  }
+
+  .media__frame {
+    position: relative;
+    overflow: hidden;
+    background: var(--grey-100);
+    /* Squared corners — geometry, not softness. */
+    border-radius: var(--r-none);
+  }
+
+  .media__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 900ms var(--e-out);
+  }
+
+  .media--zoom .media__frame:hover .media__img,
+  .media--zoom a:hover .media__img {
+    transform: scale(1.04);
+  }
+
+  /* Parallax offset is written to --py by the motion script. */
+  .media--parallax .media__img {
+    transform: translate3d(0, var(--py, 0), 0) scale(1.12);
+    transition: none;
+    will-change: transform;
+  }
+
+  .media__caption {
+    margin-top: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .media__caption-text {
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    line-height: 1.5;
+  }
+
+  .media__credit {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.03em;
+    color: var(--fg-subtle);
+    line-height: 1.5;
+  }
+
+  .media__credit a {
+    border-bottom: 1px solid var(--line-strong);
+    transition: color var(--d-fast) var(--e-out),
+      border-color var(--d-fast) var(--e-out);
+  }
+
+  .media__credit a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .media--parallax .media__img {
+      transform: none;
+    }
+
+    .media--zoom .media__frame:hover .media__img {
+      transform: none;
+    }
+  }
+</style>
