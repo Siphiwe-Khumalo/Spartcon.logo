@@ -70,6 +70,8 @@
   --bg: var(--navy-900);
   --bg-muted: var(--navy-800);
   --bg-inset: var(--navy-800);
+  /* The lighter orange reads better on navy — 5.78:1 vs 4.70:1. */
+  --accent-text: var(--orange-400);
   color: var(--white);
 }
 
@@ -94,6 +96,10 @@
   --line-strong: var(--line-invert-strong);
   --accent: var(--teal-400);
   --accent-hover: var(--teal-500);
+  /* teal-400 is 5.60:1 on navy, so it is safe for text here. Solid fills still
+     need the darker teal-500 to carry white text at 5.10:1. */
+  --accent-text: var(--teal-400);
+  --accent-solid: var(--teal-500);
   color: var(--white);
 }
 
@@ -129,7 +135,7 @@
   font-size: var(--t-label);
   font-weight: 500;
   letter-spacing: var(--tr-label);
-  color: var(--accent);
+  color: var(--accent-text);
   font-variant-numeric: tabular-nums;
 }
 
@@ -208,7 +214,7 @@
 }
 
 .accent {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 /* Measured prose blocks. */
@@ -248,7 +254,7 @@
 }
 
 .prose a:hover {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 /* ------------------------------------------------------------------ rules */

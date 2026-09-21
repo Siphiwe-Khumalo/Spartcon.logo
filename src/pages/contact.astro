@@ -341,7 +341,7 @@ const pathways = [
     font-family: var(--font-mono);
     font-size: 0.625rem;
     letter-spacing: 0.14em;
-    color: var(--accent);
+    color: var(--accent-text);
   }
 
   .path__title {
@@ -375,7 +375,7 @@ const pathways = [
   }
 
   .path__link:hover {
-    color: var(--accent);
+    color: var(--accent-text);
   }
 
   .path__link:hover svg {
@@ -403,6 +403,8 @@ const pathways = [
     justify-content: center;
     --fg: var(--white);
     --line-strong: var(--line-invert-strong);
+    /* Dark panel: the light orange reads at 5.78:1 here. */
+    --accent-text: var(--orange-400);
   }
 
   .map__label {
@@ -410,7 +412,7 @@ const pathways = [
     font-size: var(--t-label);
     letter-spacing: var(--tr-label);
     text-transform: uppercase;
-    color: var(--accent);
+    color: var(--accent-text);
   }
 
   .map__address {

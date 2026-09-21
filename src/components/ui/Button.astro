@@ -140,10 +140,12 @@ const isExternal = href?.startsWith("http");
 
   /* ----------------------------------------------------------- variants -- */
 
+  /* --accent-solid, not --accent: the brand orange only reaches 3.91:1 against
+     white label text, which fails AA. The darker orange gives 4.97:1. */
   .btn--primary {
-    background: var(--accent);
+    background: var(--accent-solid);
     color: var(--accent-fg);
-    border-color: var(--accent);
+    border-color: var(--accent-solid);
   }
 
   .btn--primary::after {

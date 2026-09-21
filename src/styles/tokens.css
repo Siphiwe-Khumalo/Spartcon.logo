@@ -48,9 +48,20 @@
   --fg-invert: var(--white);
   --fg-invert-muted: var(--navy-200);
 
+  /* Brand orange, used for rules, borders and large display type. At 3.91:1 on
+     white it satisfies the 3:1 requirement for large text and UI components,
+     but NOT the 4.5:1 needed for body-sized text. */
   --accent: var(--orange-500);
   --accent-hover: var(--orange-600);
   --accent-fg: var(--white);
+
+  /* Accent for TEXT at body size. 4.97:1 on white, 4.68:1 on grey-50.
+     Overridden on dark surfaces where the brighter orange reads better. */
+  --accent-text: var(--orange-600);
+
+  /* Accent for SOLID FILLS that carry white text — 4.97:1 with white. The
+     brighter orange-500 only reaches 3.91:1 and fails as a button ground. */
+  --accent-solid: var(--orange-600);
 
   --line: var(--grey-200);
   --line-strong: var(--grey-300);

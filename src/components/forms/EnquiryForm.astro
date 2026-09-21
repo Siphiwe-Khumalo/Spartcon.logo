@@ -22,8 +22,17 @@ import { services } from "@data/services";
 import { buildingSystems } from "@data/spartcon-tech";
 
 interface Props {
-  /** Distinguishes Spartcon from Spartcon Tech submissions. */
+  /**
+   * Distinguishes Spartcon from Spartcon Tech submissions, and selects the
+   * enquiry category list and accent colour. Does NOT change field contrast —
+   * use `onDark` for that.
+   */
   variant?: "spartcon" | "tech";
+  /**
+   * Set when the form sits on a navy or tech surface, so field borders, text
+   * and states invert. Leave false on light sections.
+   */
+  onDark?: boolean;
   /**
    * TO CONNECT A BACKEND: set this to your form endpoint (e.g. a Formspree /
    * Netlify Forms / custom API URL). When empty the form runs in demo mode.
@@ -35,6 +44,7 @@ interface Props {
 
 const {
   variant = "spartcon",
+  onDark = false,
   action = "",
   id = "enquiry",
   class: className,
@@ -61,7 +71,12 @@ const enquiryOptions = isTech
 ---
 
 <form
-  class:list={["form", isTech && "form--tech", className]}
+  class:list={[
+    "form",
+    isTech && "form--tech",
+    onDark && "form--on-dark",
+    className,
+  ]}
   id={id}
   method="POST"
   action={action || undefined}
@@ -156,8 +171,7 @@ const enquiryOptions = isTech
     <!-- ---------------------------------------------------------- service -->
     <div class="field field--full">
       <label class="field__label" for={`${id}-service`}>
-        {isTech ? "Service required" : "Service required"}
-        <span class="field__req" aria-hidden="true">*</span>
+        Service required <span class="field__req" aria-hidden="true">*</span>
         <span class="visually-hidden">(required)</span>
       </label>
       <div class="field__select-wrap">
@@ -209,7 +223,7 @@ const enquiryOptions = isTech
     </Button>
     <p class="form__note">
       Required fields are marked <span aria-hidden="true">*</span>. We use your
-      details only to respond to this enquiry — see our
+      details only to respond to this enquiry — see our{" "}
       <a href="/privacy-policy" class="link">Privacy Policy</a>.
     </p>
   </div>
@@ -283,7 +297,7 @@ const enquiryOptions = isTech
   }
 
   .field__req {
-    color: var(--accent);
+    color: var(--accent-text);
   }
 
   .field__input {
@@ -478,7 +492,7 @@ const enquiryOptions = isTech
   }
 
   .form__reset:hover {
-    color: var(--accent);
+    color: var(--accent-text);
   }
 
   /* Hide the fields once submitted successfully. */
@@ -487,71 +501,105 @@ const enquiryOptions = isTech
     display: none;
   }
 
-  /* -------------------------------------------------- on dark backgrounds */
+  /* ------------------------------------------- Spartcon Tech accent (light) */
+  /* `variant="tech"` only changes the ACCENT colour. It must stay usable on a
+     light background — the inverted treatment below is opt-in via `onDark`,
+     because coupling the two previously produced white fields on white. */
 
-  .form--tech {
-    --field-border: var(--line-invert-strong);
-    --field-bg: rgba(255, 255, 255, 0.04);
+  .form--tech .field__input:focus {
+    border-color: var(--teal-500);
+    box-shadow: inset 0 -2px 0 var(--teal-500);
   }
 
-  .form--tech .field__label {
+  .form--tech .field__req {
+    color: var(--teal-500);
+  }
+
+  .form--tech .form__success {
+    border-color: var(--teal-500);
+    background: #f1f8f8;
+  }
+
+  .form--tech .form__success-mark {
+    color: var(--teal-500);
+  }
+
+  .form--tech .form__reset {
+    border-color: var(--teal-500);
+  }
+
+  /* -------------------------------------------------- on dark backgrounds */
+  /* Opt in with `onDark` when the form is placed on a navy/tech surface. */
+
+  .form--on-dark {
+    --field-border: var(--line-invert-strong);
+    --field-bg: rgba(255, 255, 255, 0.06);
+  }
+
+  .form--on-dark .field__label {
     color: var(--navy-200);
   }
 
-  .form--tech .field__input {
+  .form--on-dark .field__input {
     color: var(--white);
   }
 
-  .form--tech .field__input option {
+  /* Native option lists render on the OS surface, so they need dark text. */
+  .form--on-dark .field__input option {
     color: var(--navy-900);
+    background: var(--white);
   }
 
-  .form--tech .field__input:focus {
+  .form--on-dark .field__input:focus {
     border-color: var(--teal-400);
     box-shadow: inset 0 -2px 0 var(--teal-400);
   }
 
-  .form--tech .field__hint {
+  .form--on-dark .field__hint {
     color: var(--navy-300);
   }
 
-  .form--tech .field__error {
+  .form--on-dark .field__error {
     color: #ff9c90;
   }
 
-  .form--tech .field__error::before {
+  .form--on-dark .field__error::before {
     background: #ff9c90;
   }
 
-  .form--tech .field__input[aria-invalid="true"] {
-    background: rgba(255, 80, 60, 0.1);
+  .form--on-dark .field__input[aria-invalid="true"] {
+    background: rgba(255, 80, 60, 0.12);
     border-color: #ff9c90;
   }
 
-  .form--tech .form__note {
+  .form--on-dark .form__note {
     color: var(--navy-300);
   }
 
-  .form--tech .form__status:not(:empty) {
-    background: rgba(255, 80, 60, 0.1);
+  .form--on-dark .form__status:not(:empty) {
+    background: rgba(255, 80, 60, 0.12);
     color: #ffd2cb;
     border-color: #ff9c90;
   }
 
-  .form--tech .form__success {
-    background: rgba(42, 157, 157, 0.12);
+  .form--on-dark .form__success {
+    background: rgba(42, 157, 157, 0.14);
     border-color: var(--teal-400);
   }
 
-  .form--tech .form__success-mark {
+  .form--on-dark .form__success-mark {
     color: var(--teal-400);
   }
 
-  .form--tech .form__success-text {
+  .form--on-dark .form__success-title {
+    color: var(--white);
+  }
+
+  .form--on-dark .form__success-text {
     color: var(--navy-100);
   }
 
-  .form--tech .form__reset {
+  .form--on-dark .form__reset {
     color: var(--white);
     border-color: var(--teal-400);
   }

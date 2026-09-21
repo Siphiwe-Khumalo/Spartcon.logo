@@ -130,7 +130,16 @@ for (const route of routes) {
     if (stuck) out.issues.push(`${stuck} reveal elements STRANDED after scroll`);
 
     // Colour contrast spot-check on body copy against its background.
-    const parseRgb = (s) => (s.match(/\d+/g) || []).slice(0, 3).map(Number);
+    const parseRgb = (s) => (s.match(/[\d.]+/g) || []).slice(0, 3).map(Number);
+
+    /** Parse to {r,g,b,a}; alpha defaults to 1. */
+    const parseRgba = (s) => {
+      const m = (s || "").match(/[\d.]+/g);
+      if (!m || m.length < 3) return null;
+      const [r, g, b, a] = m.map(Number);
+      return { r, g, b, a: a === undefined ? 1 : a };
+    };
+
     const lum = (rgb) => {
       const a = rgb.map((v) => {
         const c = v / 255;
@@ -138,40 +147,118 @@ for (const route of routes) {
       });
       return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
     };
+
+    /**
+     * Effective background behind an element, compositing translucent layers.
+     *
+     * Treating a translucent layer as opaque produces wildly wrong ratios — a
+     * 4%-white panel over navy would be read as near-white, flagging perfectly
+     * legible light text as a failure.
+     */
     const bgOf = (el) => {
+      const layers = [];
       let n = el;
       while (n && n !== document.documentElement) {
-        const bg = getComputedStyle(n).backgroundColor;
-        const rgb = parseRgb(bg);
-        if (rgb.length === 3 && !/rgba\(0, 0, 0, 0\)|transparent/.test(bg))
-          return rgb;
+        const c = parseRgba(getComputedStyle(n).backgroundColor);
+        if (c && c.a > 0) {
+          layers.push(c);
+          if (c.a >= 1) break;
+        }
         n = n.parentElement;
       }
-      return [255, 255, 255];
+      layers.push({ r: 255, g: 255, b: 255, a: 1 }); // page default
+
+      let out = layers[layers.length - 1];
+      for (let i = layers.length - 2; i >= 0; i--) {
+        const top = layers[i];
+        out = {
+          r: top.r * top.a + out.r * (1 - top.a),
+          g: top.g * top.a + out.g * (1 - top.a),
+          b: top.b * top.a + out.b * (1 - top.a),
+          a: 1,
+        };
+      }
+      return [out.r, out.g, out.b];
     };
-    const sample = [...document.querySelectorAll("p, li, dd, .t-body, .t-sm")]
-      .filter((e) => e.textContent.trim().length > 25)
-      .slice(0, 40);
+
+    /**
+     * The navigation deliberately sits transparent over a dark hero photograph
+     * with a scrim, so its white text has no CSS background to measure against.
+     * Contrast there is a function of the image, not the stylesheet — skip it
+     * rather than report a meaningless 1:1.
+     */
+    const overHeroPhoto = (el) => {
+      const nav = el.closest("[data-nav]");
+      return (
+        !!nav &&
+        nav.dataset.navTransparent === "true" &&
+        nav.dataset.navScrolled !== "true"
+      );
+    };
+    const contrast = (fg, bg) => {
+      const l1 = lum(fg);
+      const l2 = lum(bg);
+      return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+    };
+
+    /* Body copy, links and — critically — form controls. Links and inputs were
+       previously excluded, which let two invisible-text bugs ship: white
+       fields on a white section, and navy footer links on navy. */
+    const sample = [
+      ...document.querySelectorAll(
+        "p, li, dd, .t-body, .t-sm, a, input, select, textarea, address, button"
+      ),
+    ]
+      .filter((e) => {
+        if (e.type === "hidden") return false;
+        const r = e.getBoundingClientRect();
+        if (r.width < 4 || r.height < 4) return false;
+        const cs = getComputedStyle(e);
+        if (cs.visibility === "hidden" || cs.display === "none") return false;
+        // Form controls count even when empty — the user will type into them.
+        const isField = /^(INPUT|SELECT|TEXTAREA)$/.test(e.tagName);
+        return isField || e.textContent.trim().length > 2;
+      })
+      .slice(0, 160);
+
     for (const el of sample) {
+      if (overHeroPhoto(el)) continue;
+
       const cs = getComputedStyle(el);
       const fg = parseRgb(cs.color);
       if (fg.length !== 3) continue;
+
+      // bgOf composites the element's own background along with its ancestors,
+      // so translucent panels resolve correctly.
       const bg = bgOf(el);
-      const l1 = lum(fg);
-      const l2 = lum(bg);
-      const ratio =
-        (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+
+      const ratio = contrast(fg, bg);
       const size = parseFloat(cs.fontSize);
       const bold = Number(cs.fontWeight) >= 700;
       const large = size >= 24 || (size >= 18.66 && bold);
       const min = large ? 3 : 4.5;
+
       if (ratio < min) {
+        const label = /^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName)
+          ? `${el.tagName.toLowerCase()}[name=${el.name || "?"}]`
+          : `"${el.textContent.trim().slice(0, 30)}"`;
         out.issues.push(
-          `contrast ${ratio.toFixed(2)}:1 (needs ${min}) ${size}px "${el.textContent
-            .trim()
-            .slice(0, 32)}"`
+          `contrast ${ratio.toFixed(2)}:1 (needs ${min}) ${size}px ${el.tagName} ${label}`
         );
-        break; // one report per page is enough to flag it
+      }
+
+      // A control whose border is invisible against its surroundings gives the
+      // user no affordance, even if its text would be legible once typed.
+      if (/^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName)) {
+        const border = parseRgb(cs.borderTopColor);
+        const surround = bgOf(el.parentElement ?? el);
+        if (border.length === 3 && contrast(border, surround) < 1.25) {
+          out.issues.push(
+            `invisible field border on ${el.tagName.toLowerCase()}[name=${
+              el.name || "?"
+            }]`
+          );
+        }
       }
     }
 
