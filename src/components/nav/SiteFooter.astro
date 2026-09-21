@@ -143,6 +143,17 @@ const anyContact =
   .foot {
     background: var(--navy-900);
     color: var(--white);
+
+    /* Remap the semantic tokens for this dark surface. Without this, any
+       descendant relying on --fg (notably `a.link`, which PendingValue uses for
+       tel: and mailto: links) resolves to navy-900 and becomes invisible
+       against the navy footer. */
+    --fg: var(--white);
+    --fg-muted: var(--navy-200);
+    --fg-subtle: var(--navy-300);
+    --line: var(--line-invert);
+    --line-strong: var(--line-invert-strong);
+    --accent-text: var(--orange-400);
     padding-top: clamp(3.5rem, 2.5rem + 4vw, 6rem);
     padding-bottom: var(--s-7);
     /* Accent rule across the full width — a hard edge, not a glow. */
@@ -274,6 +285,18 @@ const anyContact =
     line-height: 1.55;
   }
 
+  /* The email addresses are longer than this column, so allow them to wrap
+     rather than overflow or get clipped. */
+  .foot__contact li {
+    min-width: 0;
+  }
+
+  .foot__contact a {
+    overflow-wrap: anywhere;
+    display: inline-block;
+    max-width: 100%;
+  }
+
   .foot__contact-note {
     margin-top: var(--s-4);
     font-size: var(--t-xs);
@@ -318,11 +341,12 @@ const anyContact =
     color: var(--white);
   }
 
+  /* navy-300, not navy-400: the latter is only 3.15:1 against the navy ground. */
   .foot__disclaimer {
     margin-top: var(--s-5);
     font-size: 0.6875rem;
     line-height: 1.7;
-    color: var(--navy-400);
+    color: var(--navy-300);
     max-width: 90ch;
   }
 

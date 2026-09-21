@@ -127,7 +127,7 @@ a.link {
 }
 
 a.link:hover {
-  color: var(--accent);
+  color: var(--accent-text);
   background-size: 100% 2px;
 }
 
