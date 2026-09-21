@@ -1,0 +1,375 @@
+---
+/**
+ * 05 — CAPABILITIES
+ *
+ * An interactive index rather than a wall of cards: hovering or focusing a
+ * capability group swaps the supporting photograph and detail panel. Works as a
+ * plain, readable list without JavaScript.
+ */
+import Section from "@components/ui/Section.astro";
+import Button from "@components/ui/Button.astro";
+import MediaFrame from "@components/ui/MediaFrame.astro";
+import TypographicPanel from "@components/ui/TypographicPanel.astro";
+import { capabilityGroups } from "@data/capabilities";
+---
+
+<Section id="capabilities" aria-labelledby="caps-title">
+  <header class="caps-head">
+    <div>
+      <p class="eyebrow">
+        <span class="index-num">05</span>
+        <span>Technical capability</span>
+      </p>
+      <h2 id="caps-title" class="t-display caps-head__title" data-reveal>
+        What we are equipped to do.
+      </h2>
+    </div>
+    <div class="caps-head__aside" data-reveal style="--reveal-delay:120ms">
+      <p class="t-lead">
+        Capability organised by discipline — structural and civil works, water
+        and wastewater, mechanical and thermal systems, electrical and energy,
+        life safety, maintenance, and delivery support.
+      </p>
+      <Button href="/capabilities" variant="ghost" arrow>
+        Full capability index
+      </Button>
+    </div>
+  </header>
+
+  <div class="caps" data-caps>
+    <!-- ------------------------------------------------------------- index -->
+    <ul class="caps__index" role="list">
+      {
+        capabilityGroups.map((group, i) => (
+          <li>
+            <a
+              href={`/capabilities#${group.id}`}
+              class:list={["caps__item", i === 0 && "is-active"]}
+              data-caps-trigger={group.id}
+              aria-describedby={`caps-detail-${group.id}`}
+            >
+              <span class="caps__item-index">{group.index}</span>
+              <span class="caps__item-body">
+                <span class="caps__item-title">{group.title}</span>
+                <span class="caps__item-summary">{group.summary}</span>
+              </span>
+              <span class="caps__item-owner">{group.owner}</span>
+              <span class="caps__item-arrow" aria-hidden="true">
+                <svg viewBox="0 0 16 16" width="14" height="14">
+                  <path
+                    d="M1 8h13M9 3l5 5-5 5"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="square"
+                  />
+                </svg>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <!-- ------------------------------------------------------------ detail -->
+    <div class="caps__stage">
+      {
+        capabilityGroups.map((group, i) => (
+          <div
+            class:list={["caps__panel", i === 0 && "is-active"]}
+            id={`caps-detail-${group.id}`}
+            data-caps-panel={group.id}
+          >
+            {group.image ? (
+              <MediaFrame
+                slug={group.image}
+                ratio="4/3"
+                sizes="(max-width: 1024px) 100vw, 40vw"
+                reveal={false}
+              />
+            ) : (
+              <TypographicPanel
+                variant="grid"
+                ratio="4/3"
+                title={group.title}
+                caption="Systems maintained to operate on demand"
+                tone="navy"
+              />
+            )}
+
+            <ul class="caps__items" role="list">
+              {group.items.map((item) => (
+                <li>
+                  <span class="caps__item-name">{item.title}</span>
+                  <span class="caps__item-detail">{item.detail}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</Section>
+
+<style>
+  /* --------------------------------------------------------------- header */
+
+  .caps-head {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: clamp(2rem, 1.5rem + 4vw, 5rem);
+    align-items: end;
+    margin-bottom: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+  }
+
+  .caps-head__title {
+    max-width: 18ch;
+  }
+
+  .caps-head__aside {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-5);
+    align-items: flex-start;
+  }
+
+  .caps-head__aside .t-lead {
+    max-width: 50ch;
+  }
+
+  /* ---------------------------------------------------------------- layout */
+
+  .caps {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(2rem, 1.5rem + 3vw, 4.5rem);
+    align-items: start;
+  }
+
+  /* ----------------------------------------------------------------- index */
+
+  .caps__index {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+
+  .caps__index li {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .caps__item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    gap: clamp(0.85rem, 2vw, 1.75rem);
+    align-items: center;
+    padding: clamp(1rem, 0.85rem + 0.6vw, 1.4rem) 0;
+    position: relative;
+    transition: padding-left var(--d-mid) var(--e-out);
+  }
+
+  /* Left indicator that grows on hover/active. */
+  .caps__item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.85rem;
+    bottom: 0.85rem;
+    width: 2px;
+    background: var(--accent);
+    transform: scaleY(0);
+    transform-origin: center;
+    transition: transform var(--d-mid) var(--e-out);
+  }
+
+  .caps__item:hover,
+  .caps__item:focus-visible,
+  .caps__item.is-active {
+    padding-left: var(--s-4);
+  }
+
+  .caps__item:hover::before,
+  .caps__item:focus-visible::before,
+  .caps__item.is-active::before {
+    transform: scaleY(1);
+  }
+
+  .caps__item-index {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: 0.12em;
+    color: var(--fg-subtle);
+    font-variant-numeric: tabular-nums;
+    transition: color var(--d-fast) var(--e-out);
+  }
+
+  .caps__item.is-active .caps__item-index,
+  .caps__item:hover .caps__item-index {
+    color: var(--accent);
+  }
+
+  .caps__item-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 0;
+  }
+
+  .caps__item-title {
+    font-family: var(--font-display);
+    font-size: var(--t-h3);
+    font-weight: 600;
+    letter-spacing: var(--tr-snug);
+    transition: color var(--d-fast) var(--e-out);
+  }
+
+  .caps__item:hover .caps__item-title,
+  .caps__item.is-active .caps__item-title {
+    color: var(--accent);
+  }
+
+  .caps__item-summary {
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    max-width: 52ch;
+  }
+
+  .caps__item-owner {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    border: 1px solid var(--line);
+    padding: 0.3rem 0.5rem;
+    white-space: nowrap;
+  }
+
+  .caps__item-arrow {
+    color: var(--fg-subtle);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity var(--d-mid) var(--e-out),
+      transform var(--d-mid) var(--e-out);
+  }
+
+  .caps__item:hover .caps__item-arrow,
+  .caps__item:focus-visible .caps__item-arrow {
+    opacity: 1;
+    transform: translateX(0);
+    color: var(--accent);
+  }
+
+  /* ----------------------------------------------------------------- stage */
+
+  .caps__stage {
+    position: sticky;
+    top: calc(var(--nav-h) + 2rem);
+  }
+
+  .caps__panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-5);
+  }
+
+  /* Only the active panel shows. Without JS the first is active and the rest
+     remain in the document for crawlers but out of flow. */
+  .caps__panel:not(.is-active) {
+    display: none;
+  }
+
+  .caps__items {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--line);
+  }
+
+  .caps__items li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .caps__item-name {
+    font-size: var(--t-sm);
+    font-weight: 600;
+  }
+
+  .caps__item-detail {
+    font-size: var(--t-xs);
+    color: var(--fg-muted);
+    line-height: 1.6;
+  }
+
+  /* ----------------------------------------------------------- breakpoints */
+
+  @media (max-width: 1024px) {
+    .caps-head,
+    .caps {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .caps-head {
+      align-items: start;
+    }
+
+    /* On narrow screens the swap interaction is not useful — the index becomes
+       a straightforward list of links and the stage is hidden. */
+    .caps__stage {
+      display: none;
+    }
+
+    .caps__item-summary {
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .caps__item {
+      grid-template-columns: auto minmax(0, 1fr);
+      row-gap: 0.6rem;
+    }
+
+    .caps__item-owner,
+    .caps__item-arrow {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  /**
+   * Swaps the detail panel as capability groups are hovered or focused.
+   * Progressive enhancement: the links still navigate to /capabilities#id.
+   */
+  const root = document.querySelector<HTMLElement>("[data-caps]");
+  if (root && matchMedia("(min-width: 1025px)").matches) {
+    const triggers = [
+      ...root.querySelectorAll<HTMLElement>("[data-caps-trigger]"),
+    ];
+    const panels = [...root.querySelectorAll<HTMLElement>("[data-caps-panel]")];
+
+    const activate = (id: string) => {
+      triggers.forEach((t) =>
+        t.classList.toggle("is-active", t.dataset.capsTrigger === id)
+      );
+      panels.forEach((p) =>
+        p.classList.toggle("is-active", p.dataset.capsPanel === id)
+      );
+    };
+
+    triggers.forEach((t) => {
+      const id = t.dataset.capsTrigger!;
+      t.addEventListener("mouseenter", () => activate(id));
+      t.addEventListener("focus", () => activate(id));
+    });
+  }
+</script>

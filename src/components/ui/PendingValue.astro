@@ -1,0 +1,81 @@
+---
+/**
+ * PENDING VALUE — renders a Verified<T> field.
+ *
+ * When the field is verified, the value is shown normally. When it is not, a
+ * neutral "to be confirmed" treatment is shown instead. This is the mechanism
+ * that stops the site from ever publishing an invented address, phone number,
+ * registration number or credential.
+ *
+ * Deliberately understated: it should read as a considered blank on a
+ * pre-launch site, not as a broken error state.
+ */
+import { isPublished, type Verified } from "@data/company";
+
+interface Props {
+  field: Verified<unknown>;
+  /** Renders the value as a mailto:/tel: link when verified. */
+  as?: "text" | "email" | "tel";
+  /** Overrides the placeholder copy. */
+  placeholder?: string;
+  class?: string;
+}
+
+const { field, as = "text", placeholder, class: className } = Astro.props;
+const published = isPublished(field);
+const value = published ? String(field.value) : null;
+
+const href =
+  as === "email" && value
+    ? `mailto:${value}`
+    : as === "tel" && value
+      ? `tel:${value.replace(/[^\d+]/g, "")}`
+      : null;
+---
+
+{
+  published ? (
+    href ? (
+      <a href={href} class:list={["pending__value", "link", className]}>
+        {value}
+      </a>
+    ) : (
+      <span class:list={["pending__value", className]}>{value}</span>
+    )
+  ) : (
+    <span class:list={["pending", className]} data-unverified>
+      <span class="pending__mark" aria-hidden="true"></span>
+      <span class="pending__text">
+        {placeholder ?? field.note ?? "To be confirmed"}
+      </span>
+    </span>
+  )
+}
+
+<style>
+  .pending {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: var(--t-xs);
+    letter-spacing: 0.04em;
+    color: var(--fg-subtle);
+  }
+
+  /* A small hollow square: clearly a placeholder, not a value. */
+  .pending__mark {
+    width: 0.5rem;
+    height: 0.5rem;
+    border: 1px solid var(--line-strong);
+    flex: none;
+  }
+
+  .pending__text {
+    text-transform: uppercase;
+  }
+
+  .pending__value {
+    font-variant-numeric: tabular-nums;
+  }
+</style>

@@ -1,0 +1,444 @@
+---
+/**
+ * PROJECTS & EXPERIENCE
+ *
+ * No named projects were supplied, so none are invented. The page presents the
+ * TYPES of work Spartcon undertakes, plus the sectors and clients its own
+ * profile names — and switches automatically to a project grid the moment a
+ * real project is added to projects.ts.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PageHero from "@components/ui/PageHero.astro";
+import Section from "@components/ui/Section.astro";
+import SectionHeader from "@components/ui/SectionHeader.astro";
+import MediaFrame from "@components/ui/MediaFrame.astro";
+import Button from "@components/ui/Button.astro";
+import EditorialNote from "@components/ui/EditorialNote.astro";
+import ContactCta from "@components/sections/ContactCta.astro";
+import { projects, hasProjects, experienceAreas } from "@data/projects";
+import { clients, clientSectors } from "@data/credentials";
+import { industries } from "@data/industries";
+---
+
+<BaseLayout
+  title="Projects & Experience | Spartcon"
+  description="Spartcon's experience spans structural building works, civil and infrastructure works, construction support and facilities engineering across mining, government, commercial, industrial and residential sectors."
+  ogImage="projects"
+>
+  <PageHero
+    eyebrow="Projects & Experience"
+    title="The work we take on."
+    lead="We have undertaken medium projects spanning buildings to roads and water infrastructure, with multidisciplinary experience across mining, residential, factories, corporate offices and warehouse spaces."
+    image="pipeline-construction-trench"
+    facts={[
+      { label: "Construction since", value: "2018" },
+      { label: "Facilities engineering since", value: "2008" },
+      { label: "Sectors", value: String(industries.length) },
+      { label: "Clients listed", value: String(clients.length) },
+    ]}
+  />
+
+  {
+    hasProjects ? (
+      /* ============================ real project grid ==================== */
+      <Section aria-labelledby="proj-title">
+        <SectionHeader
+          index="01"
+          eyebrow="Selected projects"
+          title="Project experience."
+          layout="split"
+          id="proj-title"
+        />
+
+        <ul class="pg" role="list">
+          {projects.map((p, i) => (
+            <li class="pg__cell" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              {p.image && p.imageIsOfThisProject && (
+                <MediaFrame slug={p.image} ratio="4/3" hoverZoom reveal={false} />
+              )}
+              <div class="pg__body">
+                <h3 class="pg__title">{p.title}</h3>
+                {p.client && <p class="pg__meta">{p.client}</p>}
+                {(p.location || p.period) && (
+                  <p class="pg__meta">
+                    {[p.location, p.period].filter(Boolean).join(" · ")}
+                  </p>
+                )}
+                <p class="pg__summary">{p.summary}</p>
+                {p.scope.length > 0 && (
+                  <ul class="pg__scope" role="list">
+                    {p.scope.map((s) => <li>{s}</li>)}
+                  </ul>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </Section>
+    ) : (
+      /* ======================= experience presentation =================== */
+      <>
+        <Section aria-labelledby="exp-title">
+          <SectionHeader
+            index="01"
+            eyebrow="Experience"
+            title="Four areas of delivery."
+            lead="Rather than list projects we cannot yet evidence in detail, these are the types of work Spartcon undertakes and the scope each typically involves."
+            layout="split"
+            id="exp-title"
+          />
+
+          <div class="areas">
+            {experienceAreas.map((area, i) => (
+              <article
+                class:list={["area", i % 2 === 1 && "area--reverse"]}
+              >
+                <div class="area__media">
+                  <MediaFrame
+                    slug={area.image}
+                    ratio="4/3"
+                    sizes="(max-width: 900px) 100vw, 48vw"
+                    hoverZoom
+                  />
+                </div>
+
+                <div class="area__body">
+                  <p class="area__index">{area.index}</p>
+                  <h3 class="t-h1 area__title" data-reveal>{area.title}</h3>
+                  <p class="area__summary" data-reveal style="--reveal-delay:80ms">
+                    {area.summary}
+                  </p>
+
+                  <div class="area__scope" data-reveal style="--reveal-delay:140ms">
+                    <h4 class="area__scope-label">Typical scope</h4>
+                    <ul role="list">
+                      {area.typicalScope.map((s) => <li>{s}</li>)}
+                    </ul>
+                  </div>
+
+                  {area.serviceLine !== "facilities-engineering" ? (
+                    <div class="area__cta">
+                      <Button
+                        href={`/services/${area.serviceLine}`}
+                        variant="ghost"
+                        arrow
+                      >
+                        Service detail
+                      </Button>
+                    </div>
+                  ) : (
+                    <div class="area__cta">
+                      <Button href="/facilities-engineering" variant="ghost" arrow>
+                        Spartcon Tech
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        </Section>
+
+        <!-- ================================ why no project list yet ======= -->
+        <Section surface="muted" aria-labelledby="proj-note-title">
+          <SectionHeader
+            index="02"
+            eyebrow="Project portfolio"
+            title="A note on this page."
+            layout="split"
+            id="proj-note-title"
+          />
+
+          <EditorialNote
+            tone="info"
+            title="Project detail is being compiled"
+          >
+            <p>
+              Spartcon's company profile confirms the sectors and the clients
+              listed below, but it does not include individual project records.
+              Rather than publish approximate or illustrative projects, this page
+              presents verified capability and experience only.
+            </p>
+            <p>
+              This page is already structured to carry a full project portfolio.
+              For each project we would need:
+            </p>
+            <ul>
+              <li>Project name and location</li>
+              <li>Client, and confirmation that the client may be named</li>
+              <li>Period and, where it may be published, contract value</li>
+              <li>Scope of works delivered by Spartcon</li>
+              <li>
+                Photography that genuinely shows the project, with permission to
+                publish it
+              </li>
+            </ul>
+            <p>
+              Once supplied, projects appear here automatically as a filterable
+              grid — no redesign required.
+            </p>
+          </EditorialNote>
+        </Section>
+      </>
+    )
+  }
+
+  <!-- =============================================================== clients -->
+  <Section surface="navy" aria-labelledby="proj-clients-title">
+    <SectionHeader
+      index={hasProjects ? "02" : "03"}
+      eyebrow="Clients"
+      title="Who we have worked with."
+      lead="Organisations named in Spartcon's company profile, across mining, public sector, industrial, education, health and commercial."
+      layout="split"
+      id="proj-clients-title"
+    />
+
+    <div class="clients">
+      {
+        clientSectors.map((sector) => {
+          const list = clients.filter((c) => c.sector === sector);
+          if (!list.length) return null;
+          return (
+            <div class="clients__group" data-reveal>
+              <h3 class="clients__sector">{sector}</h3>
+              <ul role="list">
+                {list.map((c) => <li>{c.name}</li>)}
+              </ul>
+            </div>
+          );
+        })
+      }
+    </div>
+
+    <p class="clients__note">
+      Client names are reproduced from Spartcon's supplied company profile.
+      Photography elsewhere on this website is contextual industry imagery and
+      does not depict Spartcon projects.
+    </p>
+  </Section>
+
+  <ContactCta
+    title="Ask us for references."
+    lead="We can talk you through directly relevant experience and put you in touch with references for the kind of work you are planning."
+    secondaryLabel="View Credentials"
+    secondaryHref="/credentials"
+  />
+</BaseLayout>
+
+<style>
+  /* -------------------------------------------------------- experience areas */
+
+  .areas {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(3.5rem, 2.5rem + 5vw, 7rem);
+  }
+
+  .area {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: clamp(2rem, 1.5rem + 4vw, 5rem);
+    align-items: center;
+  }
+
+  .area--reverse .area__media {
+    order: 2;
+  }
+
+  .area__index {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: var(--tr-label);
+    color: var(--accent);
+    margin-bottom: var(--s-3);
+  }
+
+  .area__title {
+    margin-bottom: var(--s-4);
+  }
+
+  .area__summary {
+    font-size: var(--t-lead);
+    line-height: var(--lh-relaxed);
+    color: var(--fg-muted);
+    max-width: 50ch;
+  }
+
+  .area__scope {
+    margin-top: var(--s-6);
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--line);
+  }
+
+  .area__scope-label {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    font-weight: 500;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    margin-bottom: var(--s-3);
+  }
+
+  .area__scope ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem var(--s-5);
+  }
+
+  .area__scope li {
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    position: relative;
+    padding-left: 1.1rem;
+  }
+
+  .area__scope li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 0.45rem;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .area__cta {
+    margin-top: var(--s-6);
+  }
+
+  /* ------------------------------------------------------------ project grid */
+
+  .pg {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  }
+
+  .pg__cell {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+  }
+
+  .pg__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .pg__title {
+    font-family: var(--font-display);
+    font-size: var(--t-h3);
+    font-weight: 600;
+    letter-spacing: var(--tr-snug);
+  }
+
+  .pg__meta {
+    font-family: var(--font-mono);
+    font-size: var(--t-xs);
+    color: var(--fg-subtle);
+  }
+
+  .pg__summary {
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    line-height: var(--lh-body);
+  }
+
+  .pg__scope {
+    margin: 0.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+    padding-top: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .pg__scope li {
+    font-size: var(--t-xs);
+    color: var(--fg-subtle);
+  }
+
+  /* ---------------------------------------------------------------- clients */
+
+  .clients {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: var(--s-6) var(--s-5);
+  }
+
+  .clients__sector {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    font-weight: 500;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--accent);
+    padding-bottom: var(--s-3);
+    border-bottom: 1px solid var(--line-invert);
+    margin-bottom: var(--s-4);
+  }
+
+  .clients__group ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .clients__group li {
+    font-size: var(--t-sm);
+    color: var(--navy-100);
+    line-height: 1.5;
+  }
+
+  .clients__note {
+    margin-top: var(--s-7);
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--line-invert);
+    font-size: var(--t-xs);
+    color: var(--navy-300);
+    max-width: 78ch;
+    line-height: 1.7;
+  }
+
+  /* ------------------------------------------------------------ breakpoints */
+
+  @media (max-width: 1024px) {
+    .pg {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 900px) {
+    .area {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .area--reverse .area__media {
+      order: 0;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .pg {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .area__scope ul {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

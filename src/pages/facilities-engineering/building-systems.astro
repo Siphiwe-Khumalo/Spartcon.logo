@@ -1,0 +1,369 @@
+---
+/**
+ * SPARTCON TECH — BUILDING SYSTEMS
+ * Every system family, grouped by category, with the standards each works to.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PageHero from "@components/ui/PageHero.astro";
+import Section from "@components/ui/Section.astro";
+import SectionHeader from "@components/ui/SectionHeader.astro";
+import MediaFrame from "@components/ui/MediaFrame.astro";
+import TypographicPanel from "@components/ui/TypographicPanel.astro";
+import Button from "@components/ui/Button.astro";
+import ContactCta from "@components/sections/ContactCta.astro";
+import {
+  techBrand,
+  buildingSystems,
+  systemCategories,
+} from "@data/spartcon-tech";
+
+const totalScope = buildingSystems.reduce((n, s) => n + s.scope.length, 0);
+---
+
+<BaseLayout
+  title="Building Systems | Spartcon Tech"
+  description="Spartcon Tech designs, installs and maintains HVAC, ventilation, refrigeration, electrical, standby power, water works, wastewater, steam, heating, heat exchange, fire and security systems."
+  ogImage="building-systems"
+>
+  <PageHero
+    eyebrow="Spartcon Tech"
+    tone="tech"
+    title="Building Systems"
+    lead="Twelve system families, designed, installed and maintained to the applicable SANS, OEM and OHSA standards."
+    image="air-cooled-liquid-chiller"
+    breadcrumbs={[{ label: "Facilities Engineering", href: techBrand.basePath }]}
+    facts={[
+      { label: "System families", value: String(buildingSystems.length) },
+      { label: "Scope items", value: String(totalScope) },
+      { label: "Division", value: "Spartcon Tech" },
+    ]}
+  />
+
+  <!-- ============================================================ jump index -->
+  <Section spacing="tight" surface="muted" aria-labelledby="bs-index-title">
+    <h2 id="bs-index-title" class="t-h3 jump__title">Jump to a system</h2>
+
+    <nav aria-label="Building systems">
+      {
+        systemCategories.map((cat) => {
+          const list = buildingSystems.filter((s) => s.category === cat);
+          if (!list.length) return null;
+          return (
+            <div class="jump__cat">
+              <h3 class="jump__cat-title">{cat}</h3>
+              <ul class="jump" role="list">
+                {list.map((s) => (
+                  <li>
+                    <a href={`#${s.slug}`} class="jump__link">
+                      <span class="jump__index">{s.index}</span>
+                      <span class="jump__label">{s.title}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })
+      }
+    </nav>
+  </Section>
+
+  <!-- ============================================================== systems -->
+  {
+    buildingSystems.map((system, i) => (
+      <Section
+        id={system.slug}
+        surface={i % 2 === 1 ? "default" : "muted"}
+        aria-labelledby={`${system.slug}-title`}
+      >
+        <article class:list={["sys", i % 2 === 1 && "sys--reverse"]}>
+          <div class="sys__media">
+            {system.image ? (
+              <MediaFrame
+                slug={system.image}
+                ratio="4/3"
+                sizes="(max-width: 1024px) 100vw, 42vw"
+                hoverZoom
+              />
+            ) : (
+              <TypographicPanel
+                variant="spec"
+                ratio="4/3"
+                tone="tech"
+                title={system.title}
+                caption="Equipment photography to follow"
+                rows={[
+                  { label: "System", value: system.index },
+                  { label: "Category", value: system.category },
+                  ...(system.standards
+                    ? [{ label: "Standards", value: system.standards[0] }]
+                    : []),
+                ]}
+              />
+            )}
+          </div>
+
+          <div class="sys__body">
+            <p class="eyebrow sys__eyebrow">
+              <span class="index-num">{system.index}</span>
+              <span>{system.category}</span>
+            </p>
+
+            <h2 id={`${system.slug}-title`} class="t-h1 sys__title" data-reveal>
+              {system.title}
+            </h2>
+
+            <p class="sys__summary" data-reveal style="--reveal-delay:80ms">
+              {system.summary}
+            </p>
+
+            {system.standards && (
+              <ul class="sys__standards" role="list">
+                {system.standards.map((std) => (
+                  <li>{std}</li>
+                ))}
+              </ul>
+            )}
+
+            <div class="sys__scope" data-reveal style="--reveal-delay:140ms">
+              <h3 class="sys__scope-label">Scope</h3>
+              <ul role="list">
+                {system.scope.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </article>
+      </Section>
+    ))
+  }
+
+  <!-- ========================================================== cross-links -->
+  <Section surface="navy" spacing="tight">
+    <div class="xl">
+      <div>
+        <h2 class="t-h3">How these systems are maintained</h2>
+        <p class="t-sm xl__text">
+          Every system above is covered by a predictive, pre-emptive and reactive
+          maintenance approach, recorded in either your existing maintenance
+          management system or a Spartcon turnkey system.
+        </p>
+      </div>
+      <div class="xl__actions">
+        <Button href={`${techBrand.basePath}/maintenance-operations`} variant="primary" arrow>
+          Maintenance &amp; Operations
+        </Button>
+        <Button
+          href={`${techBrand.basePath}/maintenance-management`}
+          variant="secondary"
+        >
+          Maintenance Management
+        </Button>
+      </div>
+    </div>
+  </Section>
+
+  <ContactCta
+    tone="tech"
+    eyebrow="Contact Spartcon Tech"
+    title="Which system is giving you trouble?"
+    lead="Tell us which systems are in scope and we will put the right engineering discipline in the conversation."
+    primaryLabel="Contact Spartcon Tech"
+    primaryHref={`${techBrand.basePath}/contact`}
+    secondaryLabel="Energy & Utilities"
+    secondaryHref={`${techBrand.basePath}/energy-utilities`}
+  />
+</BaseLayout>
+
+<style>
+  /* ------------------------------------------------------------- jump index */
+
+  .jump__title {
+    margin-bottom: var(--s-5);
+  }
+
+  .jump__cat + .jump__cat {
+    margin-top: var(--s-6);
+  }
+
+  .jump__cat-title {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    font-weight: 500;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--teal-500);
+    margin-bottom: var(--s-3);
+  }
+
+  .jump {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+
+  .jump__link {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.55rem 0.8rem;
+    background: var(--white);
+    border: 1px solid var(--line);
+    transition: border-color var(--d-fast) var(--e-out),
+      background-color var(--d-fast) var(--e-out);
+  }
+
+  .jump__link:hover {
+    border-color: var(--teal-500);
+  }
+
+  .jump__index {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    color: var(--teal-500);
+  }
+
+  .jump__label {
+    font-size: var(--t-sm);
+    font-weight: 500;
+  }
+
+  /* ----------------------------------------------------------------- system */
+
+  .sys {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(2rem, 1.5rem + 4vw, 5rem);
+    align-items: start;
+  }
+
+  .sys--reverse .sys__media {
+    order: 2;
+  }
+
+  .sys__eyebrow :global(.index-num) {
+    color: var(--teal-500);
+  }
+
+  .sys__eyebrow::before {
+    background: var(--teal-500);
+  }
+
+  .sys__title {
+    margin-bottom: var(--s-4);
+  }
+
+  .sys__summary {
+    font-size: var(--t-lead);
+    line-height: var(--lh-relaxed);
+    color: var(--fg-muted);
+    max-width: 52ch;
+  }
+
+  .sys__standards {
+    margin: var(--s-5) 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .sys__standards li {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--teal-500);
+    border: 1px solid currentColor;
+    padding: 0.3rem 0.5rem;
+  }
+
+  .sys__scope {
+    margin-top: var(--s-6);
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--line);
+  }
+
+  .sys__scope-label {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    font-weight: 500;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    margin-bottom: var(--s-4);
+  }
+
+  .sys__scope ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem var(--s-5);
+  }
+
+  .sys__scope li {
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    position: relative;
+    padding-left: 1.1rem;
+    line-height: 1.55;
+  }
+
+  .sys__scope li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 0.45rem;
+    height: 1px;
+    background: var(--teal-500);
+  }
+
+  /* ------------------------------------------------------------ cross-links */
+
+  .xl {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-5);
+  }
+
+  .xl__text {
+    margin-top: var(--s-3);
+    max-width: 60ch;
+  }
+
+  .xl__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    align-items: center;
+  }
+
+  /* ------------------------------------------------------------ breakpoints */
+
+  @media (max-width: 1024px) {
+    .sys {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .sys--reverse .sys__media {
+      order: 0;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .sys__scope ul {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

@@ -1,0 +1,10 @@
+# Spartcon (Pty) Ltd
+# Update the Sitemap host when the production domain is confirmed.
+
+User-agent: *
+Allow: /
+
+# Utility routes with no search value.
+Disallow: /thank-you
+
+Sitemap: https://www.spartcon.co.za/sitemap-index.xml

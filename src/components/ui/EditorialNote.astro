@@ -1,0 +1,119 @@
+---
+/**
+ * EDITORIAL NOTE — an on-page statement about information that is absent or
+ * awaiting verification.
+ *
+ * Used where a visitor would otherwise wonder why a section is thin: the
+ * projects page with no published projects, the credentials page before
+ * registrations are confirmed, the contact page before details are supplied.
+ *
+ * Being explicit is deliberate. It is more credible to a prospective client
+ * than filling the space with invented content, and it tells the Spartcon team
+ * exactly what to supply.
+ */
+interface Props {
+  title?: string;
+  /** "info" for neutral context, "pending" for awaiting-verification. */
+  tone?: "info" | "pending";
+  class?: string;
+}
+
+const { title, tone = "pending", class: className } = Astro.props;
+---
+
+<aside class:list={["note", `note--${tone}`, className]} data-reveal="fade">
+  <div class="note__bar" aria-hidden="true"></div>
+  <div class="note__body">
+    {
+      title && (
+        <p class="note__title">
+          {tone === "pending" && (
+            <span class="note__tag">Awaiting verification</span>
+          )}
+          {title}
+        </p>
+      )
+    }
+    <div class="note__content"><slot /></div>
+  </div>
+</aside>
+
+<style>
+  .note {
+    display: flex;
+    gap: 0;
+    background: var(--bg-muted);
+    border: 1px solid var(--line);
+  }
+
+  .note__bar {
+    width: 3px;
+    flex: none;
+    background: var(--accent);
+  }
+
+  .note--info .note__bar {
+    background: var(--navy-500);
+  }
+
+  .note__body {
+    padding: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .note__title {
+    font-family: var(--font-display);
+    font-size: var(--t-h4);
+    font-weight: 600;
+    letter-spacing: var(--tr-snug);
+    color: var(--fg);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .note__tag {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid currentColor;
+    padding: 0.25rem 0.5rem;
+    line-height: 1;
+    flex: none;
+  }
+
+  .note--info .note__tag {
+    color: var(--navy-500);
+  }
+
+  .note__content {
+    font-size: var(--t-sm);
+    line-height: var(--lh-body);
+    color: var(--fg-muted);
+  }
+
+  .note__content :global(p + p) {
+    margin-top: 0.75rem;
+  }
+
+  .note__content :global(ul) {
+    margin: 0.5rem 0 0;
+    padding-left: 1.1rem;
+  }
+
+  .note__content :global(li + li) {
+    margin-top: 0.3rem;
+  }
+
+  :global(.surface-navy) .note,
+  :global(.on-navy) .note {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--line-invert);
+  }
+</style>

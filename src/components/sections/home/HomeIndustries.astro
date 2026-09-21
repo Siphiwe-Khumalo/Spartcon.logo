@@ -1,0 +1,186 @@
+---
+/**
+ * 06 — INDUSTRIES
+ *
+ * Strong imagery and typography. Sectors without a genuine, relevant photograph
+ * render as a typographic tile rather than borrowing an unrelated image.
+ */
+import Section from "@components/ui/Section.astro";
+import Button from "@components/ui/Button.astro";
+import MediaFrame from "@components/ui/MediaFrame.astro";
+import TypographicPanel from "@components/ui/TypographicPanel.astro";
+import { industries } from "@data/industries";
+---
+
+<Section id="industries" surface="muted" aria-labelledby="industries-title">
+  <header class="ind-head">
+    <div>
+      <p class="eyebrow">
+        <span class="index-num">06</span>
+        <span>Sectors we serve</span>
+      </p>
+      <h2 id="industries-title" class="t-display ind-head__title" data-reveal>
+        Nine sectors. One standard.
+      </h2>
+    </div>
+    <Button href="/industries" variant="ghost" arrow>All industries</Button>
+  </header>
+
+  <ul class="ind" role="list">
+    {
+      industries.map((industry, i) => (
+        <li
+          class:list={["ind__cell", i === 0 && "ind__cell--wide"]}
+          data-reveal
+          style={`--reveal-delay:${Math.min(i * 60, 360)}ms`}
+        >
+          <a href={`/industries#${industry.slug}`} class="ind__link">
+            <span class="ind__media">
+              {industry.image ? (
+                <MediaFrame
+                  slug={industry.image}
+                  ratio={i === 0 ? "16/9" : "4/3"}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  reveal={false}
+                  hoverZoom
+                />
+              ) : (
+                <TypographicPanel
+                  variant="index"
+                  index={industry.index}
+                  ratio={i === 0 ? "16/9" : "4/3"}
+                  caption="Imagery to follow"
+                  tone="navy"
+                />
+              )}
+            </span>
+
+            <span class="ind__body">
+              <span class="ind__index">{industry.index}</span>
+              <span class="ind__title">{industry.title}</span>
+              <span class="ind__summary">{industry.summary}</span>
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<style>
+  .ind-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--s-5);
+    margin-bottom: clamp(2.5rem, 2rem + 3vw, 4rem);
+  }
+
+  .ind-head__title {
+    max-width: 20ch;
+  }
+
+  /* --------------------------------------------------------------- grid --- */
+
+  .ind {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1.25rem, 1rem + 1.5vw, 2.5rem);
+  }
+
+  /* The first sector spans two columns for editorial weight. */
+  .ind__cell--wide {
+    grid-column: span 2;
+  }
+
+  .ind__link {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+    height: 100%;
+  }
+
+  .ind__media {
+    display: block;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Accent rule that draws across the image on hover. */
+  .ind__media::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--d-slow) var(--e-out);
+    z-index: 2;
+  }
+
+  .ind__link:hover .ind__media::after,
+  .ind__link:focus-visible .ind__media::after {
+    transform: scaleX(1);
+  }
+
+  .ind__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .ind__index {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+  }
+
+  .ind__title {
+    font-family: var(--font-display);
+    font-size: var(--t-h3);
+    font-weight: 600;
+    letter-spacing: var(--tr-snug);
+    transition: color var(--d-fast) var(--e-out);
+  }
+
+  .ind__link:hover .ind__title {
+    color: var(--accent);
+  }
+
+  .ind__summary {
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    line-height: var(--lh-body);
+    max-width: 46ch;
+  }
+
+  /* --------------------------------------------------------- breakpoints -- */
+
+  @media (max-width: 1024px) {
+    .ind {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ind__cell--wide {
+      grid-column: span 2;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .ind {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .ind__cell--wide {
+      grid-column: span 1;
+    }
+  }
+</style>

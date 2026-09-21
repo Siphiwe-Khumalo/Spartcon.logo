@@ -1,0 +1,416 @@
+---
+/**
+ * SPARTCON TECH — MAINTENANCE & OPERATIONS
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PageHero from "@components/ui/PageHero.astro";
+import Section from "@components/ui/Section.astro";
+import SectionHeader from "@components/ui/SectionHeader.astro";
+import MediaFrame from "@components/ui/MediaFrame.astro";
+import Accordion from "@components/ui/Accordion.astro";
+import Button from "@components/ui/Button.astro";
+import ContactCta from "@components/sections/ContactCta.astro";
+import {
+  techBrand,
+  maintenanceDisciplines,
+  techOperatingStrategy,
+  maintenanceManagement,
+} from "@data/spartcon-tech";
+
+const accordionItems = maintenanceDisciplines.map((d) => ({
+  id: d.id,
+  index: d.index,
+  title: d.title,
+  summary: d.summary,
+  body: d.detail,
+  points: [d.appliesWhen],
+}));
+
+/** The three maintenance approaches, highlighted as the core model. */
+const core = maintenanceDisciplines.slice(0, 3);
+---
+
+<BaseLayout
+  title="Maintenance & Operations | Spartcon Tech"
+  description="Predictive, pre-emptive and reactive maintenance, life cycle management, asset preservation, engineering labour, operations platform and technical support from Spartcon Tech."
+  ogImage="maintenance-operations"
+>
+  <PageHero
+    eyebrow="Spartcon Tech"
+    tone="tech"
+    title="Maintenance & Operations"
+    lead="Solutions oriented towards maximising asset lifecycle value and ensuring continuous optimum performance of infrastructure, facilities and buildings."
+    image="centrifugal-pump"
+    breadcrumbs={[{ label: "Facilities Engineering", href: techBrand.basePath }]}
+    facts={[
+      { label: "Approaches", value: "Predictive · Pre-emptive · Reactive" },
+      { label: "Disciplines", value: String(maintenanceDisciplines.length) },
+      { label: "Since", value: "2008" },
+    ]}
+  />
+
+  <!-- ====================================================== the three models -->
+  <Section aria-labelledby="mo-core-title">
+    <SectionHeader
+      index="01"
+      eyebrow="The maintenance model"
+      title="Three approaches, applied where each is economic."
+      lead="Maintenance is driven through a predictive, pre-emptive and reactive approach, ensuring services can be provided with minimum disruption while assuring the comfort of our clients."
+      layout="split"
+      id="mo-core-title"
+    />
+
+    <ol class="core" role="list" data-reveal-group="80">
+      {
+        core.map((d) => (
+          <li class="core__item">
+            <span class="core__index">{d.index}</span>
+            <h3 class="core__title">{d.title}</h3>
+            <p class="core__summary">{d.summary}</p>
+            <p class="core__detail">{d.detail}</p>
+            <p class="core__applies">
+              <span class="core__applies-label">Applies when</span>
+              {d.appliesWhen}
+            </p>
+          </li>
+        ))
+      }
+    </ol>
+  </Section>
+
+  <!-- ==================================================== operating strategy -->
+  <Section surface="tech" aria-labelledby="mo-os-title">
+    <div class="split">
+      <div>
+        <SectionHeader
+          index="02"
+          eyebrow="Operating strategy"
+          title="What we optimise for."
+          id="mo-os-title"
+        />
+        <p class="t-body os__intro">
+          Our primary objective is to maximise operational efficiency, while
+          balancing the need for environmental comfort, cost effectiveness,
+          convenience and safety.
+        </p>
+      </div>
+
+      <ol class="os" role="list" data-reveal-group="70">
+        {
+          techOperatingStrategy.map((item, i) => (
+            <li>
+              <span class="os__index">{String(i + 1).padStart(2, "0")}</span>
+              <span class="os__label">{item}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <!-- platform components -->
+    <div class="plat">
+      <h3 class="plat__title">Operations platform components</h3>
+      <dl class="plat__list" data-reveal-group="60">
+        {
+          maintenanceManagement.platformComponents.map((c) => (
+            <div class="plat__row">
+              <dt>{c.title}</dt>
+              <dd>{c.detail}</dd>
+            </div>
+          ))
+        }
+      </dl>
+      <p class="plat__note">
+        Spartcon applies professional engineering management concepts and
+        contemporary scientific methodologies to achieve these objectives and
+        meet the needs of occupants. The operations platform is tailored to each
+        facility, but built on these consistent components.
+      </p>
+    </div>
+  </Section>
+
+  <!-- ========================================================== disciplines -->
+  <Section surface="muted" aria-labelledby="mo-disc-title">
+    <SectionHeader
+      index="03"
+      eyebrow="Full capability"
+      title="Maintenance and operations disciplines."
+      lead="Expand each discipline for what it covers and when it is the right approach."
+      layout="split"
+      id="mo-disc-title"
+    />
+
+    <div class="disc">
+      <Accordion items={accordionItems} defaultOpen={0} />
+
+      <div class="disc__media">
+        <MediaFrame
+          slug="heat-exchanger-bundle-extraction"
+          ratio="3/4"
+          sizes="(max-width: 1024px) 100vw, 32vw"
+          parallax
+          caption="Heat exchanger tube bundles withdrawn for inspection and cleaning — performance recovery rather than replacement."
+        />
+      </div>
+    </div>
+  </Section>
+
+  <!-- ============================================================ people -->
+  <Section aria-labelledby="mo-people-title">
+    <div class="split">
+      <div>
+        <SectionHeader
+          index="04"
+          eyebrow="People"
+          title="Who does the work."
+          id="mo-people-title"
+        />
+      </div>
+
+      <div class="prose" data-reveal>
+        <p class="t-lead">
+          We employ engineers, technologists, technicians and skilled trades
+          professionals performing services, with regional offices located
+          strategically throughout the country.
+        </p>
+        <p>
+          Our engineering managers are registered with ECSA as professional
+          engineers and have served as facilities engineers, bringing the
+          hands-on experience essential to keeping facilities operating at
+          optimum efficiency.
+        </p>
+        <p>
+          Spartcon provides a systematic and consistent Quality Control
+          Programme, tailored to the project or maintenance needs and continually
+          updated to meet client needs. The onsite project manager ensures that
+          all facets of the programme are followed and maintained.
+        </p>
+        <div class="people__cta">
+          <Button href="/credentials" variant="secondary" arrow>
+            Credentials &amp; registrations
+          </Button>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <ContactCta
+    tone="tech"
+    eyebrow="Contact Spartcon Tech"
+    title="Let's talk about your maintenance regime."
+    lead="Whether you need a full outsourced maintenance contract or engineering labour alongside your own team, the starting point is understanding the estate."
+    primaryLabel="Contact Spartcon Tech"
+    primaryHref={`${techBrand.basePath}/contact`}
+    secondaryLabel="Maintenance Management"
+    secondaryHref={`${techBrand.basePath}/maintenance-management`}
+  />
+</BaseLayout>
+
+<style>
+  /* --------------------------------------------------------- core approaches */
+
+  .core {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  .core__item {
+    background: var(--bg);
+    padding: clamp(1.5rem, 1.25rem + 1.2vw, 2.25rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    position: relative;
+  }
+
+  .core__item::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--teal-500);
+  }
+
+  .core__index {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    color: var(--teal-500);
+  }
+
+  .core__title {
+    font-family: var(--font-display);
+    font-size: var(--t-h3);
+    font-weight: 600;
+    letter-spacing: var(--tr-snug);
+  }
+
+  .core__summary {
+    font-size: var(--t-sm);
+    font-weight: 600;
+  }
+
+  .core__detail {
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    line-height: var(--lh-body);
+  }
+
+  .core__applies {
+    margin-top: auto;
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--line);
+    font-size: var(--t-xs);
+    color: var(--fg-subtle);
+    line-height: 1.65;
+  }
+
+  .core__applies-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--teal-500);
+    margin-bottom: 0.35rem;
+  }
+
+  /* ------------------------------------------------------ operating strategy */
+
+  .os__intro {
+    margin-top: var(--s-5);
+    max-width: 48ch;
+  }
+
+  .os {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line-invert);
+  }
+
+  .os li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-5);
+    padding: var(--s-4) 0;
+    border-bottom: 1px solid var(--line-invert);
+  }
+
+  .os__index {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: 0.12em;
+    color: var(--teal-400);
+  }
+
+  .os__label {
+    font-family: var(--font-display);
+    font-size: var(--t-h3);
+    font-weight: 500;
+    letter-spacing: var(--tr-snug);
+    color: var(--white);
+  }
+
+  /* --------------------------------------------------------------- platform */
+
+  .plat {
+    margin-top: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+    padding-top: var(--s-7);
+    border-top: 1px solid var(--line-invert);
+  }
+
+  .plat__title {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    font-weight: 500;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--teal-400);
+    margin-bottom: var(--s-5);
+  }
+
+  .plat__list {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--line-invert);
+    border: 1px solid var(--line-invert);
+  }
+
+  .plat__row {
+    background: var(--navy-900);
+    padding: var(--s-5);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .plat__row dt {
+    font-family: var(--font-display);
+    font-size: var(--t-h4);
+    font-weight: 600;
+    letter-spacing: var(--tr-snug);
+    color: var(--white);
+  }
+
+  .plat__row dd {
+    margin: 0;
+    font-size: var(--t-xs);
+    color: var(--navy-200);
+    line-height: 1.7;
+  }
+
+  .plat__note {
+    margin-top: var(--s-5);
+    font-size: var(--t-sm);
+    color: var(--navy-200);
+    max-width: 80ch;
+    line-height: var(--lh-body);
+  }
+
+  /* ------------------------------------------------------------- disciplines */
+
+  .disc {
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+    gap: clamp(2rem, 1.5rem + 4vw, 5rem);
+    align-items: start;
+  }
+
+  .disc__media {
+    position: sticky;
+    top: calc(var(--nav-h) + 2rem);
+  }
+
+  .people__cta {
+    margin-top: var(--s-6);
+  }
+
+  /* ------------------------------------------------------------ breakpoints */
+
+  @media (max-width: 1024px) {
+    .core,
+    .plat__list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .disc {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .disc__media {
+      position: static;
+      max-width: 24rem;
+    }
+  }
+</style>

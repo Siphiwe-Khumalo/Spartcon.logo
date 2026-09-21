@@ -1,0 +1,609 @@
+---
+/**
+ * ABOUT — company overview, history, approach, engineering capability.
+ * All content from the supplied company profiles.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PageHero from "@components/ui/PageHero.astro";
+import Section from "@components/ui/Section.astro";
+import SectionHeader from "@components/ui/SectionHeader.astro";
+import MediaFrame from "@components/ui/MediaFrame.astro";
+import Button from "@components/ui/Button.astro";
+import ContactCta from "@components/sections/ContactCta.astro";
+import Logo from "@components/brand/Logo.astro";
+import { company, approachPillars, standards } from "@data/company";
+import { engineeringDisciplines, operatingStrategy } from "@data/services";
+import { techBrand, techMarketSegments } from "@data/spartcon-tech";
+import { verifiedCredentials } from "@data/credentials";
+
+const disciplineGroups = Object.values(engineeringDisciplines);
+---
+
+<BaseLayout
+  title="About Spartcon | Construction & Engineering Company, South Africa"
+  description="Spartcon (Pty) Ltd is a 100% BEE South African construction and engineering company, delivering building construction, civil engineering and facilities engineering since 2008."
+  ogImage="about"
+>
+  <PageHero
+    eyebrow="About"
+    title="A construction and engineering company built around engineering judgement."
+    lead={company.shortDescription}
+    image="structural-steel-welding"
+    facts={[
+      { label: "Ownership", value: "100% BEE" },
+      { label: "Facilities engineering since", value: "2008" },
+      { label: "Construction since", value: "2018" },
+      { label: "CIDB grading", value: "7ME · 7CE · 6GB PE" },
+    ]}
+  />
+
+  <!-- ===================================================== company background -->
+  <Section id="background" aria-labelledby="background-title">
+    <div class="split">
+      <div>
+        <SectionHeader
+          index="01"
+          eyebrow="Company background"
+          title="Two histories, one organisation."
+          id="background-title"
+        />
+      </div>
+
+      <div class="prose" data-reveal>
+        <p class="t-lead">
+          Spartcon (Pty) Ltd is a 100% BEE privately held corporation operating
+          within the Spartan Group of companies.
+        </p>
+        <p>
+          Our facilities engineering business has provided engineering services
+          to clients throughout South Africa <strong>since 2008</strong>, under
+          the Spartan Group. Our construction business has been involved in the
+          construction of government, facilities and commercial infrastructure
+          <strong>since 2018</strong>.
+        </p>
+        <p>
+          We are experts in most typical building and civil construction
+          disciplines, having undertaken medium projects spanning from buildings
+          to roads and water infrastructure. Our experience in multidisciplinary
+          projects encompasses industries including mining, residential,
+          factories, corporate offices and warehouse spaces.
+        </p>
+        <p>
+          We offer professional service from professional engineering and project
+          management throughout the construction value chain. Our diversified
+          construction skills lead us as a noteworthy construction company that
+          is rooted in its reputation of work.
+        </p>
+        <p>
+          <strong>
+            We value sustainable and transparent relationships with our clients
+            over profit — and that is what sets us apart from our competitors.
+          </strong>
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- ======================================================= two businesses -->
+  <Section surface="muted" aria-labelledby="businesses-title">
+    <SectionHeader
+      index="02"
+      eyebrow="How we are organised"
+      title="Construction and engineering, under one roof."
+      lead="Spartcon delivers the structure and the infrastructure. Spartcon Tech keeps the engineering inside it working. Both sit inside the same company, with the same engineering standards."
+      layout="split"
+      id="businesses-title"
+    />
+
+    <div class="orgs">
+      <article class="org" data-reveal>
+        <div class="org__head">
+          <Logo variant="spartcon" layout="inline" size="md" />
+        </div>
+        <h3 class="t-h3 org__title">Construction &amp; Civil</h3>
+        <p class="org__text">
+          Design, planning and construction of building and civil infrastructure
+          projects — foundations, concrete and masonry structures, structural
+          steel, bulk earthworks, roads, water and sanitation.
+        </p>
+        <ul class="org__list" role="list">
+          <li>Building Construction</li>
+          <li>Civil Engineering</li>
+          <li>Construction Support Solutions</li>
+        </ul>
+        <Button href="/services" variant="ghost" arrow>Our services</Button>
+      </article>
+
+      <article class="org org--tech" data-reveal style="--reveal-delay:120ms">
+        <div class="org__head">
+          <Logo variant="tech" layout="inline" size="md" invert />
+        </div>
+        <h3 class="t-h3 org__title">{techBrand.descriptor}</h3>
+        <p class="org__text">
+          Outsourced engineering and maintenance solutions nationwide, serving
+          small facilities and large facilities portfolios — HVAC, electrical,
+          water, steam, fire, security and facilities equipment.
+        </p>
+        <ul class="org__list" role="list">
+          {techMarketSegments.slice(0, 4).map((s) => <li>{s}</li>)}
+          <li>and more</li>
+        </ul>
+        <Button href={techBrand.basePath} variant="ghost" arrow>
+          Spartcon Tech
+        </Button>
+      </article>
+    </div>
+
+    <p class="orgs__note" data-reveal>{techBrand.parentStatement}</p>
+  </Section>
+
+  <!-- =================================================== engineering capability -->
+  <Section id="engineering" aria-labelledby="engineering-title">
+    <SectionHeader
+      index="03"
+      eyebrow="Engineering"
+      title="Professional engineers, across every discipline the work touches."
+      lead="Our professional engineers bring industry expertise harvested from hands-on experience across different engineering disciplines. Our astuteness is evident in our analytical thinking, problem solving and practical methodologies."
+      layout="split"
+      id="engineering-title"
+    />
+
+    <div class="eng">
+      <div class="eng__cols">
+        {
+          disciplineGroups.map((group, i) => (
+            <div class="eng__group" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              <h3 class="eng__group-title">{group.title}</h3>
+              <ul role="list">
+                {group.items.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+
+      <MediaFrame
+        slug="mechanical-plant-room"
+        ratio="4/5"
+        sizes="(max-width: 1024px) 100vw, 34vw"
+        parallax
+        class="eng__media"
+      />
+    </div>
+  </Section>
+
+  <!-- ====================================================== operating strategy -->
+  <Section surface="navy" aria-labelledby="strategy-title">
+    <div class="split">
+      <div>
+        <SectionHeader
+          index="04"
+          eyebrow="Operating strategy"
+          title="What we manage, deliberately."
+          id="strategy-title"
+        />
+        <p class="t-body strategy__note">
+          Spartcon provides a systematic and consistent Quality Control
+          Programme (QCP), tailored to each project's needs and continually
+          updated. The onsite project manager ensures all facets of the
+          programme are followed and maintained.
+        </p>
+      </div>
+
+      <ol class="strategy" role="list" data-reveal-group="60">
+        {
+          operatingStrategy.map((item, i) => (
+            <li class="strategy__item">
+              <span class="strategy__index">{String(i + 1).padStart(2, "0")}</span>
+              <span class="strategy__label">{item}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </Section>
+
+  <!-- ============================================================== approach -->
+  <Section surface="muted" id="approach" aria-labelledby="approach-title">
+    <SectionHeader
+      index="05"
+      eyebrow="Our approach"
+      title="Partnership from capital planning through to completion."
+      lead="We endeavour to understand your infrastructure needs to help you mitigate risk and achieve your objectives. We challenge you to give us the opportunity to prove that construction is not a capital-intensive nightmare."
+      layout="split"
+      id="approach-title"
+    />
+
+    <ol class="pillars" role="list">
+      {
+        approachPillars.map((p, i) => (
+          <li class="pillar" data-reveal style={`--reveal-delay:${Math.min(i * 70, 420)}ms`}>
+            <span class="pillar__index">{String(i + 1).padStart(2, "0")}</span>
+            <h3 class="pillar__title">{p.title}</h3>
+            <p class="pillar__text">{p.summary}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </Section>
+
+  <!-- ============================================================= standards -->
+  <Section aria-labelledby="standards-title">
+    <div class="split">
+      <div>
+        <SectionHeader
+          index="06"
+          eyebrow="Standards"
+          title="The codes we work to."
+          id="standards-title"
+        />
+        <p class="t-body">
+          Our operations platform is built on minimum engineering standards, OEM
+          operational standards and OHSA regulations — applied consistently
+          across construction and facilities engineering.
+        </p>
+        <div class="standards__cta">
+          <Button href="/credentials" variant="secondary" arrow>
+            Credentials &amp; registrations
+          </Button>
+        </div>
+      </div>
+
+      <dl class="standards" data-reveal-group="50">
+        {
+          standards.map((s) => (
+            <div class="standards__row">
+              <dt>{s.code}</dt>
+              <dd>{s.scope}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </Section>
+
+  <!-- =========================================================== credentials -->
+  <Section surface="inset" spacing="tight" aria-labelledby="creds-strip-title">
+    <h2 id="creds-strip-title" class="visually-hidden">
+      Registrations and credentials
+    </h2>
+    <ul class="creds-strip" role="list" data-reveal-group="60">
+      {
+        verifiedCredentials.map((c) => (
+          <li class="creds-strip__item">
+            <span class="creds-strip__body">{c.body}</span>
+            <span class="creds-strip__title">{c.title}</span>
+            {c.grade && <span class="creds-strip__grade">{c.grade}</span>}
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <ContactCta
+    title="Let's build what comes next."
+    lead="Whether the work starts with ground, structure or the systems inside a building, the conversation starts the same way."
+  />
+</BaseLayout>
+
+<style>
+  /* ------------------------------------------------------- two organisations */
+
+  .orgs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+  }
+
+  .org {
+    background: var(--white);
+    border: 1px solid var(--line);
+    padding: clamp(1.5rem, 1.25rem + 1.5vw, 2.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+    align-items: flex-start;
+  }
+
+  .org--tech {
+    background: var(--navy-900);
+    border-color: var(--navy-900);
+    color: var(--white);
+    --fg: var(--white);
+    --fg-muted: var(--navy-200);
+    --accent: var(--teal-400);
+  }
+
+  .org--tech .org__title {
+    color: var(--white);
+  }
+
+  .org__head {
+    padding-bottom: var(--s-4);
+    border-bottom: 1px solid var(--line);
+    width: 100%;
+  }
+
+  .org--tech .org__head {
+    border-color: var(--line-invert);
+  }
+
+  .org__title {
+    margin: 0;
+  }
+
+  .org__text {
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    line-height: var(--lh-body);
+  }
+
+  .org__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .org__list li {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border: 1px solid var(--line-strong);
+    padding: 0.35rem 0.55rem;
+    color: var(--fg-muted);
+  }
+
+  .org--tech .org__list li {
+    border-color: var(--line-invert-strong);
+    color: var(--navy-100);
+  }
+
+  .orgs__note {
+    margin-top: var(--s-6);
+    padding-left: var(--s-4);
+    border-left: 2px solid var(--accent);
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    max-width: 64ch;
+  }
+
+  /* ------------------------------------------------------------- engineering */
+
+  .eng {
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+    gap: clamp(2rem, 1.5rem + 4vw, 5rem);
+    align-items: start;
+  }
+
+  .eng__cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-6) var(--s-7);
+  }
+
+  .eng__group-title {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    font-weight: 500;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--accent);
+    padding-bottom: var(--s-3);
+    border-bottom: 1px solid var(--line);
+    margin-bottom: var(--s-4);
+  }
+
+  .eng__group ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .eng__group li {
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    position: relative;
+    padding-left: 1.1rem;
+  }
+
+  .eng__group li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 0.45rem;
+    height: 1px;
+    background: var(--line-strong);
+  }
+
+  /* ------------------------------------------------------ operating strategy */
+
+  .strategy__note {
+    margin-top: var(--s-5);
+    max-width: 48ch;
+  }
+
+  .strategy {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+
+  .strategy__item {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-5);
+    padding: var(--s-4) 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .strategy__index {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: 0.12em;
+    color: var(--accent);
+  }
+
+  .strategy__label {
+    font-family: var(--font-display);
+    font-size: var(--t-h4);
+    font-weight: 500;
+    letter-spacing: var(--tr-snug);
+  }
+
+  /* ---------------------------------------------------------------- pillars */
+
+  .pillars {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  .pillar {
+    background: var(--bg-muted);
+    padding: clamp(1.25rem, 1rem + 1vw, 1.9rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    transition: background-color var(--d-mid) var(--e-out);
+  }
+
+  .pillar:hover {
+    background: var(--white);
+  }
+
+  .pillar__index {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+  }
+
+  .pillar__title {
+    font-family: var(--font-display);
+    font-size: var(--t-h4);
+    font-weight: 600;
+    letter-spacing: var(--tr-snug);
+  }
+
+  .pillar__text {
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    line-height: var(--lh-body);
+  }
+
+  /* -------------------------------------------------------------- standards */
+
+  .standards__cta {
+    margin-top: var(--s-6);
+  }
+
+  .standards {
+    margin: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .standards__row {
+    display: grid;
+    grid-template-columns: minmax(8rem, 12rem) minmax(0, 1fr);
+    gap: var(--s-5);
+    padding: var(--s-4) 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .standards__row dt {
+    font-family: var(--font-mono);
+    font-size: var(--t-sm);
+    font-weight: 500;
+    color: var(--fg);
+  }
+
+  .standards__row dd {
+    margin: 0;
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    line-height: var(--lh-body);
+  }
+
+  /* ----------------------------------------------------------- creds strip -->*/
+
+  .creds-strip {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    gap: 1px;
+    background: var(--line);
+  }
+
+  .creds-strip__item {
+    background: var(--bg-inset);
+    padding: var(--s-5);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .creds-strip__body {
+    font-family: var(--font-display);
+    font-size: var(--t-h3);
+    font-weight: 700;
+    letter-spacing: var(--tr-tight);
+    color: var(--accent);
+  }
+
+  .creds-strip__title {
+    font-size: var(--t-sm);
+    font-weight: 500;
+  }
+
+  .creds-strip__grade {
+    font-family: var(--font-mono);
+    font-size: var(--t-xs);
+    color: var(--fg-subtle);
+  }
+
+  /* ------------------------------------------------------------ breakpoints */
+
+  @media (max-width: 1024px) {
+    .eng {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .eng__media {
+      max-width: 28rem;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .orgs {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .eng__cols {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .standards__row {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.3rem;
+    }
+  }
+</style>

@@ -1,0 +1,334 @@
+---
+/**
+ * SPARTCON TECH — CONTACT
+ * A dedicated enquiry pathway that keeps the Spartcon parent relationship clear.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Section from "@components/ui/Section.astro";
+import SectionHeader from "@components/ui/SectionHeader.astro";
+import Breadcrumbs from "@components/ui/Breadcrumbs.astro";
+import EnquiryForm from "@components/forms/EnquiryForm.astro";
+import PendingValue from "@components/ui/PendingValue.astro";
+import Button from "@components/ui/Button.astro";
+import Logo from "@components/brand/Logo.astro";
+import ContactCta from "@components/sections/ContactCta.astro";
+import { company, isPublished } from "@data/company";
+import { techBrand, buildingSystems } from "@data/spartcon-tech";
+
+const addr = company.contact.address;
+---
+
+<BaseLayout
+  title="Contact Spartcon Tech | Facilities Engineering Enquiries"
+  description="Contact Spartcon Tech for facilities engineering, maintenance contracts, building systems, energy audits and engineering labour enquiries across South Africa."
+  ogImage="contact-tech"
+>
+  <!-- ================================================================= hero -->
+  <header class="thero surface-tech">
+    <div class="container">
+      <Breadcrumbs
+        trail={[{ label: "Facilities Engineering", href: techBrand.basePath }]}
+        current="Contact"
+        invert
+      />
+
+      <div class="thero__lockup">
+        <Logo variant="tech" layout="stacked" size="lg" invert />
+        <p class="thero__descriptor">{techBrand.descriptor}</p>
+      </div>
+
+      <h1 class="t-display thero__title" data-reveal-lines>
+        <span class="reveal-line"><span>Contact Spartcon Tech.</span></span>
+      </h1>
+
+      <p class="thero__lead" data-reveal style="--reveal-delay:160ms">
+        Maintenance contracts, building systems, engineering labour, energy audits
+        and maintenance management — tell us what the facility needs.
+      </p>
+
+      <p class="thero__parent">{techBrand.parentStatement}</p>
+    </div>
+  </header>
+
+  <!-- ====================================================== details + form -->
+  <Section aria-labelledby="tc-title">
+    <div class="contact">
+      <aside class="details">
+        <h2 id="tc-title" class="t-h2 details__title">Contact details</h2>
+
+        <p class="details__intro">
+          Facilities engineering enquiries are handled through the Spartcon
+          office. There is one company behind both brands, so you will not be
+          passed around.
+        </p>
+
+        <dl class="details__list">
+          <div class="details__row">
+            <dt>Telephone</dt>
+            <dd>
+              <PendingValue field={company.contact.telephone} as="tel" />
+              {
+                isPublished(company.contact.contactPerson) && (
+                  <span class="details__person">
+                    {company.contact.contactPerson.value}
+                  </span>
+                )
+              }
+            </dd>
+          </div>
+
+          <div class="details__row">
+            <dt>Email</dt>
+            <dd class="details__emails">
+              <PendingValue field={company.contact.emailTech} as="email" />
+              <PendingValue field={company.contact.emailAlternate} as="email" />
+            </dd>
+          </div>
+
+          <div class="details__row">
+            <dt>Address</dt>
+            <dd>
+              {
+                isPublished(addr) ? (
+                  <address>
+                    {addr.value.street}<br />
+                    {addr.value.suburb}<br />
+                    {addr.value.city} {addr.value.postalCode}<br />
+                    {addr.value.province}, {company.country}
+                  </address>
+                ) : (
+                  <PendingValue field={addr} />
+                )
+              }
+            </dd>
+          </div>
+
+          <div class="details__row">
+            <dt>Coverage</dt>
+            <dd><PendingValue field={company.contact.regionalOffices} /></dd>
+          </div>
+        </dl>
+
+        <div class="details__systems">
+          <h3 class="details__systems-title">Systems we cover</h3>
+          <ul role="list">
+            {buildingSystems.map((s) => <li>{s.title}</li>)}
+          </ul>
+        </div>
+
+        <div class="details__cross">
+          <Logo variant="spartcon" layout="inline" size="sm" />
+          <p>
+            Construction or civil enquiry instead?
+            <a href="/contact" class="link">Contact Spartcon</a>.
+          </p>
+        </div>
+      </aside>
+
+      <div class="formcol">
+        <SectionHeader
+          eyebrow="Facilities engineering enquiry"
+          title="Send us an enquiry"
+          level={2}
+          scale="h2"
+          lead="Tell us which systems are in scope, roughly how large the estate is, and whether you already run a maintenance management system."
+        />
+        <EnquiryForm variant="tech" id="tech-enquiry" />
+      </div>
+    </div>
+  </Section>
+
+  <ContactCta
+    tone="tech"
+    eyebrow="Spartcon"
+    title="One company, two disciplines."
+    lead="Spartcon builds the structure and the infrastructure. Spartcon Tech keeps the engineering inside it working."
+    primaryLabel="Explore Spartcon Tech"
+    primaryHref={techBrand.basePath}
+    secondaryLabel="Spartcon Construction"
+    secondaryHref="/services"
+  />
+</BaseLayout>
+
+<style>
+  /* ================================================================== hero */
+
+  .thero {
+    padding-top: calc(var(--nav-h) + clamp(2.5rem, 1.5rem + 4vw, 5rem));
+    padding-bottom: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+    --accent: var(--teal-400);
+  }
+
+  .thero__lockup {
+    margin-top: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    margin-bottom: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    align-items: flex-start;
+  }
+
+  .thero__descriptor {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--teal-400);
+  }
+
+  .thero__title {
+    color: var(--white);
+    max-width: 22ch;
+  }
+
+  .thero__lead {
+    margin-top: var(--s-5);
+    font-size: var(--t-lead);
+    line-height: var(--lh-relaxed);
+    color: var(--navy-100);
+    max-width: 56ch;
+  }
+
+  .thero__parent {
+    margin-top: clamp(1.75rem, 1.25rem + 2vw, 2.75rem);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--line-invert);
+    font-size: var(--t-xs);
+    color: var(--navy-200);
+    max-width: 60ch;
+  }
+
+  /* ============================================================ two columns */
+
+  .contact {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    gap: clamp(2.5rem, 1.5rem + 5vw, 6rem);
+    align-items: start;
+  }
+
+  .details {
+    position: sticky;
+    top: calc(var(--nav-h) + 2rem);
+  }
+
+  .details__title {
+    margin-bottom: var(--s-4);
+  }
+
+  .details__intro {
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    line-height: var(--lh-body);
+    margin-bottom: var(--s-5);
+    max-width: 44ch;
+  }
+
+  .details__list {
+    margin: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .details__row {
+    padding: var(--s-4) 0;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .details__row dt {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    font-weight: 500;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+
+  .details__row dd {
+    margin: 0;
+    font-size: var(--t-sm);
+    line-height: var(--lh-body);
+  }
+
+  .details__emails {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    word-break: break-word;
+  }
+
+  .details__person {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--t-xs);
+    color: var(--fg-subtle);
+    margin-top: 0.2rem;
+  }
+
+  /* --------------------------------------------------------------- systems */
+
+  .details__systems {
+    margin-top: var(--s-6);
+  }
+
+  .details__systems-title {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    font-weight: 500;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--teal-500);
+    margin-bottom: var(--s-3);
+  }
+
+  .details__systems ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .details__systems li {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    border: 1px solid var(--line);
+    padding: 0.3rem 0.5rem;
+  }
+
+  /* ----------------------------------------------------------------- cross */
+
+  .details__cross {
+    margin-top: var(--s-6);
+    padding: var(--s-5);
+    background: var(--bg-muted);
+    border: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+
+  .details__cross p {
+    font-size: var(--t-xs);
+    color: var(--fg-muted);
+    line-height: 1.7;
+  }
+
+  /* ------------------------------------------------------------ breakpoints */
+
+  @media (max-width: 1024px) {
+    .contact {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .details {
+      position: static;
+    }
+  }
+</style>

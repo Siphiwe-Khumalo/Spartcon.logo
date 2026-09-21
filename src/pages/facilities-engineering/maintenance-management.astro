@@ -1,0 +1,376 @@
+---
+/**
+ * SPARTCON TECH — MAINTENANCE MANAGEMENT
+ *
+ * The central message from the source material: Spartcon is "flexible enough to
+ * either adopt the client's system or introduce our own turnkey system."
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PageHero from "@components/ui/PageHero.astro";
+import Section from "@components/ui/Section.astro";
+import SectionHeader from "@components/ui/SectionHeader.astro";
+import MediaFrame from "@components/ui/MediaFrame.astro";
+import Button from "@components/ui/Button.astro";
+import ContactCta from "@components/sections/ContactCta.astro";
+import { techBrand, maintenanceManagement } from "@data/spartcon-tech";
+---
+
+<BaseLayout
+  title="Maintenance Management | Spartcon Tech"
+  description="Spartcon Tech leverages technology to automate engineering and maintenance management, and is flexible enough to either adopt your existing system or introduce a Spartcon turnkey system."
+  ogImage="maintenance-management"
+>
+  <PageHero
+    eyebrow="Spartcon Tech"
+    tone="tech"
+    title="Maintenance Management"
+    lead={maintenanceManagement.intro}
+    breadcrumbs={[{ label: "Facilities Engineering", href: techBrand.basePath }]}
+  />
+
+  <!-- ====================================================== the core choice -->
+  <Section aria-labelledby="mm-choice-title">
+    <SectionHeader
+      index="01"
+      eyebrow="Two routes"
+      title="Your system, or ours."
+      lead={maintenanceManagement.flexibilityStatement}
+      layout="split"
+      id="mm-choice-title"
+    />
+
+    <div class="routes">
+      {
+        maintenanceManagement.approaches.map((a, i) => (
+          <article
+            class:list={["route", i === 1 && "route--alt"]}
+            data-reveal
+            style={`--reveal-delay:${i * 120}ms`}
+          >
+            <p class="route__index">{a.index}</p>
+            <h3 class="route__title">{a.title}</h3>
+            <p class="route__summary">{a.summary}</p>
+            <p class="route__detail">{a.detail}</p>
+
+            <ul class="route__points" role="list">
+              {a.points.map((p) => <li>{p}</li>)}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="routes__note">
+      The choice is a practical one, not a commercial one. If your organisation
+      already reports from a maintenance system, fragmenting that record across
+      two platforms costs you more than it saves.
+    </p>
+  </Section>
+
+  <!-- ======================================================== what it covers -->
+  <Section surface="muted" aria-labelledby="mm-caps-title">
+    <div class="caps">
+      <div class="caps__body">
+        <SectionHeader
+          index="02"
+          eyebrow="Capability"
+          title="What the system carries."
+          id="mm-caps-title"
+        />
+
+        <ul class="caps__list" role="list" data-reveal-group="60">
+          {
+            maintenanceManagement.capabilities.map((c, i) => (
+              <li>
+                <span class="caps__index">{String(i + 1).padStart(2, "0")}</span>
+                <span class="caps__label">{c}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <MediaFrame
+        slug="air-handling-units-commercial"
+        ratio="4/5"
+        sizes="(max-width: 1024px) 100vw, 36vw"
+        parallax
+        caption="Installed plant only holds its performance when the maintenance history is recorded somewhere useful."
+      />
+    </div>
+  </Section>
+
+  <!-- ==================================================== platform components -->
+  <Section surface="tech" aria-labelledby="mm-plat-title">
+    <SectionHeader
+      index="03"
+      eyebrow="Platform foundations"
+      title="Built on standards, not preferences."
+      layout="split"
+      id="mm-plat-title"
+      lead="Our operations platform is tailored to each facility, but every version is built on the same three foundations."
+    />
+
+    <dl class="plat" data-reveal-group="70">
+      {
+        maintenanceManagement.platformComponents.map((c, i) => (
+          <div class="plat__row">
+            <dt>
+              <span class="plat__index">{String(i + 1).padStart(2, "0")}</span>
+              {c.title}
+            </dt>
+            <dd>{c.detail}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <div class="plat__cta">
+      <Button href={`${techBrand.basePath}/maintenance-operations`} variant="primary" arrow>
+        Maintenance &amp; Operations
+      </Button>
+    </div>
+  </Section>
+
+  <ContactCta
+    tone="tech"
+    eyebrow="Contact Spartcon Tech"
+    title="Which system are you running?"
+    lead="Tell us what you already have in place. If it works, we will work inside it — and if you have nothing, we will bring a system with us."
+    primaryLabel="Contact Spartcon Tech"
+    primaryHref={`${techBrand.basePath}/contact`}
+    secondaryLabel="Building Systems"
+    secondaryHref={`${techBrand.basePath}/building-systems`}
+  />
+</BaseLayout>
+
+<style>
+  /* ----------------------------------------------------------------- routes */
+
+  .routes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+  }
+
+  .route {
+    border: 1px solid var(--line);
+    padding: clamp(1.5rem, 1.25rem + 1.5vw, 2.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    position: relative;
+    background: var(--bg);
+  }
+
+  .route::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--teal-500);
+  }
+
+  /* The second route is the Spartcon-supplied option — weighted differently. */
+  .route--alt {
+    background: var(--navy-900);
+    border-color: var(--navy-900);
+    color: var(--white);
+  }
+
+  .route--alt::before {
+    background: var(--orange-500);
+  }
+
+  .route__index {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    color: var(--teal-500);
+  }
+
+  .route--alt .route__index {
+    color: var(--orange-400);
+  }
+
+  .route__title {
+    font-family: var(--font-display);
+    font-size: var(--t-h2);
+    font-weight: 600;
+    letter-spacing: var(--tr-tight);
+    max-width: 22ch;
+  }
+
+  .route--alt .route__title {
+    color: var(--white);
+  }
+
+  .route__summary {
+    font-size: var(--t-body);
+    font-weight: 500;
+  }
+
+  .route__detail {
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    line-height: var(--lh-body);
+  }
+
+  .route--alt .route__detail {
+    color: var(--navy-200);
+  }
+
+  .route__points {
+    margin: auto 0 0;
+    padding: var(--s-5) 0 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .route--alt .route__points {
+    border-color: var(--line-invert);
+  }
+
+  .route__points li {
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    position: relative;
+    padding-left: 1.1rem;
+  }
+
+  .route--alt .route__points li {
+    color: var(--navy-100);
+  }
+
+  .route__points li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 0.45rem;
+    height: 1px;
+    background: var(--teal-500);
+  }
+
+  .route--alt .route__points li::before {
+    background: var(--orange-500);
+  }
+
+  .routes__note {
+    margin-top: var(--s-6);
+    padding-left: var(--s-4);
+    border-left: 2px solid var(--line-strong);
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    max-width: 70ch;
+    line-height: var(--lh-body);
+  }
+
+  /* ----------------------------------------------------------- capabilities */
+
+  .caps {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(2rem, 1.5rem + 4vw, 5rem);
+    align-items: start;
+  }
+
+  .caps__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+
+  .caps__list li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-5);
+    padding: var(--s-4) 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .caps__index {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: 0.12em;
+    color: var(--teal-500);
+    flex: none;
+  }
+
+  .caps__label {
+    font-family: var(--font-display);
+    font-size: var(--t-h4);
+    font-weight: 500;
+    letter-spacing: var(--tr-snug);
+  }
+
+  /* -------------------------------------------------------------- platform */
+
+  .plat {
+    margin: 0;
+    border-top: 1px solid var(--line-invert);
+  }
+
+  .plat__row {
+    display: grid;
+    grid-template-columns: minmax(12rem, 20rem) minmax(0, 1fr);
+    gap: var(--s-5);
+    padding: var(--s-5) 0;
+    border-bottom: 1px solid var(--line-invert);
+  }
+
+  .plat__row dt {
+    font-family: var(--font-display);
+    font-size: var(--t-h4);
+    font-weight: 600;
+    letter-spacing: var(--tr-snug);
+    color: var(--white);
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+
+  .plat__index {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    color: var(--teal-400);
+    flex: none;
+  }
+
+  .plat__row dd {
+    margin: 0;
+    font-size: var(--t-sm);
+    color: var(--navy-200);
+    line-height: var(--lh-body);
+  }
+
+  .plat__cta {
+    margin-top: var(--s-6);
+  }
+
+  /* ------------------------------------------------------------ breakpoints */
+
+  @media (max-width: 1024px) {
+    .caps {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 860px) {
+    .routes {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .plat__row {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.5rem;
+    }
+  }
+</style>

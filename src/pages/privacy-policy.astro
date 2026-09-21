@@ -1,0 +1,220 @@
+---
+/**
+ * PRIVACY POLICY — structured placeholder.
+ *
+ * IMPORTANT: this is a professionally structured template, NOT legal advice and
+ * NOT a completed policy. South African processing is governed by POPIA (the
+ * Protection of Personal Information Act 4 of 2013), which requires specific
+ * disclosures and a designated Information Officer.
+ *
+ * Sections marked [TO CONFIRM] must be completed and the whole document
+ * reviewed by a qualified legal advisor before launch.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PageHero from "@components/ui/PageHero.astro";
+import Section from "@components/ui/Section.astro";
+import EditorialNote from "@components/ui/EditorialNote.astro";
+import PendingValue from "@components/ui/PendingValue.astro";
+import { company, isPublished } from "@data/company";
+
+const addr = company.contact.address;
+const updated = "Awaiting legal review";
+---
+
+<BaseLayout
+  title="Privacy Policy | Spartcon"
+  description="How Spartcon (Pty) Ltd collects, uses and protects personal information submitted through this website."
+  noindex
+>
+  <PageHero
+    eyebrow="Legal"
+    title="Privacy Policy"
+    lead="How Spartcon (Pty) Ltd handles personal information submitted through this website."
+  />
+
+  <Section width="text">
+    <EditorialNote title="This policy requires legal review before launch">
+      <p>
+        The structure below is complete and ready for content, but it is a
+        template rather than a finished legal document. Processing of personal
+        information in South Africa is governed by <strong>POPIA</strong> (the
+        Protection of Personal Information Act 4 of 2013), which requires
+        specific disclosures and a designated Information Officer.
+      </p>
+      <p>
+        Sections marked <strong>[TO CONFIRM]</strong> need Spartcon's input, and
+        the complete document should be reviewed by a qualified legal advisor
+        before this page is published.
+      </p>
+    </EditorialNote>
+
+    <div class="prose legal">
+      <p class="legal__meta">Last updated: {updated}</p>
+
+      <h2>1. Who we are</h2>
+      <p>
+        This website is operated by {company.legalName} ("Spartcon", "we", "us").
+        {isPublished(addr) && (
+          <>
+            Our registered address is {addr.value.street}, {addr.value.suburb},{" "}
+            {addr.value.city} {addr.value.postalCode}, {addr.value.province},{" "}
+            {company.country}.
+          </>
+        )}
+      </p>
+      <p>
+        <strong>Information Officer.</strong> POPIA requires every responsible
+        party to designate an Information Officer and register them with the
+        Information Regulator. <strong>[TO CONFIRM]</strong> — name and contact
+        details of Spartcon's Information Officer.
+      </p>
+
+      <h2>2. Information we collect</h2>
+      <p>
+        When you submit an enquiry through this website, we collect the
+        information you provide in the form:
+      </p>
+      <ul>
+        <li>Your name</li>
+        <li>Your company name, where provided</li>
+        <li>Your email address</li>
+        <li>Your telephone number</li>
+        <li>The service you have selected</li>
+        <li>The content of your message</li>
+      </ul>
+      <p>
+        <strong>[TO CONFIRM]</strong> — whether Spartcon uses website analytics,
+        and if so which provider. This website currently loads no third-party
+        analytics or advertising scripts. The contact page embeds a Google Maps
+        frame, which is a third-party service subject to Google's own privacy
+        terms.
+      </p>
+
+      <h2>3. Why we process it</h2>
+      <p>
+        We process the information you submit solely in order to respond to your
+        enquiry and, where relevant, to provide a quotation or proposal and
+        manage the resulting business relationship.
+      </p>
+      <p>
+        We do not sell your personal information. We do not use it for marketing
+        unrelated to your enquiry without your consent.
+      </p>
+
+      <h2>4. Legal basis</h2>
+      <p>
+        We process your information because it is necessary to respond to a
+        request you have initiated, and in pursuit of our legitimate business
+        interests as a construction and engineering service provider.
+      </p>
+
+      <h2>5. Who we share it with</h2>
+      <p>
+        <strong>[TO CONFIRM]</strong> — the operators and service providers
+        Spartcon uses, which may include a website host, an email provider and a
+        form-handling service. Each should be named here, together with whether
+        any personal information is transferred outside South Africa.
+      </p>
+
+      <h2>6. How long we keep it</h2>
+      <p>
+        <strong>[TO CONFIRM]</strong> — Spartcon's retention period for enquiry
+        records. POPIA requires that records not be retained for longer than is
+        necessary for the purpose for which they were collected, unless another
+        law requires retention.
+      </p>
+
+      <h2>7. How we protect it</h2>
+      <p>
+        We take reasonable technical and organisational measures to protect
+        personal information against loss, unauthorised access and unlawful
+        processing. <strong>[TO CONFIRM]</strong> — a short description of the
+        specific safeguards in place.
+      </p>
+
+      <h2>8. Your rights</h2>
+      <p>Under POPIA you have the right to:</p>
+      <ul>
+        <li>Request access to the personal information we hold about you</li>
+        <li>Request correction or deletion of that information</li>
+        <li>Object to the processing of your information</li>
+        <li>Lodge a complaint with the Information Regulator of South Africa</li>
+      </ul>
+      <p>
+        To exercise any of these rights, contact us using the details on our{" "}
+        <a href="/contact">contact page</a>.
+      </p>
+
+      <h2>9. Cookies</h2>
+      <p>
+        This website does not set advertising or tracking cookies. Embedded
+        third-party content, such as the Google Maps frame on the contact page,
+        may set its own cookies when loaded. <strong>[TO CONFIRM]</strong> —
+        whether any analytics cookies will be introduced, in which case a cookie
+        notice and consent mechanism will be required.
+      </p>
+
+      <h2>10. Changes to this policy</h2>
+      <p>
+        We may update this policy from time to time. The date at the top of this
+        page shows when it was last revised.
+      </p>
+
+      <h2>11. Contact</h2>
+      <p>
+        For any question about this policy or about how we handle your personal
+        information:
+      </p>
+      <ul class="legal__contact">
+        <li>
+          <span>Email</span>
+          <PendingValue field={company.contact.email} as="email" />
+        </li>
+        <li>
+          <span>Telephone</span>
+          <PendingValue field={company.contact.telephone} as="tel" />
+        </li>
+      </ul>
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  .legal__meta {
+    font-family: var(--font-mono);
+    font-size: var(--t-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    padding-bottom: var(--s-4);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .legal h2 {
+    font-size: var(--t-h3);
+    margin-top: var(--s-8);
+  }
+
+  .legal__contact {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--s-4);
+  }
+
+  .legal__contact li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .legal__contact span {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    min-width: 7rem;
+  }
+</style>

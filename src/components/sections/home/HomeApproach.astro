@@ -1,0 +1,165 @@
+---
+/**
+ * 10 — PARTNERSHIP / APPROACH
+ *
+ * The seven approved messaging pillars: partnership, quality, risk management,
+ * safety, environmental responsibility, professional engineering and long-term
+ * relationships. Presented as a numbered editorial list rather than seven
+ * identical cards.
+ */
+import Section from "@components/ui/Section.astro";
+import MediaFrame from "@components/ui/MediaFrame.astro";
+import { approachPillars } from "@data/company";
+---
+
+<Section id="approach" aria-labelledby="approach-title">
+  <div class="app">
+    <!-- ----------------------------------------------------- sticky column -->
+    <div class="app__lede">
+      <p class="eyebrow">
+        <span class="index-num">10</span>
+        <span>How we work</span>
+      </p>
+
+      <h2 id="approach-title" class="t-display app__title" data-reveal>
+        Partnership, not just delivery.
+      </h2>
+
+      <p class="t-lead app__lead" data-reveal style="--reveal-delay:120ms">
+        The commitments below are not a values statement on a wall. They describe
+        how we set up an appointment and how we behave when a project comes under
+        pressure.
+      </p>
+
+      <MediaFrame
+        slug="reinforcement-bars-foundation"
+        ratio="4/3"
+        sizes="(max-width: 1024px) 100vw, 40vw"
+        parallax
+        class="app__media"
+      />
+    </div>
+
+    <!-- ---------------------------------------------------------- pillars -->
+    <ol class="app__list" role="list">
+      {
+        approachPillars.map((pillar, i) => (
+          <li
+            class="app__pillar"
+            data-reveal
+            style={`--reveal-delay:${Math.min(i * 70, 420)}ms`}
+          >
+            <span class="app__pillar-index">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <div class="app__pillar-body">
+              <h3 class="app__pillar-title">{pillar.title}</h3>
+              <p class="app__pillar-summary">{pillar.summary}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</Section>
+
+<style>
+  .app {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(2.5rem, 1.5rem + 5vw, 7rem);
+    align-items: start;
+  }
+
+  .app__lede {
+    position: sticky;
+    top: calc(var(--nav-h) + 2.5rem);
+  }
+
+  .app__title {
+    max-width: 16ch;
+  }
+
+  .app__lead {
+    margin-top: var(--s-5);
+    max-width: 46ch;
+  }
+
+  .app__media {
+    margin-top: var(--s-7);
+  }
+
+  /* -------------------------------------------------------------- pillars */
+
+  .app__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+
+  .app__pillar {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: clamp(1rem, 2vw, 2.25rem);
+    padding: clamp(1.4rem, 1.2rem + 1vw, 2.1rem) 0;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    transition: padding-left var(--d-mid) var(--e-out);
+  }
+
+  /* Hover indicator — a quiet cue that this is a considered list, not a menu. */
+  .app__pillar::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 1.2rem;
+    bottom: 1.2rem;
+    width: 2px;
+    background: var(--accent);
+    transform: scaleY(0);
+    transition: transform var(--d-mid) var(--e-out);
+  }
+
+  .app__pillar:hover {
+    padding-left: var(--s-4);
+  }
+
+  .app__pillar:hover::before {
+    transform: scaleY(1);
+  }
+
+  .app__pillar-index {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    padding-top: 0.35rem;
+  }
+
+  .app__pillar-title {
+    font-family: var(--font-display);
+    font-size: var(--t-h3);
+    font-weight: 600;
+    letter-spacing: var(--tr-snug);
+    margin-bottom: 0.5rem;
+  }
+
+  .app__pillar-summary {
+    font-size: var(--t-body);
+    color: var(--fg-muted);
+    line-height: var(--lh-body);
+    max-width: 62ch;
+  }
+
+  @media (max-width: 1024px) {
+    .app {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .app__lede {
+      position: static;
+    }
+  }
+</style>

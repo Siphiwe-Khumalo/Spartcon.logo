@@ -1,0 +1,46 @@
+---
+/**
+ * HOMEPAGE — Spartcon (Pty) Ltd
+ *
+ * Section order follows the agreed flow:
+ *   01 Hero · 02 Introduction · 03 Divisions · 04 Lifecycle · 05 Capabilities
+ *   06 Industries · 07 Spartcon Tech · 08 Credentials · 09 Experience
+ *   10 Approach · 11 Contact CTA
+ *
+ * Each section is its own component, so the order can be changed or a section
+ * removed without touching any other part of the page.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import HomeHero from "@components/sections/home/HomeHero.astro";
+import HomeIntro from "@components/sections/home/HomeIntro.astro";
+import HomeDivisions from "@components/sections/home/HomeDivisions.astro";
+import HomeLifecycle from "@components/sections/home/HomeLifecycle.astro";
+import HomeCapabilities from "@components/sections/home/HomeCapabilities.astro";
+import HomeIndustries from "@components/sections/home/HomeIndustries.astro";
+import HomeTech from "@components/sections/home/HomeTech.astro";
+import HomeCredentials from "@components/sections/home/HomeCredentials.astro";
+import HomeExperience from "@components/sections/home/HomeExperience.astro";
+import HomeApproach from "@components/sections/home/HomeApproach.astro";
+import ContactCta from "@components/sections/ContactCta.astro";
+import { company } from "@data/company";
+---
+
+<BaseLayout
+  title="Spartcon | Construction & Engineering, South Africa"
+  description={company.metaDescription}
+  ogImage="home"
+  includeOrganization
+  transparentNav
+>
+  <HomeHero />
+  <HomeIntro />
+  <HomeDivisions />
+  <HomeLifecycle />
+  <HomeCapabilities />
+  <HomeIndustries />
+  <HomeTech />
+  <HomeCredentials />
+  <HomeExperience />
+  <HomeApproach />
+  <ContactCta />
+</BaseLayout>

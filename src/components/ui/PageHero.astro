@@ -1,0 +1,236 @@
+---
+/**
+ * PAGE HERO — the standard header for every inner page.
+ *
+ * Keeps the site's pages visually consistent while allowing a per-page image,
+ * a Spartcon Tech tone, and an optional set of quick facts.
+ */
+import Breadcrumbs from "./Breadcrumbs.astro";
+import MediaFrame from "./MediaFrame.astro";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+  /** Background photograph slug. Omit for a clean typographic header. */
+  image?: string | null;
+  /** Breadcrumb trail, excluding Home and the current page. */
+  breadcrumbs?: { label: string; href: string }[];
+  /** Spartcon Tech pages use the teal-keyed tone. */
+  tone?: "spartcon" | "tech";
+  /** Short stats or facts rendered under the lead. */
+  facts?: { label: string; value: string }[];
+  class?: string;
+}
+
+const {
+  eyebrow,
+  title,
+  lead,
+  image = null,
+  breadcrumbs = [],
+  tone = "spartcon",
+  facts = [],
+  class: className,
+} = Astro.props;
+---
+
+<header
+  class:list={[
+    "phero",
+    image && "phero--image",
+    // Remaps colour tokens for the dark ground so nested components adapt.
+    image && "on-navy",
+    `phero--${tone}`,
+    className,
+  ]}
+  data-nav-overlap={image ? "" : undefined}
+>
+  {
+    image && (
+      <div class="phero__bg" aria-hidden="true">
+        <MediaFrame
+          slug={image}
+          ratio="auto"
+          reveal={false}
+          priority={true}
+          sizes="100vw"
+          widths={[768, 1280, 1920, 2400]}
+          class="phero__media"
+        />
+        <div class="phero__scrim"></div>
+      </div>
+    )
+  }
+
+  <div class="container phero__inner">
+    <Breadcrumbs trail={breadcrumbs} current={title} invert={!!image} />
+
+    <div class="phero__content">
+      {eyebrow && <p class="eyebrow phero__eyebrow">{eyebrow}</p>}
+
+      <h1 class="t-display phero__title" data-reveal-lines>
+        <span class="reveal-line"><span>{title}</span></span>
+      </h1>
+
+      {lead && <p class="t-lead phero__lead" data-reveal style="--reveal-delay:160ms">{lead}</p>}
+
+      {
+        facts.length > 0 && (
+          <dl class="phero__facts" data-reveal style="--reveal-delay:240ms">
+            {facts.map((f) => (
+              <div class="phero__fact">
+                <dt>{f.label}</dt>
+                <dd>{f.value}</dd>
+              </div>
+            ))}
+          </dl>
+        )
+      }
+    </div>
+  </div>
+</header>
+
+<style>
+  .phero {
+    position: relative;
+    /* Clears the fixed navigation. */
+    padding-top: calc(var(--nav-h) + clamp(2.5rem, 1.5rem + 4vw, 5.5rem));
+    padding-bottom: clamp(2.5rem, 1.5rem + 4vw, 5rem);
+    background: var(--bg);
+    overflow: hidden;
+  }
+
+  /* Hairline that separates a plain hero from the first section. */
+  .phero:not(.phero--image)::after {
+    content: "";
+    position: absolute;
+    left: var(--gutter);
+    right: var(--gutter);
+    bottom: 0;
+    height: 1px;
+    background: var(--line);
+  }
+
+  .phero--image {
+    background: var(--navy-900);
+    color: var(--white);
+    min-height: min(68vh, 40rem);
+    display: flex;
+    align-items: flex-end;
+    padding-top: calc(var(--nav-h) + clamp(4rem, 2rem + 8vw, 9rem));
+    padding-bottom: clamp(3rem, 2rem + 4vw, 5.5rem);
+  }
+
+  .phero--image :global(h1),
+  .phero--image .phero__lead {
+    color: var(--white);
+  }
+
+  .phero__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .phero__bg :global(.phero__media),
+  .phero__bg :global(.phero__media .media__frame) {
+    height: 100%;
+  }
+
+  .phero__bg :global(.phero__media img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Single flat scrim — no gradient, no banding seam. */
+  .phero__scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 20, 40, 0.7);
+  }
+
+  .phero__inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+  }
+
+  .phero__content {
+    margin-top: clamp(1.5rem, 1rem + 2vw, 3rem);
+  }
+
+  .phero__eyebrow {
+    color: var(--accent);
+  }
+
+  .phero--tech .phero__eyebrow {
+    color: var(--teal-400);
+  }
+
+  .phero--image .phero__eyebrow {
+    color: var(--orange-400);
+  }
+
+  .phero--image.phero--tech .phero__eyebrow {
+    color: var(--teal-400);
+  }
+
+  .phero__title {
+    max-width: 22ch;
+  }
+
+  .phero__lead {
+    margin-top: var(--s-5);
+    max-width: 58ch;
+  }
+
+  .phero--image .phero__lead {
+    color: var(--navy-100);
+  }
+
+  /* ---------------------------------------------------------------- facts */
+
+  .phero__facts {
+    margin: clamp(2rem, 1.5rem + 2vw, 3.5rem) 0 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, auto));
+    gap: var(--s-5) clamp(2rem, 4vw, 4.5rem);
+    justify-content: start;
+    border-top: 1px solid var(--line);
+    padding-top: var(--s-5);
+    max-width: 62rem;
+  }
+
+  .phero--image .phero__facts {
+    border-color: var(--line-invert-strong);
+  }
+
+  .phero__fact dt {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    margin-bottom: 0.4rem;
+  }
+
+  .phero--image .phero__fact dt {
+    color: var(--navy-200);
+  }
+
+  .phero__fact dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--t-h4);
+    font-weight: 600;
+    letter-spacing: var(--tr-snug);
+  }
+
+  @media (max-width: 640px) {
+    .phero--image {
+      min-height: auto;
+    }
+  }
+</style>

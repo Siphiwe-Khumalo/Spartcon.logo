@@ -1,0 +1,251 @@
+---
+/**
+ * 04 — LIFECYCLE
+ * PLAN → DESIGN → BUILD → INSTALL → OPERATE → MAINTAIN
+ *
+ * The connecting rule fills as the section scrolls, and each stage activates as
+ * the line reaches it. Driven by `data-progress-track` from the motion module —
+ * a single shared rAF loop, one CSS custom property, no per-item observers.
+ */
+import Section from "@components/ui/Section.astro";
+import { lifecycle } from "@data/company";
+---
+
+<Section id="lifecycle" surface="navy" aria-labelledby="lifecycle-title">
+  <header class="lc-head">
+    <p class="eyebrow">
+      <span class="index-num">04</span>
+      <span>How the work runs</span>
+    </p>
+    <h2 id="lifecycle-title" class="t-display lc-head__title" data-reveal>
+      One organisation, across the whole lifecycle.
+    </h2>
+    <p class="t-lead lc-head__lead" data-reveal style="--reveal-delay:120ms">
+      Most projects hand over between planning, construction and operations —
+      and lose something at every handover. Spartcon is structured to carry the
+      work through.
+    </p>
+  </header>
+
+  <!-- data-progress-track writes --progress (0 → 1) as this element passes. -->
+  <ol class="lc" role="list" data-progress-track>
+    <!-- The rail: a static hairline with an accent fill scaled by --progress. -->
+    <div class="lc__rail" aria-hidden="true">
+      <span class="lc__rail-fill"></span>
+    </div>
+
+    {
+      lifecycle.map((stage, i) => (
+        <li
+          class="lc__stage"
+          style={`--stage-at:${i / (lifecycle.length - 1)}`}
+        >
+          <span class="lc__node" aria-hidden="true"></span>
+          <span class="lc__step">{stage.step}</span>
+          <h3 class="lc__title">{stage.title}</h3>
+          <p class="lc__summary">{stage.summary}</p>
+        </li>
+      ))
+    }
+  </ol>
+</Section>
+
+<style>
+  .lc-head {
+    max-width: 60rem;
+    margin-bottom: clamp(3rem, 2rem + 4vw, 5.5rem);
+  }
+
+  .lc-head__title {
+    max-width: 24ch;
+  }
+
+  .lc-head__lead {
+    margin-top: var(--s-5);
+    max-width: 56ch;
+    color: var(--navy-200);
+  }
+
+  /* ============================================================ the track */
+
+  .lc {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: var(--s-5);
+  }
+
+  .lc__rail {
+    position: absolute;
+    top: 0.3rem;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--line-invert);
+  }
+
+  .lc__rail-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    transform: scaleX(var(--progress, 0));
+    transform-origin: left;
+    /* No transition: the value is updated per frame from scroll position. */
+  }
+
+  /* ============================================================== stages */
+
+  .lc__stage {
+    position: relative;
+    padding-top: var(--s-6);
+    transition: opacity var(--d-slow) var(--e-out);
+    /* Fully visible by default so the section reads correctly with no JS. */
+    opacity: 1;
+  }
+
+  /* Once the motion module starts writing --progress to the <ol>, each stage
+     dims until the rail fill reaches its own position (--stage-at). */
+  .lc[style*="--progress"] .lc__stage {
+    opacity: clamp(0.34, (var(--progress) - var(--stage-at)) * 1000, 1);
+  }
+
+  .lc__node {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0.625rem;
+    height: 0.625rem;
+    background: var(--navy-900);
+    border: 1px solid var(--line-invert-strong);
+    transition: background-color var(--d-mid) var(--e-out),
+      border-color var(--d-mid) var(--e-out);
+  }
+
+  /* Filled node state. Visible by default; gated by progress once JS runs. */
+  .lc__stage::after {
+    content: "";
+    position: absolute;
+    top: 0.125rem;
+    left: 0.125rem;
+    width: 0.375rem;
+    height: 0.375rem;
+    background: var(--accent);
+    opacity: 1;
+    transition: opacity var(--d-mid) var(--e-out);
+  }
+
+  .lc[style*="--progress"] .lc__stage::after {
+    opacity: clamp(0, (var(--progress) - var(--stage-at)) * 1000, 1);
+  }
+
+  .lc__step {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .lc__title {
+    font-family: var(--font-display);
+    font-size: var(--t-h3);
+    font-weight: 600;
+    letter-spacing: var(--tr-snug);
+    color: var(--white);
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+
+  .lc__summary {
+    font-size: var(--t-xs);
+    line-height: 1.7;
+    color: var(--navy-200);
+  }
+
+  /* ========================================================= breakpoints */
+
+  /* Two rows of three keeps the labels readable on tablet. */
+  @media (max-width: 1100px) {
+    .lc {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--s-7) var(--s-5);
+    }
+
+    /* The single horizontal rail no longer maps to a wrapped grid. */
+    .lc__rail {
+      display: none;
+    }
+
+    .lc__stage {
+      border-top: 1px solid var(--line-invert);
+    }
+  }
+
+  /* Vertical rail on mobile. */
+  @media (max-width: 640px) {
+    .lc {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+
+    .lc__rail {
+      display: block;
+      top: 0;
+      bottom: 0;
+      left: 0.3rem;
+      right: auto;
+      width: 1px;
+      height: auto;
+    }
+
+    .lc__rail-fill {
+      transform: scaleY(var(--progress, 0));
+      transform-origin: top;
+    }
+
+    .lc__stage {
+      border-top: 0;
+      padding: 0 0 var(--s-6) var(--s-6);
+    }
+
+    .lc__stage:last-child {
+      padding-bottom: 0;
+    }
+
+    .lc__node,
+    .lc__stage::after {
+      top: 0.35rem;
+    }
+
+    .lc__stage::after {
+      top: 0.475rem;
+    }
+  }
+
+  /* Reduced motion: no progress-driven dimming, rail shown complete. */
+  @media (prefers-reduced-motion: reduce) {
+    .lc__stage,
+    .lc[style*="--progress"] .lc__stage {
+      opacity: 1;
+    }
+
+    .lc__stage::after,
+    .lc[style*="--progress"] .lc__stage::after {
+      opacity: 1;
+    }
+
+    .lc__rail-fill {
+      transform: scaleX(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) and (max-width: 640px) {
+    .lc__rail-fill {
+      transform: scaleY(1);
+    }
+  }
+</style>

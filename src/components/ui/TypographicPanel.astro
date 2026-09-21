@@ -1,0 +1,220 @@
+---
+/**
+ * TYPOGRAPHIC PANEL — the deliberate alternative to photography.
+ *
+ * Used wherever no genuine, relevant photograph exists. Per the brief, a strong
+ * typographic or technical composition is preferable to a loosely-related or
+ * artificially-generated image.
+ *
+ * Three treatments:
+ *   "index"   — oversized index numeral with a technical caption
+ *   "grid"    — engineering grid rule pattern behind a title
+ *   "spec"    – a specification-style key/value list
+ *
+ * All patterns are drawn with CSS only: no images, no gradients, no cost.
+ */
+interface Props {
+  variant?: "index" | "grid" | "spec";
+  /** Large numeral or short label for the "index" treatment. */
+  index?: string;
+  title?: string;
+  caption?: string;
+  /** Key/value rows for the "spec" treatment. */
+  rows?: { label: string; value: string }[];
+  ratio?: string;
+  tone?: "navy" | "muted" | "tech";
+  class?: string;
+}
+
+const {
+  variant = "index",
+  index,
+  title,
+  caption,
+  rows = [],
+  ratio = "3/2",
+  tone = "navy",
+  class: className,
+} = Astro.props;
+---
+
+<div
+  class:list={["tp", `tp--${variant}`, `tp--${tone}`, className]}
+  style={`aspect-ratio:${ratio}`}
+  data-reveal="mask"
+  role="presentation"
+>
+  <div class="tp__pattern" aria-hidden="true"></div>
+
+  <div class="tp__content">
+    {variant === "index" && index && <span class="tp__numeral">{index}</span>}
+
+    {
+      variant === "spec" && rows.length > 0 && (
+        <dl class="tp__spec">
+          {rows.map((r) => (
+            <div class="tp__spec-row">
+              <dt>{r.label}</dt>
+              <dd>{r.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )
+    }
+
+    <div class="tp__meta">
+      {title && <p class="tp__title">{title}</p>}
+      {caption && <p class="tp__caption">{caption}</p>}
+    </div>
+  </div>
+</div>
+
+<style>
+  .tp {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    isolation: isolate;
+  }
+
+  .tp--navy {
+    background: var(--navy-900);
+    color: var(--white);
+    --tp-line: rgba(255, 255, 255, 0.09);
+    --tp-dim: var(--navy-300);
+  }
+
+  .tp--tech {
+    background: var(--navy-800);
+    color: var(--white);
+    --tp-line: rgba(42, 157, 157, 0.18);
+    --tp-dim: var(--navy-200);
+  }
+
+  .tp--muted {
+    background: var(--grey-100);
+    color: var(--navy-900);
+    --tp-line: rgba(10, 20, 40, 0.08);
+    --tp-dim: var(--grey-500);
+  }
+
+  /* ----------------------------------------------------------- patterns -- */
+
+  .tp__pattern {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  /* Engineering grid: 1px lines on a fixed module. */
+  .tp--grid .tp__pattern {
+    background-image: linear-gradient(
+        to right,
+        var(--tp-line) 1px,
+        transparent 1px
+      ),
+      linear-gradient(to bottom, var(--tp-line) 1px, transparent 1px);
+    background-size: 2.5rem 2.5rem;
+  }
+
+  /* Index: a single vertical accent rule plus a hairline baseline. */
+  .tp--index .tp__pattern::before,
+  .tp--spec .tp__pattern::before {
+    content: "";
+    position: absolute;
+    left: clamp(1.5rem, 4%, 3rem);
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--tp-line);
+  }
+
+  .tp--index .tp__pattern::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: clamp(3.5rem, 22%, 6rem);
+    height: 1px;
+    background: var(--tp-line);
+  }
+
+  /* ------------------------------------------------------------ content -- */
+
+  .tp__content {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: clamp(1.5rem, 1rem + 2vw, 2.75rem);
+    padding-left: clamp(2.75rem, 4% + 1.5rem, 4.5rem);
+    gap: var(--s-5);
+  }
+
+  .tp__numeral {
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 2rem + 12vw, 9rem);
+    font-weight: 600;
+    line-height: 0.82;
+    letter-spacing: -0.05em;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--tp-dim);
+    opacity: 0.8;
+  }
+
+  .tp__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    max-width: 34ch;
+  }
+
+  .tp__title {
+    font-family: var(--font-display);
+    font-size: var(--t-h4);
+    font-weight: 600;
+    letter-spacing: var(--tr-snug);
+  }
+
+  .tp__caption {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--tp-dim);
+    line-height: 1.6;
+  }
+
+  /* --------------------------------------------------------------- spec -- */
+
+  .tp__spec {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--tp-line);
+  }
+
+  .tp__spec-row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-4);
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--tp-line);
+  }
+
+  .tp__spec-row dt {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--tp-dim);
+  }
+
+  .tp__spec-row dd {
+    margin: 0;
+    font-size: var(--t-sm);
+    font-weight: 500;
+    text-align: right;
+  }
+</style>

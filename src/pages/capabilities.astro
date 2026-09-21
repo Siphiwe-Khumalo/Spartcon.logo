@@ -1,0 +1,353 @@
+---
+/**
+ * CAPABILITIES — the full technical index, organised by discipline.
+ * Categorised deliberately rather than presented as one long list.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PageHero from "@components/ui/PageHero.astro";
+import Section from "@components/ui/Section.astro";
+import SectionHeader from "@components/ui/SectionHeader.astro";
+import MediaFrame from "@components/ui/MediaFrame.astro";
+import TypographicPanel from "@components/ui/TypographicPanel.astro";
+import Button from "@components/ui/Button.astro";
+import ContactCta from "@components/sections/ContactCta.astro";
+import { capabilityGroups } from "@data/capabilities";
+import { standards } from "@data/company";
+import { techBrand } from "@data/spartcon-tech";
+
+const totalItems = capabilityGroups.reduce((n, g) => n + g.items.length, 0);
+---
+
+<BaseLayout
+  title="Technical Capabilities | Spartcon"
+  description="Spartcon's technical capabilities across structural and concrete works, earthworks and roads, water and wastewater, HVAC and thermal systems, electrical and standby power, fire and security, and maintenance."
+  ogImage="capabilities"
+>
+  <PageHero
+    eyebrow="Capabilities"
+    title="The full technical index."
+    lead="Capability organised by engineering discipline, across construction, civil infrastructure and facilities engineering."
+    image="cooling-water-pumps-pipework"
+    facts={[
+      { label: "Disciplines", value: String(capabilityGroups.length) },
+      { label: "Capabilities", value: String(totalItems) },
+      { label: "Delivered by", value: "Spartcon · Spartcon Tech" },
+    ]}
+  />
+
+  <!-- ========================================================= jump index -->
+  <Section spacing="tight" surface="muted" aria-labelledby="cap-index-title">
+    <h2 id="cap-index-title" class="t-h3 jump__title">Jump to a discipline</h2>
+    <nav aria-label="Capability disciplines">
+      <ol class="jump" role="list" data-reveal-group="40">
+        {
+          capabilityGroups.map((g) => (
+            <li>
+              <a href={`#${g.id}`} class="jump__link">
+                <span class="jump__index">{g.index}</span>
+                <span class="jump__label">{g.title}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+  </Section>
+
+  <!-- ====================================================== capability groups -->
+  {
+    capabilityGroups.map((group, i) => (
+      <Section
+        id={group.id}
+        surface={i % 2 === 1 ? "muted" : "default"}
+        aria-labelledby={`${group.id}-title`}
+      >
+        <div class:list={["grp", i % 2 === 1 && "grp--reverse"]}>
+          <div class="grp__media">
+            {group.image ? (
+              <MediaFrame
+                slug={group.image}
+                ratio="4/3"
+                sizes="(max-width: 1024px) 100vw, 38vw"
+                hoverZoom
+              />
+            ) : (
+              <TypographicPanel
+                variant="grid"
+                ratio="4/3"
+                tone="navy"
+                title={group.title}
+                caption="Systems maintained to operate on demand"
+              />
+            )}
+          </div>
+
+          <div class="grp__body">
+            <p class="eyebrow">
+              <span class="index-num">{group.index}</span>
+              <span>{group.owner === "Both" ? "Spartcon · Spartcon Tech" : group.owner}</span>
+            </p>
+
+            <h2 id={`${group.id}-title`} class="t-h1 grp__title" data-reveal>
+              {group.title}
+            </h2>
+
+            <p class="grp__summary" data-reveal style="--reveal-delay:80ms">
+              {group.summary}
+            </p>
+
+            <dl class="grp__items" data-reveal-group="45">
+              {group.items.map((item) => (
+                <div class="grp__item">
+                  <dt>{item.title}</dt>
+                  <dd>{item.detail}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+      </Section>
+    ))
+  }
+
+  <!-- ============================================================= standards -->
+  <Section surface="navy" aria-labelledby="cap-standards-title">
+    <SectionHeader
+      index="10"
+      eyebrow="Standards"
+      title="The codes behind the capability."
+      lead="Our operations platform is built on minimum engineering standards, OEM operational standards and OHSA regulations."
+      layout="split"
+      id="cap-standards-title"
+    />
+
+    <dl class="std" data-reveal-group="50">
+      {
+        standards.map((s) => (
+          <div class="std__row">
+            <dt>{s.code}</dt>
+            <dd>{s.scope}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </Section>
+
+  <!-- =========================================================== tech link -->
+  <Section surface="inset" spacing="tight">
+    <div class="xl">
+      <div>
+        <h2 class="t-h3">Facilities engineering capability in depth</h2>
+        <p class="t-sm xl__text">
+          Building systems, maintenance disciplines, energy and utilities, and
+          maintenance management are covered in detail across the Spartcon Tech
+          section.
+        </p>
+      </div>
+      <div class="xl__actions">
+        <Button href={techBrand.basePath} variant="secondary" arrow>
+          Spartcon Tech
+        </Button>
+        <Button href={`${techBrand.basePath}/building-systems`} variant="ghost" arrow>
+          Building Systems
+        </Button>
+      </div>
+    </div>
+  </Section>
+
+  <ContactCta
+    title="Need a capability we haven't listed?"
+    lead="Our professional engineers work across architectural, civil, mechanical and electrical disciplines, and bring in outsourced professional services where a project requires them."
+    secondaryLabel="View Industries"
+    secondaryHref="/industries"
+  />
+</BaseLayout>
+
+<style>
+  /* ------------------------------------------------------------- jump index */
+
+  .jump__title {
+    margin-bottom: var(--s-5);
+  }
+
+  .jump {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  .jump__link {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    padding: var(--s-4);
+    background: var(--bg-muted);
+    height: 100%;
+    transition: background-color var(--d-fast) var(--e-out);
+  }
+
+  .jump__link:hover {
+    background: var(--white);
+  }
+
+  .jump__index {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    flex: none;
+  }
+
+  .jump__label {
+    font-size: var(--t-sm);
+    font-weight: 500;
+  }
+
+  /* -------------------------------------------------------- capability group */
+
+  .grp {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    gap: clamp(2rem, 1.5rem + 4vw, 5rem);
+    align-items: start;
+  }
+
+  .grp--reverse .grp__media {
+    order: 2;
+  }
+
+  .grp__media {
+    position: sticky;
+    top: calc(var(--nav-h) + 2rem);
+  }
+
+  .grp__title {
+    margin-bottom: var(--s-4);
+  }
+
+  .grp__summary {
+    font-size: var(--t-lead);
+    line-height: var(--lh-relaxed);
+    color: var(--fg-muted);
+    max-width: 52ch;
+    margin-bottom: var(--s-6);
+  }
+
+  .grp__items {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  .grp__item {
+    background: var(--bg);
+    padding: var(--s-4);
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    transition: background-color var(--d-mid) var(--e-out);
+  }
+
+  .grp__item:hover {
+    background: var(--bg-muted);
+  }
+
+  .grp__item dt {
+    font-size: var(--t-sm);
+    font-weight: 600;
+  }
+
+  .grp__item dd {
+    margin: 0;
+    font-size: var(--t-xs);
+    color: var(--fg-muted);
+    line-height: 1.65;
+  }
+
+  /* -------------------------------------------------------------- standards */
+
+  .std {
+    margin: 0;
+    border-top: 1px solid var(--line-invert);
+  }
+
+  .std__row {
+    display: grid;
+    grid-template-columns: minmax(10rem, 16rem) minmax(0, 1fr);
+    gap: var(--s-5);
+    padding: var(--s-4) 0;
+    border-bottom: 1px solid var(--line-invert);
+  }
+
+  .std__row dt {
+    font-family: var(--font-mono);
+    font-size: var(--t-sm);
+    font-weight: 500;
+    color: var(--white);
+  }
+
+  .std__row dd {
+    margin: 0;
+    font-size: var(--t-sm);
+    color: var(--navy-200);
+    line-height: var(--lh-body);
+  }
+
+  /* ------------------------------------------------------------ cross-links */
+
+  .xl {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-5);
+  }
+
+  .xl__text {
+    margin-top: var(--s-3);
+    max-width: 58ch;
+  }
+
+  .xl__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    align-items: center;
+  }
+
+  /* ------------------------------------------------------------ breakpoints */
+
+  @media (max-width: 1024px) {
+    .grp {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .grp--reverse .grp__media {
+      order: 0;
+    }
+
+    .grp__media {
+      position: static;
+      max-width: 30rem;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .grp__items {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .std__row {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.3rem;
+    }
+  }
+</style>

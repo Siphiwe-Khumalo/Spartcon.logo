@@ -1,0 +1,442 @@
+/* ==========================================================================
+   UTILITIES — layout containers, typographic roles, surfaces, reveals
+   ========================================================================== */
+
+/* ------------------------------------------------------------- containers */
+
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.container--narrow {
+  max-width: var(--container-narrow);
+}
+
+.container--text {
+  max-width: var(--container-text);
+}
+
+.container--flush {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: 0;
+}
+
+/* ---------------------------------------------------------------- sections */
+
+.section {
+  padding-block: var(--section-y);
+  position: relative;
+}
+
+.section--tight {
+  padding-block: var(--section-y-tight);
+}
+
+.section--loose {
+  padding-block: var(--section-y-loose);
+}
+
+.section--flush-top {
+  padding-block-start: 0;
+}
+
+.section--flush-bottom {
+  padding-block-end: 0;
+}
+
+/* ---------------------------------------------------------------- surfaces */
+
+.surface-muted {
+  background: var(--bg-muted);
+}
+
+.surface-inset {
+  background: var(--bg-inset);
+}
+
+/* Dark surfaces re-map semantic tokens so children need no special casing. */
+.surface-navy,
+.on-navy {
+  background: var(--navy-900);
+  --fg: var(--white);
+  --fg-muted: var(--navy-200);
+  --fg-subtle: var(--navy-300);
+  --line: var(--line-invert);
+  --line-strong: var(--line-invert-strong);
+  --bg: var(--navy-900);
+  --bg-muted: var(--navy-800);
+  --bg-inset: var(--navy-800);
+  color: var(--white);
+}
+
+.surface-navy h1,
+.surface-navy h2,
+.surface-navy h3,
+.surface-navy h4,
+.on-navy h1,
+.on-navy h2,
+.on-navy h3,
+.on-navy h4 {
+  color: var(--white);
+}
+
+/* Spartcon Tech sections carry a distinct teal-keyed identity on navy. */
+.surface-tech {
+  background: var(--navy-800);
+  --fg: var(--white);
+  --fg-muted: var(--navy-200);
+  --fg-subtle: var(--navy-300);
+  --line: var(--line-invert);
+  --line-strong: var(--line-invert-strong);
+  --accent: var(--teal-400);
+  --accent-hover: var(--teal-500);
+  color: var(--white);
+}
+
+/* ------------------------------------------------------- typographic roles */
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+  margin-bottom: var(--s-5);
+}
+
+.eyebrow::before {
+  content: "";
+  width: 1.75rem;
+  height: 1px;
+  background: var(--accent);
+  flex: none;
+}
+
+.eyebrow--plain::before {
+  display: none;
+}
+
+.index-num {
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: var(--tr-label);
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.t-hero {
+  font-family: var(--font-display);
+  font-size: var(--t-hero);
+  font-weight: 600;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tr-tight);
+}
+
+.t-display {
+  font-family: var(--font-display);
+  font-size: var(--t-display);
+  font-weight: 600;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tr-tight);
+}
+
+.t-h1 {
+  font-size: var(--t-h1);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tr-tight);
+}
+
+.t-h2 {
+  font-size: var(--t-h2);
+}
+
+.t-h3 {
+  font-size: var(--t-h3);
+}
+
+.t-h4 {
+  font-size: var(--t-h4);
+  letter-spacing: var(--tr-normal);
+}
+
+.t-lead {
+  font-size: var(--t-lead);
+  line-height: var(--lh-relaxed);
+  color: var(--fg-muted);
+  font-weight: 400;
+}
+
+.t-body {
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
+  color: var(--fg-muted);
+}
+
+.t-sm {
+  font-size: var(--t-sm);
+  line-height: var(--lh-body);
+  color: var(--fg-muted);
+}
+
+.t-xs {
+  font-size: var(--t-xs);
+  line-height: 1.55;
+  color: var(--fg-subtle);
+}
+
+.t-mono {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.04em;
+}
+
+.t-label {
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+
+.accent {
+  color: var(--accent);
+}
+
+/* Measured prose blocks. */
+.prose > * + * {
+  margin-top: var(--s-5);
+}
+
+.prose p,
+.prose li {
+  color: var(--fg-muted);
+  max-width: 68ch;
+}
+
+.prose h2 {
+  font-size: var(--t-h2);
+  margin-top: var(--s-9);
+}
+
+.prose h3 {
+  font-size: var(--t-h3);
+  margin-top: var(--s-7);
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.25rem;
+}
+
+.prose li + li {
+  margin-top: var(--s-2);
+}
+
+.prose a {
+  color: var(--fg);
+  border-bottom: 1px solid var(--accent);
+  transition: color var(--d-fast) var(--e-out);
+}
+
+.prose a:hover {
+  color: var(--accent);
+}
+
+/* ------------------------------------------------------------------ rules */
+
+.rule {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 0;
+}
+
+.rule--accent {
+  border-top: 2px solid var(--accent);
+  width: 3rem;
+}
+
+/* ------------------------------------------------------------------ grids */
+
+.grid {
+  display: grid;
+  gap: var(--s-6);
+}
+
+.grid--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.grid--4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* Editorial split: heading column + content column. */
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(2rem, 1rem + 4vw, 6rem);
+  align-items: start;
+}
+
+.split--even {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.split--reverse > :first-child {
+  order: 2;
+}
+
+@media (max-width: 1024px) {
+  .grid--4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .grid--3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .split,
+  .split--even {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-6);
+  }
+
+  .split--reverse > :first-child {
+    order: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .grid--2,
+  .grid--3,
+  .grid--4 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* --------------------------------------------------- scroll reveal system */
+/* Elements opt in with data-reveal. The observer adds .is-visible.
+   Everything degrades to visible if JS never runs (see the noscript rule). */
+
+[data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 1.75rem, 0);
+  transition: opacity var(--d-reveal) var(--e-out),
+    transform var(--d-reveal) var(--e-out);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+[data-reveal="fade"] {
+  transform: none;
+}
+
+[data-reveal="left"] {
+  transform: translate3d(-2rem, 0, 0);
+}
+
+[data-reveal="right"] {
+  transform: translate3d(2rem, 0, 0);
+}
+
+[data-reveal="scale"] {
+  transform: scale(0.96);
+}
+
+/* Image mask reveal — the frame wipes open and the photo settles from a
+   slight zoom. Used for feature photography, never for every image. */
+[data-reveal="mask"] {
+  opacity: 1;
+  transform: none;
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 1100ms var(--e-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal="mask"].is-visible {
+  clip-path: inset(0 0 0 0);
+}
+
+[data-reveal="mask"] > img,
+[data-reveal="mask"] > picture > img {
+  transform: scale(1.1);
+  transition: transform 1600ms var(--e-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal="mask"].is-visible > img,
+[data-reveal="mask"].is-visible > picture > img {
+  transform: scale(1);
+}
+
+/* Line-by-line text reveal. Each line is wrapped by the layout markup. */
+.reveal-line {
+  display: block;
+  overflow: hidden;
+}
+
+.reveal-line > span {
+  display: block;
+  transform: translate3d(0, 105%, 0);
+  transition: transform 1000ms var(--e-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal-lines].is-visible .reveal-line > span {
+  transform: none;
+}
+
+/* When JS is unavailable, nothing may stay hidden. */
+.no-js [data-reveal] {
+  opacity: 1;
+  transform: none;
+  clip-path: none;
+}
+
+.no-js .reveal-line > span {
+  transform: none;
+}
+
+/* ------------------------------------------------------------- misc helpers */
+
+.flow > * + * {
+  margin-top: var(--flow-space, var(--s-4));
+}
+
+.stack-sm > * + * {
+  margin-top: var(--s-3);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-0 {
+  margin-top: 0;
+}
+
+.full-bleed {
+  width: 100vw;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}

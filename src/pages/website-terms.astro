@@ -1,0 +1,159 @@
+---
+/**
+ * WEBSITE TERMS — structured placeholder. Requires legal review before launch.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PageHero from "@components/ui/PageHero.astro";
+import Section from "@components/ui/Section.astro";
+import EditorialNote from "@components/ui/EditorialNote.astro";
+import { company } from "@data/company";
+---
+
+<BaseLayout
+  title="Website Terms | Spartcon"
+  description="Terms governing use of the Spartcon (Pty) Ltd website."
+  noindex
+>
+  <PageHero
+    eyebrow="Legal"
+    title="Website Terms of Use"
+    lead={`Terms governing your use of the ${company.legalName} website.`}
+  />
+
+  <Section width="text">
+    <EditorialNote title="These terms require legal review before launch">
+      <p>
+        The structure below is complete, but it is a template rather than a
+        finished legal document. Sections marked <strong>[TO CONFIRM]</strong>
+        need Spartcon's input, and the whole document should be reviewed by a
+        qualified legal advisor before publication.
+      </p>
+    </EditorialNote>
+
+    <div class="prose legal">
+      <p class="legal__meta">Last updated: Awaiting legal review</p>
+
+      <h2>1. Acceptance</h2>
+      <p>
+        By accessing or using this website you agree to these terms. If you do
+        not agree, please do not use the site.
+      </p>
+
+      <h2>2. About this website</h2>
+      <p>
+        This website is operated by {company.legalName}, a private company
+        registered in {company.country}. It describes the construction,
+        civil engineering and facilities engineering services offered by Spartcon
+        and its Spartcon Tech division.
+      </p>
+
+      <h2>3. Information is general</h2>
+      <p>
+        Content on this website is provided for general information about our
+        capabilities. It does not constitute a quotation, an offer, professional
+        engineering advice, or a commitment to perform work. Any appointment is
+        governed by a separate written contract agreed between the parties.
+      </p>
+      <p>
+        Capability descriptions, service scopes and sector experience describe
+        the types of work Spartcon undertakes. They should not be read as a
+        warranty that a specific outcome will be achieved on any particular
+        project.
+      </p>
+
+      <h2>4. Accuracy</h2>
+      <p>
+        We take care to keep this website accurate and current, but we do not
+        warrant that it is complete or free from error. Registrations, gradings
+        and credentials are stated as at the date of last revision; current
+        certification can be confirmed on request.
+      </p>
+
+      <h2>5. Photography and imagery</h2>
+      <p>
+        Photography on this website is contextual industry and equipment imagery,
+        licensed for commercial use from third-party contributors. Unless a
+        caption states otherwise, <strong>photographs do not depict Spartcon
+        projects</strong> and should not be interpreted as a portfolio of
+        completed work. Full attribution for every image is published on our{" "}
+        <a href="/image-credits">image credits</a> page.
+      </p>
+
+      <h2>6. Third-party names and marks</h2>
+      <p>
+        Client names, professional body names and standards references appear for
+        identification and factual purposes. All third-party names, logos and
+        trade marks remain the property of their respective owners, and their
+        appearance does not imply endorsement of Spartcon by those parties.
+      </p>
+
+      <h2>7. Intellectual property</h2>
+      <p>
+        The Spartcon and Spartcon Tech names, logos and the design and text of
+        this website are the property of {company.legalName} or its licensors.
+        You may not reproduce, distribute or adapt them without written
+        permission, other than for ordinary personal use of the website.
+      </p>
+
+      <h2>8. Links to other sites</h2>
+      <p>
+        This website may link to third-party websites. We do not control those
+        sites and are not responsible for their content, availability or privacy
+        practices.
+      </p>
+
+      <h2>9. Limitation of liability</h2>
+      <p>
+        <strong>[TO CONFIRM]</strong> — the limitation of liability appropriate
+        to Spartcon's risk position and insurance cover, drafted and reviewed by
+        a qualified legal advisor. A construction and engineering company's
+        liability wording should not be adopted from a generic template.
+      </p>
+
+      <h2>10. Enquiries you submit</h2>
+      <p>
+        Information you submit through our enquiry forms is handled in accordance
+        with our <a href="/privacy-policy">Privacy Policy</a>. Please do not
+        submit confidential or commercially sensitive information through the
+        website; use a direct channel instead.
+      </p>
+
+      <h2>11. Availability</h2>
+      <p>
+        We aim to keep this website available but do not guarantee uninterrupted
+        access, and may change, suspend or withdraw any part of it without
+        notice.
+      </p>
+
+      <h2>12. Governing law</h2>
+      <p>
+        These terms are governed by the laws of the Republic of South Africa.
+        <strong>[TO CONFIRM]</strong> — the jurisdiction and dispute resolution
+        wording Spartcon wishes to adopt.
+      </p>
+
+      <h2>13. Contact</h2>
+      <p>
+        Questions about these terms can be directed to us through the{" "}
+        <a href="/contact">contact page</a>.
+      </p>
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  .legal__meta {
+    font-family: var(--font-mono);
+    font-size: var(--t-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    padding-bottom: var(--s-4);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .legal h2 {
+    font-size: var(--t-h3);
+    margin-top: var(--s-8);
+  }
+</style>

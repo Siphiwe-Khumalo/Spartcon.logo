@@ -1,0 +1,470 @@
+---
+/**
+ * CONTACT — Spartcon enquiry pathways.
+ * Contact details are now verified from the supplied company profiles.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import PageHero from "@components/ui/PageHero.astro";
+import Section from "@components/ui/Section.astro";
+import SectionHeader from "@components/ui/SectionHeader.astro";
+import EnquiryForm from "@components/forms/EnquiryForm.astro";
+import PendingValue from "@components/ui/PendingValue.astro";
+import Button from "@components/ui/Button.astro";
+import Logo from "@components/brand/Logo.astro";
+import { company, isPublished } from "@data/company";
+import { techBrand } from "@data/spartcon-tech";
+import { services } from "@data/services";
+
+const addr = company.contact.address;
+const mapsQuery = isPublished(addr)
+  ? encodeURIComponent(
+      `${addr.value.street}, ${addr.value.suburb}, ${addr.value.city}, ${addr.value.postalCode}, South Africa`
+    )
+  : null;
+
+/** Enquiry routes so visitors self-select before writing. */
+const pathways = [
+  {
+    index: "01",
+    title: "Construction & civil projects",
+    text: "Building construction, civil engineering and construction support — from capital planning through to completion.",
+    href: "/services",
+    linkLabel: "Our services",
+  },
+  {
+    index: "02",
+    title: "Facilities engineering & maintenance",
+    text: "Maintenance contracts, building systems, engineering labour and maintenance management through Spartcon Tech.",
+    href: `${techBrand.basePath}/contact`,
+    linkLabel: "Contact Spartcon Tech",
+  },
+  {
+    index: "03",
+    title: "Tenders & compliance documents",
+    text: "CIDB certificates, B-BBEE affidavit, tax compliance status and professional registration certificates.",
+    href: "/credentials",
+    linkLabel: "Credentials",
+  },
+];
+---
+
+<BaseLayout
+  title="Contact Spartcon | Construction & Engineering Enquiries"
+  description="Contact Spartcon (Pty) Ltd in Midrand, Gauteng for building construction, civil engineering, construction support and facilities engineering enquiries."
+  ogImage="contact"
+>
+  <PageHero
+    eyebrow="Contact"
+    title="Let's build what comes next."
+    lead="Tell us about the project or facility. We will make sure the right part of Spartcon is in the conversation from the start."
+    image="johannesburg-city-skyline"
+  />
+
+  <!-- ====================================================== details + form -->
+  <Section aria-labelledby="contact-title">
+    <div class="contact">
+      <!-- ------------------------------------------------------ details col -->
+      <aside class="details">
+        <h2 id="contact-title" class="t-h2 details__title">Contact details</h2>
+
+        <dl class="details__list">
+          <div class="details__row">
+            <dt>Address</dt>
+            <dd>
+              {
+                isPublished(addr) ? (
+                  <address>
+                    {addr.value.street}<br />
+                    {addr.value.suburb}<br />
+                    {addr.value.city}<br />
+                    {addr.value.postalCode}<br />
+                    {addr.value.province}, {company.country}
+                  </address>
+                ) : (
+                  <PendingValue field={addr} />
+                )
+              }
+            </dd>
+          </div>
+
+          <div class="details__row">
+            <dt>Telephone</dt>
+            <dd>
+              <PendingValue field={company.contact.telephone} as="tel" />
+              {
+                isPublished(company.contact.contactPerson) && (
+                  <span class="details__person">
+                    {company.contact.contactPerson.value}
+                  </span>
+                )
+              }
+            </dd>
+          </div>
+
+          <div class="details__row">
+            <dt>Email</dt>
+            <dd class="details__emails">
+              <PendingValue field={company.contact.email} as="email" />
+              <PendingValue field={company.contact.emailAlternate} as="email" />
+            </dd>
+          </div>
+
+          <div class="details__row">
+            <dt>Coverage</dt>
+            <dd>
+              <PendingValue field={company.contact.regionalOffices} />
+            </dd>
+          </div>
+
+          <div class="details__row">
+            <dt>Office hours</dt>
+            <dd><PendingValue field={company.contact.officeHours} /></dd>
+          </div>
+        </dl>
+
+        <div class="details__group">
+          <Logo variant="tech" layout="inline" size="sm" />
+          <p class="details__group-text">
+            {techBrand.parentStatement} Facilities engineering enquiries can go
+            through the
+            <a href={`${techBrand.basePath}/contact`} class="link">
+              Spartcon Tech contact page</a>.
+          </p>
+        </div>
+      </aside>
+
+      <!-- --------------------------------------------------------- form col -->
+      <div class="formcol">
+        <SectionHeader
+          eyebrow="Enquiry"
+          title="Send us an enquiry"
+          level={2}
+          scale="h2"
+          lead="Required fields are marked. We aim to respond to every enquiry."
+        />
+        <EnquiryForm variant="spartcon" id="spartcon-enquiry" />
+      </div>
+    </div>
+  </Section>
+
+  <!-- ============================================================ pathways -->
+  <Section surface="muted" aria-labelledby="paths-title">
+    <SectionHeader
+      index="02"
+      eyebrow="Enquiry pathways"
+      title="Not sure where your enquiry belongs?"
+      layout="split"
+      id="paths-title"
+      lead="Three routes cover most enquiries. If none of them fit, use the form above and we will direct it internally."
+    />
+
+    <ul class="paths" role="list" data-reveal-group="70">
+      {
+        pathways.map((p) => (
+          <li class="path">
+            <span class="path__index">{p.index}</span>
+            <h3 class="path__title">{p.title}</h3>
+            <p class="path__text">{p.text}</p>
+            <a href={p.href} class="path__link">
+              <span>{p.linkLabel}</span>
+              <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
+                <path
+                  d="M1 8h13M9 3l5 5-5 5"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="square"
+                />
+              </svg>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <!-- ================================================================= map -->
+  <Section spacing="none" width="flush" aria-labelledby="map-title">
+    <h2 id="map-title" class="visually-hidden">Our location</h2>
+    {
+      mapsQuery ? (
+        <div class="map">
+          <div class="map__panel">
+            <p class="map__label">Registered office</p>
+            {isPublished(addr) && (
+              <address class="map__address">
+                {addr.value.street}, {addr.value.suburb}<br />
+                {addr.value.city} {addr.value.postalCode}<br />
+                {addr.value.province}
+              </address>
+            )}
+            <Button
+              href={`https://www.google.com/maps/search/?api=1&query=${mapsQuery}`}
+              variant="secondary"
+              arrow
+            >
+              Open in Google Maps
+            </Button>
+          </div>
+
+          <!-- Lazily embedded so it never blocks first paint. -->
+          <div class="map__embed">
+            <iframe
+              title="Map showing the location of Spartcon's registered office in Midrand"
+              src={`https://www.google.com/maps?q=${mapsQuery}&output=embed`}
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              width="100%"
+              height="100%"
+              style="border:0"
+            ></iframe>
+          </div>
+        </div>
+      ) : (
+        <div class="map map--pending">
+          <p class="map__label">Location</p>
+          <PendingValue field={company.contact.mapEmbedUrl} />
+        </div>
+      )
+    }
+  </Section>
+</BaseLayout>
+
+<style>
+  /* ------------------------------------------------------------ two columns */
+
+  .contact {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    gap: clamp(2.5rem, 1.5rem + 5vw, 6rem);
+    align-items: start;
+  }
+
+  /* ---------------------------------------------------------------- details */
+
+  .details {
+    position: sticky;
+    top: calc(var(--nav-h) + 2rem);
+  }
+
+  .details__title {
+    margin-bottom: var(--s-5);
+  }
+
+  .details__list {
+    margin: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .details__row {
+    padding: var(--s-4) 0;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .details__row dt {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    font-weight: 500;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+
+  .details__row dd {
+    margin: 0;
+    font-size: var(--t-sm);
+    color: var(--fg);
+    line-height: var(--lh-body);
+  }
+
+  .details__emails {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    word-break: break-word;
+  }
+
+  .details__person {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--t-xs);
+    color: var(--fg-subtle);
+    margin-top: 0.2rem;
+  }
+
+  .details__group {
+    margin-top: var(--s-6);
+    padding: var(--s-5);
+    background: var(--bg-muted);
+    border: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+
+  .details__group-text {
+    font-size: var(--t-xs);
+    color: var(--fg-muted);
+    line-height: 1.7;
+  }
+
+  /* --------------------------------------------------------------- pathways */
+
+  .paths {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  .path {
+    background: var(--bg-muted);
+    padding: clamp(1.25rem, 1rem + 1.2vw, 2rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    transition: background-color var(--d-mid) var(--e-out);
+  }
+
+  .path:hover {
+    background: var(--white);
+  }
+
+  .path__index {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+  }
+
+  .path__title {
+    font-family: var(--font-display);
+    font-size: var(--t-h4);
+    font-weight: 600;
+    letter-spacing: var(--tr-snug);
+  }
+
+  .path__text {
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    line-height: var(--lh-body);
+    flex: 1;
+  }
+
+  .path__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: var(--t-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--fg);
+    margin-top: var(--s-2);
+  }
+
+  .path__link svg {
+    transition: transform var(--d-mid) var(--e-out);
+  }
+
+  .path__link:hover {
+    color: var(--accent);
+  }
+
+  .path__link:hover svg {
+    transform: translateX(4px);
+  }
+
+  /* -------------------------------------------------------------------- map */
+
+  .map {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    min-height: 26rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .map__panel {
+    background: var(--navy-900);
+    color: var(--white);
+    padding: clamp(1.75rem, 1.5rem + 2vw, 3rem);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+    align-items: flex-start;
+    justify-content: center;
+    --fg: var(--white);
+    --line-strong: var(--line-invert-strong);
+  }
+
+  .map__label {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .map__address {
+    font-size: var(--t-lead);
+    line-height: 1.6;
+    color: var(--white);
+  }
+
+  .map__embed {
+    background: var(--grey-100);
+    min-height: 26rem;
+  }
+
+  .map__embed iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    /* Desaturate slightly so the map sits with the brand rather than shouting. */
+    filter: saturate(0.85) contrast(1.02);
+  }
+
+  .map--pending {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: auto;
+    padding: var(--s-8) var(--gutter);
+    background: var(--bg-muted);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+    align-items: center;
+    text-align: center;
+  }
+
+  /* ------------------------------------------------------------ breakpoints */
+
+  @media (max-width: 1024px) {
+    .contact {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .details {
+      position: static;
+    }
+
+    .paths {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .map {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .map__embed {
+      min-height: 20rem;
+    }
+  }
+</style>

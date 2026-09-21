@@ -1,0 +1,356 @@
+---
+/**
+ * SITE FOOTER
+ *
+ * Substantial link architecture plus the parent/division relationship and the
+ * contact block. Contact values render through <PendingValue>, so nothing
+ * unverified is ever published as fact.
+ */
+import Logo from "@components/brand/Logo.astro";
+import PendingValue from "@components/ui/PendingValue.astro";
+import { company, isPublished } from "@data/company";
+import { footerGroups, legalLinks } from "@data/navigation";
+import { techBrand } from "@data/spartcon-tech";
+
+const year = new Date().getFullYear();
+const start = company.copyrightStart;
+const copyrightRange =
+  isPublished(start) && Number(start.value) < year
+    ? `${start.value}–${year}`
+    : `${year}`;
+
+const anyContact =
+  isPublished(company.contact.email) ||
+  isPublished(company.contact.telephone) ||
+  isPublished(company.contact.address);
+---
+
+<footer class="foot" role="contentinfo">
+  <div class="container">
+    <!-- ================================================= top: brand + nav -->
+    <div class="foot__top">
+      <div class="foot__brand">
+        <Logo variant="spartcon" layout="stacked" size="lg" invert title="Spartcon" />
+
+        <p class="foot__blurb">
+          {company.shortDescription}
+        </p>
+
+        <p class="foot__positioning">{company.positioning}</p>
+
+        <!-- Division relationship, stated plainly. -->
+        <div class="foot__division">
+          <Logo variant="tech" layout="inline" size="sm" invert />
+          <p>{techBrand.parentStatement}</p>
+        </div>
+      </div>
+
+      <div class="foot__cols">
+        {
+          footerGroups.map((group) => (
+            <nav class="foot__col" aria-labelledby={`foot-${group.title.replace(/\W+/g, "-")}`}>
+              <h2
+                class="foot__col-title"
+                id={`foot-${group.title.replace(/\W+/g, "-")}`}
+              >
+                {group.title}
+              </h2>
+              <ul role="list">
+                {group.links.map((link) => (
+                  <li>
+                    <a href={link.href}>{link.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ))
+        }
+
+        <!-- ------------------------------------------------------- contact -->
+        <div class="foot__col foot__col--contact">
+          <h2 class="foot__col-title" id="foot-contact">Contact</h2>
+
+          <ul role="list" class="foot__contact">
+            <li>
+              <span class="foot__contact-label">Telephone</span>
+              <PendingValue field={company.contact.telephone} as="tel" />
+            </li>
+            <li>
+              <span class="foot__contact-label">Email</span>
+              <PendingValue field={company.contact.email} as="email" />
+            </li>
+            <li>
+              <span class="foot__contact-label">Address</span>
+              {
+                isPublished(company.contact.address) ? (
+                  <address>
+                    {company.contact.address.value.street}<br />
+                    {company.contact.address.value.suburb}<br />
+                    {company.contact.address.value.city},{" "}
+                    {company.contact.address.value.province}<br />
+                    {company.contact.address.value.postalCode}
+                  </address>
+                ) : (
+                  <PendingValue field={company.contact.address} />
+                )
+              }
+            </li>
+            <li>
+              <span class="foot__contact-label">Country</span>
+              <span class="foot__contact-value">{company.country}</span>
+            </li>
+          </ul>
+
+          {
+            !anyContact && (
+              <p class="foot__contact-note">
+                Contact details are being confirmed. Please use the{" "}
+                <a href="/contact" class="link">enquiry form</a> in the meantime.
+              </p>
+            )
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================= bottom: legal ---- -->
+    <div class="foot__bottom">
+      <p class="foot__copy">
+        © {copyrightRange} {company.legalName}. All rights reserved.
+      </p>
+
+      <nav aria-label="Legal" class="foot__legal">
+        <ul role="list">
+          {
+            legalLinks.map((link) => (
+              <li><a href={link.href}>{link.label}</a></li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+
+    <p class="foot__disclaimer">
+      Photography on this website is contextual industry and equipment imagery
+      sourced under licences permitting commercial use. It does not depict
+      Spartcon projects unless explicitly stated.
+      <a href="/image-credits" class="link">Image credits</a>.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .foot {
+    background: var(--navy-900);
+    color: var(--white);
+    padding-top: clamp(3.5rem, 2.5rem + 4vw, 6rem);
+    padding-bottom: var(--s-7);
+    /* Accent rule across the full width — a hard edge, not a glow. */
+    border-top: 3px solid var(--accent);
+  }
+
+  .foot__top {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: clamp(2.5rem, 1.5rem + 4vw, 6rem);
+  }
+
+  /* --------------------------------------------------------------- brand */
+
+  .foot__brand {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-5);
+    max-width: 34rem;
+  }
+
+  .foot__blurb {
+    font-size: var(--t-sm);
+    line-height: var(--lh-body);
+    color: var(--navy-200);
+    max-width: 44ch;
+  }
+
+  .foot__positioning {
+    font-family: var(--font-display);
+    font-size: var(--t-h4);
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: var(--tr-snug);
+    color: var(--white);
+    max-width: 30ch;
+    padding-left: var(--s-4);
+    border-left: 2px solid var(--accent);
+  }
+
+  .foot__division {
+    margin-top: var(--s-2);
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--line-invert);
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .foot__division p {
+    font-size: var(--t-xs);
+    color: var(--navy-300);
+    line-height: 1.6;
+  }
+
+  /* -------------------------------------------------------------- columns */
+
+  .foot__cols {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--s-6) var(--s-5);
+  }
+
+  .foot__col-title {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    font-weight: 500;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--navy-300);
+    margin-bottom: var(--s-4);
+    padding-bottom: var(--s-3);
+    border-bottom: 1px solid var(--line-invert);
+  }
+
+  .foot__col ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .foot__col a {
+    font-size: var(--t-sm);
+    color: var(--navy-100);
+    /* Drawn underline reveal on hover. */
+    background-image: linear-gradient(var(--accent), var(--accent));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 1px;
+    padding-bottom: 2px;
+    transition: color var(--d-fast) var(--e-out),
+      background-size var(--d-mid) var(--e-out);
+  }
+
+  .foot__col a:hover {
+    color: var(--white);
+    background-size: 100% 1px;
+  }
+
+  /* -------------------------------------------------------------- contact */
+
+  .foot__contact {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4) !important;
+  }
+
+  .foot__contact li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .foot__contact-label {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--navy-400);
+  }
+
+  .foot__contact-value,
+  .foot__contact address {
+    font-size: var(--t-sm);
+    color: var(--navy-100);
+    line-height: 1.55;
+  }
+
+  .foot__contact-note {
+    margin-top: var(--s-4);
+    font-size: var(--t-xs);
+    color: var(--navy-300);
+    line-height: 1.6;
+  }
+
+  /* --------------------------------------------------------------- bottom */
+
+  .foot__bottom {
+    margin-top: clamp(3rem, 2rem + 3vw, 5rem);
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--line-invert);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-4);
+  }
+
+  .foot__copy {
+    font-size: var(--t-xs);
+    color: var(--navy-300);
+  }
+
+  .foot__legal ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .foot__legal a {
+    font-size: var(--t-xs);
+    color: var(--navy-300);
+    transition: color var(--d-fast) var(--e-out);
+  }
+
+  .foot__legal a:hover {
+    color: var(--white);
+  }
+
+  .foot__disclaimer {
+    margin-top: var(--s-5);
+    font-size: 0.6875rem;
+    line-height: 1.7;
+    color: var(--navy-400);
+    max-width: 90ch;
+  }
+
+  .foot__disclaimer a {
+    color: var(--navy-200);
+  }
+
+  /* ---------------------------------------------------------- breakpoints */
+
+  @media (max-width: 1100px) {
+    .foot__top {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .foot__cols {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--s-7) var(--s-6);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .foot__cols {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .foot__bottom {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

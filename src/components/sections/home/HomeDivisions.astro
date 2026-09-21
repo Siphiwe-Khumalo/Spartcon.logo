@@ -1,0 +1,405 @@
+---
+/**
+ * 03 — CORE DIVISIONS
+ *
+ * Large editorial presentation of Building Construction and Civil Engineering,
+ * then a deliberate transition into Facilities Engineering / Spartcon Tech.
+ * Not a grid of identical cards — each division gets a full editorial row.
+ */
+import Section from "@components/ui/Section.astro";
+import Button from "@components/ui/Button.astro";
+import MediaFrame from "@components/ui/MediaFrame.astro";
+import Logo from "@components/brand/Logo.astro";
+import { services } from "@data/services";
+import { techBrand } from "@data/spartcon-tech";
+
+// The two primary construction divisions, presented editorially.
+const primary = services.filter((s) =>
+  ["building-construction", "civil-engineering"].includes(s.slug)
+);
+const support = services.find(
+  (s) => s.slug === "construction-support-solutions"
+)!;
+---
+
+<Section id="divisions" surface="muted" aria-labelledby="divisions-title">
+  <header class="div-head">
+    <p class="eyebrow">
+      <span class="index-num">02</span>
+      <span>What we do</span>
+    </p>
+    <h2 id="divisions-title" class="t-display div-head__title" data-reveal>
+      Two construction divisions. One engineering division.
+    </h2>
+    <p class="t-lead div-head__lead" data-reveal style="--reveal-delay:120ms">
+      Spartcon delivers the structure and the infrastructure. Spartcon Tech keeps
+      the engineering inside it working.
+    </p>
+  </header>
+
+  <!-- ============================================== editorial division rows -->
+  <div class="divisions">
+    {
+      primary.map((service, i) => (
+        <article class:list={["division", i % 2 === 1 && "division--reverse"]}>
+          <div class="division__media">
+            <MediaFrame
+              slug={service.image}
+              ratio="4/3"
+              sizes="(max-width: 900px) 100vw, 52vw"
+              hoverZoom
+            />
+          </div>
+
+          <div class="division__body">
+            <p class="division__index">{service.index}</p>
+
+            <h3 class="t-h1 division__title" data-reveal>
+              <a href={`/services/${service.slug}`}>{service.title}</a>
+            </h3>
+
+            <p class="division__strapline" data-reveal style="--reveal-delay:80ms">
+              {service.strapline}
+            </p>
+
+            <p class="division__intro" data-reveal style="--reveal-delay:140ms">
+              {service.intro}
+            </p>
+
+            <ul class="division__caps" role="list" data-reveal-group="60">
+              {service.capabilities.map((cap) => (
+                <li>{cap.title}</li>
+              ))}
+            </ul>
+
+            <div class="division__cta" data-reveal>
+              <Button href={`/services/${service.slug}`} variant="ghost" arrow>
+                {service.title}
+              </Button>
+            </div>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+
+  <!-- ======================================= construction support (compact) -->
+  <article class="support" data-reveal>
+    <div class="support__text">
+      <p class="division__index">{support.index}</p>
+      <h3 class="t-h2">
+        <a href={`/services/${support.slug}`}>{support.title}</a>
+      </h3>
+      <p class="support__intro">{support.intro}</p>
+    </div>
+    <ul class="support__list" role="list">
+      {support.capabilities.map((c) => <li>{c.title}</li>)}
+    </ul>
+    <div class="support__cta">
+      <Button href={`/services/${support.slug}`} variant="secondary" arrow>
+        Construction Support
+      </Button>
+    </div>
+  </article>
+
+  <!-- ================================== transition into Facilities Engineering -->
+  <aside class="transition" aria-labelledby="transition-title">
+    <div class="transition__rule" aria-hidden="true"></div>
+
+    <div class="transition__inner">
+      <div class="transition__brand">
+        <Logo variant="tech" layout="stacked" size="lg" invert />
+        <p class="transition__descriptor">{techBrand.descriptor}</p>
+      </div>
+
+      <div class="transition__text">
+        <p class="eyebrow transition__eyebrow">
+          <span class="index-num">03</span>
+          <span>And after it is built</span>
+        </p>
+
+        <h3 id="transition-title" class="t-h1 transition__title" data-reveal>
+          Facilities Engineering, by the people who build.
+        </h3>
+
+        <p class="transition__lead" data-reveal style="--reveal-delay:100ms">
+          {techBrand.positioning}
+        </p>
+
+        <p class="transition__parent">{techBrand.parentStatement}</p>
+
+        <div class="transition__cta" data-reveal style="--reveal-delay:180ms">
+          <Button href={techBrand.basePath} variant="primary" size="lg" arrow>
+            Explore Spartcon Tech
+          </Button>
+        </div>
+      </div>
+    </div>
+  </aside>
+</Section>
+
+<style>
+  /* --------------------------------------------------------------- header */
+
+  .div-head {
+    max-width: 62rem;
+    margin-bottom: clamp(3rem, 2rem + 4vw, 6rem);
+  }
+
+  .div-head__title {
+    max-width: 26ch;
+  }
+
+  .div-head__lead {
+    margin-top: var(--s-5);
+    max-width: 54ch;
+  }
+
+  /* ------------------------------------------------------- division rows */
+
+  .divisions {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(4rem, 3rem + 5vw, 8rem);
+  }
+
+  .division {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: clamp(2rem, 1.5rem + 4vw, 5rem);
+    align-items: center;
+  }
+
+  .division--reverse .division__media {
+    order: 2;
+  }
+
+  .division__index {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: var(--tr-label);
+    color: var(--accent);
+    margin-bottom: var(--s-4);
+  }
+
+  .division__title {
+    margin-bottom: var(--s-3);
+  }
+
+  .division__title a {
+    /* Underline draws in from the left on hover. */
+    background-image: linear-gradient(var(--accent), var(--accent));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 2px;
+    transition: background-size var(--d-slow) var(--e-out),
+      color var(--d-fast) var(--e-out);
+    padding-bottom: 0.08em;
+  }
+
+  .division__title a:hover {
+    background-size: 100% 2px;
+  }
+
+  .division__strapline {
+    font-family: var(--font-mono);
+    font-size: var(--t-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    margin-bottom: var(--s-5);
+  }
+
+  .division__intro {
+    color: var(--fg-muted);
+    line-height: var(--lh-relaxed);
+    max-width: 52ch;
+  }
+
+  .division__caps {
+    margin: var(--s-6) 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .division__caps li {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    border: 1px solid var(--line-strong);
+    padding: 0.4rem 0.65rem;
+    background: var(--white);
+    transition: border-color var(--d-fast) var(--e-out),
+      color var(--d-fast) var(--e-out);
+  }
+
+  .division__caps li:hover {
+    border-color: var(--accent);
+    color: var(--fg);
+  }
+
+  .division__cta {
+    margin-top: var(--s-6);
+  }
+
+  /* ------------------------------------------------- construction support */
+
+  .support {
+    margin-top: clamp(3rem, 2rem + 4vw, 6rem);
+    padding: clamp(1.75rem, 1.25rem + 2vw, 3rem);
+    background: var(--white);
+    border: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 4fr) auto;
+    gap: clamp(1.5rem, 1rem + 3vw, 4rem);
+    align-items: center;
+  }
+
+  .support h3 a {
+    transition: color var(--d-fast) var(--e-out);
+  }
+
+  .support h3 a:hover {
+    color: var(--accent);
+  }
+
+  .support__intro {
+    margin-top: var(--s-3);
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+    max-width: 48ch;
+  }
+
+  .support__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .support__list li {
+    position: relative;
+    padding-left: 1.1rem;
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+  }
+
+  .support__list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 0.45rem;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  /* --------------------------------------------------------- tech transition */
+
+  .transition {
+    position: relative;
+    margin-top: clamp(4rem, 3rem + 5vw, 8rem);
+    background: var(--navy-900);
+    color: var(--white);
+    padding: clamp(2.25rem, 1.5rem + 4vw, 4.5rem);
+    overflow: hidden;
+  }
+
+  .transition__rule {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: clamp(4rem, 14vw, 14rem);
+    height: 3px;
+    background: var(--teal-400);
+  }
+
+  .transition__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: clamp(2rem, 1.5rem + 4vw, 5rem);
+    align-items: start;
+  }
+
+  .transition__brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    padding-bottom: var(--s-5);
+    border-bottom: 1px solid var(--line-invert);
+  }
+
+  .transition__descriptor {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--teal-400);
+  }
+
+  .transition__eyebrow {
+    color: var(--navy-200);
+  }
+
+  .transition__eyebrow :global(.index-num) {
+    color: var(--teal-400);
+  }
+
+  .transition__title {
+    color: var(--white);
+    max-width: 24ch;
+  }
+
+  .transition__lead {
+    margin-top: var(--s-5);
+    font-size: var(--t-lead);
+    line-height: var(--lh-relaxed);
+    color: var(--navy-100);
+    max-width: 56ch;
+  }
+
+  .transition__parent {
+    margin-top: var(--s-5);
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--line-invert);
+    font-size: var(--t-xs);
+    color: var(--navy-300);
+    max-width: 56ch;
+  }
+
+  .transition__cta {
+    margin-top: var(--s-6);
+  }
+
+  /* ---------------------------------------------------------- breakpoints */
+
+  @media (max-width: 900px) {
+    .division,
+    .transition__inner {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .division--reverse .division__media {
+      order: 0;
+    }
+
+    .support {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .support__cta :global(.btn),
+    .transition__cta :global(.btn) {
+      width: 100%;
+    }
+  }
+</style>
