@@ -1,0 +1,199 @@
+---
+/**
+ * PARTNERS / AFFILIATIONS MARQUEE
+ *
+ * A continuous, seamless logo band. Placeholder tiles until real partner
+ * logos are supplied — see src/data/partners.ts for how to swap them in.
+ *
+ * Pure CSS: two identical groups sit side by side in a flex track that
+ * animates from translateX(0) to translateX(-50%) on an infinite loop, so the
+ * seam is invisible. No JavaScript, no layout shift, no dependency.
+ *
+ * The second group is aria-hidden — a screen reader only needs the list once.
+ * Reduced motion turns the animation off site-wide (see base.css); the track
+ * still needs `animation: none` explicitly here so it doesn't just freeze
+ * mid-loop with the duplicate visible.
+ */
+import Section from "@components/ui/Section.astro";
+import { partners } from "@data/partners";
+---
+
+<Section
+  id="partners"
+  spacing="tight"
+  topRule
+  class="partners-band"
+  aria-label="Organisations Spartcon works alongside"
+>
+  <p class="eyebrow partners-band__label">
+    <span>Working alongside</span>
+  </p>
+
+  <div class="marquee">
+    <div class="marquee__track">
+      <ul class="marquee__group" role="list">
+        {
+          partners.map((p) => (
+            <li class="marquee__tile">
+              {p.logoSrc ? (
+                <img src={p.logoSrc.src} alt={p.name} loading="lazy" />
+              ) : (
+                <span class="marquee__placeholder" title={p.name}>
+                  <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
+                    <rect x="1" y="1" width="22" height="22" rx="2" fill="none" stroke="currentColor" stroke-width="1.3" />
+                    <path d="M6 17V9l6-4 6 4v8" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" />
+                  </svg>
+                  <span>{p.name}</span>
+                </span>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+      <ul class="marquee__group" role="list" aria-hidden="true">
+        {
+          partners.map((p) => (
+            <li class="marquee__tile">
+              {p.logoSrc ? (
+                <img src={p.logoSrc.src} alt="" loading="lazy" />
+              ) : (
+                <span class="marquee__placeholder">
+                  <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
+                    <rect x="1" y="1" width="22" height="22" rx="2" fill="none" stroke="currentColor" stroke-width="1.3" />
+                    <path d="M6 17V9l6-4 6 4v8" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" />
+                  </svg>
+                  <span>{p.name}</span>
+                </span>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .partners-band :global(.container) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-6);
+  }
+
+  .partners-band__label {
+    margin-bottom: 0;
+    justify-content: center;
+  }
+
+  .partners-band__label::before {
+    display: none;
+  }
+
+  /* --------------------------------------------------------------- track */
+
+  .marquee {
+    position: relative;
+    overflow: hidden;
+    /* Fade the ends so tiles don't hard-cut against the edge. */
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 var(--gutter),
+      #000 calc(100% - var(--gutter)),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 var(--gutter),
+      #000 calc(100% - var(--gutter)),
+      transparent 100%
+    );
+  }
+
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    animation: marquee-scroll 34s linear infinite;
+  }
+
+  .marquee:hover .marquee__track,
+  .marquee:focus-within .marquee__track {
+    animation-play-state: paused;
+  }
+
+  @keyframes marquee-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      /* Exactly half the track's width, because the track holds two identical
+         groups — this is what makes the loop seamless. */
+      transform: translateX(-50%);
+    }
+  }
+
+  .marquee__group {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .marquee__tile {
+    flex: none;
+    width: clamp(7.5rem, 6.5rem + 3vw, 9.5rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: var(--s-6);
+  }
+
+  .marquee__tile img {
+    max-width: 100%;
+    max-height: 2.25rem;
+    width: auto;
+    height: auto;
+    /* Real logos arrive in whatever colour they arrive in; a light desaturation
+       keeps the band calm until they're confirmed brand-approved for full colour. */
+    filter: grayscale(1) opacity(0.7);
+    transition: filter var(--d-mid) var(--e-out);
+  }
+
+  .marquee__tile img:hover {
+    filter: grayscale(0) opacity(1);
+  }
+
+  .marquee__placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--fg-subtle);
+  }
+
+  .marquee__placeholder span {
+    font-family: var(--font-mono);
+    font-size: var(--t-label);
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track {
+      animation: none !important;
+    }
+
+    .marquee {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Without the scroll, showing the duplicate group too is just noise. */
+    .marquee__group[aria-hidden="true"] {
+      display: none;
+    }
+  }
+</style>
